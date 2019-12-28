@@ -6,9 +6,11 @@ body {
     margin: auto;
     width: 40%;
     padding: 10%;
+    
+
 }
 /* Buttons properties */
-.buttons-container button{
+#button{
     background-color: #FBE21F; /* Button's background color */
     border: 1px solid #D0BA0E; /* I tested that the color must be solid, it wasn't working for me otherwise */
     color: black; /* Text color */
