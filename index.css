@@ -18,4 +18,5 @@ body {
     cursor: pointer; /* On hover, what cursor to turn into */
     display: block; /* This makes them appear below each other */
     width: 65%; /* Just to make all buttons the same width */
+    text-decoration: none;
 }
