@@ -20,11 +20,6 @@ const server = http.createServer((request, response) => {
 
   if (request.method == "GET") {
     if (urlObject.pathname === "/today_images") {
-      //   response.setHeader("Content-Type", "application/json");
-      //   response.setHeader("Access-Control-Allow-Origin", "*");
-      //   response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-      //   response.setHeader("Access-Control-Allow-Methods", "OPTIONS, POST, GET");
-      //   response.setHeader("Access-Control-Max-Age", 2592000);
       var images = [];
       fs.readdir(imagesFolder, (err, files) => {
         files.forEach(file => {
@@ -52,10 +47,7 @@ const server = http.createServer((request, response) => {
   } else if (request.method == "POST") {
     response.end("POST method invoked");
   } else if (request.method === "OPTIONS") {
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    response.setHeader("Access-Control-Allow-Methods", "OPTIONS, POST, GET");
-    response.setHeader("Access-Control-Max-Age", 2592000);
+    response.writeHead(200, headers);
     response.end();
     return;
   } else {
