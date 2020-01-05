@@ -1,44 +1,43 @@
+const url = "127.0.0.1:3000";
+const endpoint = "/today_images";
+
 var slideIndex = 0;
 var images = [];
 
-console.log("Hello Moto");
-loadImages();
-injectSlides();
-showSlides();
+loadImages().then(() => {
+  injectSlides();
+  showSlides();
+});
 
-
-function loadImages(){
-    //Here an Ajax request would take place
-    //In this step we're going to request a brand new object that contains the
-        //pictures to display
-    images.push("bread-food-brunch-lunch-3326103.jpg");
-    images.push("lighthouse-3361704.jpg");
-    images.push("shallow-focus-photography-of-woman-beside-fence-1684915.jpg");
-    images.push("woman-holding-umbrella-2438805.jpg");
+async function loadImages() {
+  //Here an Ajax request would take place
+  let response = await fetch(new URL(`http://${url}${endpoint}`));
+  let data = await response.json();
+  data["data"].forEach(element => {
+    images.push(element);
+  });
 }
 
-function injectSlides(){
-    var mainContainer = document.getElementById('slideshow-container');
-    console.log(mainContainer);
-    images.forEach((image) => {
-        var imageContainer = document.createElement("div");
-        imageContainer.setAttribute('class', 'slide fade');
-        var imageItself = document.createElement("img");
-        imageItself.setAttribute("src", `./images/${image}`);
-        imageContainer.appendChild(imageItself);
-        mainContainer.appendChild(imageContainer);
-        console.log(imageContainer);
-    });
+function injectSlides() {
+  var mainContainer = document.getElementById("slideshow-container");
+  images.forEach(image => {
+    var imageContainer = document.createElement("div");
+    imageContainer.setAttribute("class", "slide fade");
+    var imageItself = document.createElement("img");
+    imageItself.setAttribute("src", `http://${url}/image?name=${image}`);
+    imageContainer.appendChild(imageItself);
+    mainContainer.appendChild(imageContainer);
+  });
 }
 
-function showSlides(){
-    var index;
-    var slides = document.getElementsByClassName("slide");
-    for (index = 0; index < slides.length; index++){
-        slides[index].style.display = "none";
-    }
-    slideIndex++;
-    if (slideIndex > slides.length) slideIndex = 1;
-    slides[slideIndex - 1].style.display = "block";
-    setTimeout(showSlides, 2000);
+function showSlides() {
+  var index;
+  var slides = document.getElementsByClassName("slide");
+  for (index = 0; index < slides.length; index++) {
+    slides[index].style.display = "none";
+  }
+  slideIndex++;
+  if (slideIndex > slides.length) slideIndex = 1;
+  slides[slideIndex - 1].style.display = "block";
+  setTimeout(showSlides, 5000);
 }
