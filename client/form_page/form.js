@@ -1,3 +1,6 @@
+const url = "127.0.0.1:3000";
+const endpoint = "/upload";
+
 const handleSubmit = event => {
   // Stops the form from submitting; we're doing that with AJAX
   event.preventDefault();
@@ -6,6 +9,15 @@ const handleSubmit = event => {
   console.log(form.elements);
   console.log(data);
 };
+
+async function postSubmit(data) {
+  const response = await fetch(`${url}/${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+}
 
 const formToJSON = formElements =>
   [].reduce.call(

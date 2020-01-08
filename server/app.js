@@ -2,11 +2,12 @@ const http = require("http");
 const fs = require("fs");
 const url = require("url");
 const querystring = require("querystring");
+const formidable = require("formidable");
 
 const hostname = "127.0.0.1";
 const port = 3000;
 
-const imagesFolder = "../images/";
+const imagesFolder = "./data/images/";
 
 const server = http.createServer((request, response) => {
   const headers = {
@@ -45,7 +46,21 @@ const server = http.createServer((request, response) => {
       );
     }
   } else if (request.method == "POST") {
-    response.end("POST method invoked");
+    if (urlObject.pathname === "/upload") {
+      var form = new formidable.IncomingForm();
+      form.keepExtensions = true;
+      form.parse(request, (error, fields, files) => {
+        console.log(fields);
+        console.log(files);
+        var oldPath = files.filetoupload.path;
+        var newPath = `${imagesFolder}/${files.filetoupload.name}`;
+        fs.rename(oldPath, newPath, error => {
+          if (error) throw error;
+          response.write("File Uploaded and Saved!");
+          response.end();
+        });
+      });
+    }
   } else if (request.method === "OPTIONS") {
     response.writeHead(200, headers);
     response.end();
