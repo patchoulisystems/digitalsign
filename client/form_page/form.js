@@ -1,21 +1,39 @@
 const url = "127.0.0.1:3000";
 const endpoint = "/upload";
 
+//Another approach to handling the form would be...
+const submitForm = () => {
+  var form = document.getElementById('main-form');
+  form.setAttribute('action', `${url}${endpoint}`);
+};
+
+
 const handleSubmit = event => {
   // Stops the form from submitting; we're doing that with AJAX
   event.preventDefault();
   // Call our function to get the form data here
+  console.log(event);
   const data = formToJSON(form.elements);
   console.log(form.elements);
   console.log(data);
+  postSubmit(data);
 };
 
 async function postSubmit(data) {
-  const response = await fetch(`${url}/${endpoint}`, {
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+    "Access-Control-Max-Age": 2592000 // 30 days
+    /** add other headers as per requirement */
+  };
+  const response = await fetch(`http://${url}/${endpoint}`, {
     method: "POST",
+    body: data,
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+      "Access-Control-Max-Age": 2592000 // 30 days,
+    },
   });
 }
 

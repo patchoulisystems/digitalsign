@@ -9,12 +9,12 @@
       href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./form.css" />
+    <link rel="stylesheet" type="text/css" href="./form.css" />
     <title>Form</title>
   </head>
   <body>
     <div id="main-container">
-      <form class="main-form">
+      <form class="main-form" action="/upload" enctype="multipart/form-data" method="post">
         Submit a Picture
         <hr />
         <label for="firstname">First Name</label>
@@ -61,5 +61,4 @@
     type="text/javascript"
     src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
   ></script>
-  <script type="text/javascript" src="./form.js"></script>
 </html>

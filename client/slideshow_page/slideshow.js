@@ -1,5 +1,6 @@
 const url = "127.0.0.1:3000";
 const endpoint = "/today_images";
+const axios = window.axios;
 
 var slideIndex = 0;
 var images = [];
@@ -11,9 +12,13 @@ loadImages().then(() => {
 
 async function loadImages() {
   //Here an Ajax request would take place
-  let response = await fetch(new URL(`http://${url}${endpoint}`));
-  let data = await response.json();
-  data["data"].forEach(element => {
+  console.log("Hello");
+  let response = await axios.get(`http://${url}${endpoint}`);
+  axios.get(`http://${url}${endpoint}`).catch(error => {
+    console.log(error);
+  });
+  console.log(response);
+  response.data["data"].forEach(element => {
     images.push(element);
   });
 }

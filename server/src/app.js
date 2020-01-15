@@ -40,25 +40,31 @@ const server = http.createServer((request, response) => {
         response.setHeader("Content-Type", "image/jpg");
         stream.pipe(response);
       });
-    } else {
-      response.end(
-        "405 - Method Not Allowed: You cannot GET from this endpoint."
-      );
+    } else if (urlObject.pathname === "/upload"){
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      fs.createReadStream('../client/form_page/form.html').pipe(response);
+    } else if (urlObject.pathname === "/today"){      
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      fs.createReadStream('../client/slideshow_page/slideshow.html').pipe(response);
+    }
+    else {
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      fs.createReadStream("../client/index.html").pipe(response);
     }
   } else if (request.method == "POST") {
     if (urlObject.pathname === "/upload") {
       var form = new formidable.IncomingForm();
       form.keepExtensions = true;
-      form.parse(request, (error, fields, files) => {
+      form.parse(request, function (error, fields, files) {
         console.log(fields);
-        console.log(files);
-        var oldPath = files.filetoupload.path;
-        var newPath = `${imagesFolder}/${files.filetoupload.name}`;
-        fs.rename(oldPath, newPath, error => {
-          if (error) throw error;
+        console.log(files.picture.name);
+        // var oldPath = files.filetoupload.path;
+        // var newPath = `${imagesFolder}/${files.filetoupload.name}`;
+        // fs.rename(oldPath, newPath, error => {
+        //   if (error) throw error;
           response.write("File Uploaded and Saved!");
           response.end();
-        });
+        // });
       });
     }
   } else if (request.method === "OPTIONS") {
