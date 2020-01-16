@@ -5,20 +5,22 @@ const axios = window.axios;
 var slideIndex = 0;
 var images = [];
 
-loadImages().then(() => {
-  injectSlides();
-  showSlides();
-});
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete')
+  // The page is fully loaded
+  {
+  
+    loadImages().then(function () {
+      injectSlides();
+      showSlides();
+    });
+  } 
+}
 
 async function loadImages() {
   //Here an Ajax request would take place
-  console.log("Hello");
   let response = await axios.get(`http://${url}${endpoint}`);
-  axios.get(`http://${url}${endpoint}`).catch(error => {
-    console.log(error);
-  });
-  console.log(response);
-  response.data["data"].forEach(element => {
+  response.data["data"].forEach(function (element) {
     images.push(element);
   });
 }
