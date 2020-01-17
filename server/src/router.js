@@ -44,7 +44,19 @@ function home(request, response) {
                 stream.pipe(response);
             });
         }
-    } else if (urlObject.pathname === "/upload") {
+    } else if (urlObject.pathname === "/assets") {
+        if (request.method == "GET") {
+            var parsedQuerystring = querystring.parse(urlObject.query);
+            var stream = fs.createReadStream(
+                `${imagesFolder}${parsedQuerystring.name}`
+            );
+            stream.on("open", () => {
+                response.setHeader("Content-Type", "image/jpg");
+                stream.pipe(response);
+            });
+        }
+    }
+    else if (urlObject.pathname === "/upload") {
         if (request.method == "GET") {
             response.writeHead(200, { 'Content-Type': 'text/html' });
             fs.createReadStream('../client/form_page/form.html').pipe(response);
