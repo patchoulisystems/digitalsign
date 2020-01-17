@@ -1,0 +1,50 @@
+{
+    "metadata": {
+        "imageNumber": 101,
+        "todayList": []
+    },
+    "entries": {
+        "image1.jpg": {
+            "name": "Vladimir",
+            "lastname": "Ventura",
+            "studentID": "00301144",
+            "dates": "02-12-2020",
+            "pictureName": "image1.jpg"
+        },
+        "image2.jpg": {
+            "name": "Vladimir",
+            "lastname": "Ventura",
+            "studentID": "00301144",
+            "dates": "02-12-2020",
+            "pictureName": "image2.jpg"
+        },
+        "image3.jpg": {
+            "name": "Vladimir",
+            "lastname": "Ventura",
+            "studentID": "00301144",
+            "dates": "02-12-2020",
+            "pictureName": "image3.jpg"
+        },
+        "image4.jpg": {
+            "name": "Vladimir",
+            "lastname": "Ventura",
+            "studentID": "00301144",
+            "dates": "02-12-2020",
+            "pictureName": "image4.jpg"
+        },
+        "image5.jpg": {
+            "name": "Vladimir",
+            "lastname": "Ventura",
+            "studentID": "00301144",
+            "dates": "02-12-2020",
+            "pictureName": "image5.jpg"
+        },
+        "image6.jpg": {
+            "name": "Vladimir",
+            "lastname": "Ventura",
+            "studentID": "00301144",
+            "dates": "02-12-2020",
+            "pictureName": "image6.jpg"
+        }
+    }
+}
