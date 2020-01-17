@@ -1,4 +1,3 @@
-const url = "127.0.0.1:3000";
 const endpoint = "/today_images";
 const axios = window.axios;
 
@@ -19,7 +18,7 @@ document.onreadystatechange = () => {
 
 async function loadImages() {
   //Here an Ajax request would take place
-  let response = await axios.get(`http://${url}${endpoint}`);
+  let response = await axios.get(`${endpoint}`);
   response.data["data"].forEach(function (element) {
     images.push(element);
   });
@@ -31,7 +30,7 @@ function injectSlides() {
     var imageContainer = document.createElement("div");
     imageContainer.setAttribute("class", "slide fade");
     var imageItself = document.createElement("img");
-    imageItself.setAttribute("src", `http://${url}/image?name=${image}`);
+    imageItself.setAttribute("src", `/image?name=${image}`);
     imageContainer.appendChild(imageItself);
     mainContainer.appendChild(imageContainer);
   });
