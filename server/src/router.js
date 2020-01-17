@@ -4,6 +4,7 @@ const formidable = require('formidable');
 const querystring = require('querystring');
 
 const imagesFolder = "./data/images/";
+const assetsFolder = "./data/assets";
 
 function home(request, response) {
     var urlObject = url.parse(`${request.headers.host}${request.url}`);
