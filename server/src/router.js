@@ -49,7 +49,7 @@ function home(request, response) {
         if (request.method == "GET") {
             var parsedQuerystring = querystring.parse(urlObject.query);
             var stream = fs.createReadStream(
-                `${imagesFolder}${parsedQuerystring.name}`
+                `${assetsFolder}${parsedQuerystring.name}`
             );
             stream.on("open", () => {
                 response.setHeader("Content-Type", "image/jpg");
