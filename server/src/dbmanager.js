@@ -1,4 +1,6 @@
 const fs = require('fs');
+const formidable = require('formidable');
+const path = require('path');
 
 const imagesFolder = "./data/images/";
 const dbLocation = "./data/db.json";
@@ -34,15 +36,53 @@ const getTodayList = () => {
     }
 }
 
+const insertFormData = (response) => {
+    var form = new formidable.IncomingForm();
+    var today = new Date();
+    form.keepExtensions = true;
+
+    form.parse(response, (error, fields, files) => {
+        var imageToInsert = savePicture(files);
+        var date = new Date(fields.date.toString());
+        db.entries[imageToInsert] = {
+            "firstname": fields.firstname,
+            "lastname": fields.lastname,
+            "studentID": date,
+            "dates": fields.date.toString(),
+            "pictureName": imageToInsert
+        };
+        db.metadata['imageNumber']++;
+        let jsonData = JSON.stringify(db);
+        fs.writeFileSync(dbLocation, jsonData);
+
+        //This will be N eventually
+        if (date <= today){
+            buildToday();
+        }
+    });
+}
+
+const savePicture = (files) => {
+    var imageNumber = db.metadata['imageNumber'] + 1;
+    var oldPath = files.picture.path;
+    var extension = path.extname(oldPath);
+    var fileName = `image${imageNumber}${extension}`;
+    var newPath = `${imagesFolder}/${fileName}`;
+
+    fs.renameSync(files.picture.path, newPath);
+
+    return fileName;
+}
+
 //We'l probably delete this
 const initialize = () => {
     fs.readdir(imagesFolder, (err, files) => {
         var today = new Date();
         files.forEach(image => {
             db.entries[image] = {
-                "name": "Vladimir",
+                "firstname": "Vladimir",
                 "lastname": "Ventura",
-                "studentID": "00301144",
+                "studentid": "00301144",
                 "dates": today,
                 "pictureName": image
             };
@@ -52,6 +92,5 @@ const initialize = () => {
     });
 }
 
-buildToday();
-
 module.exports.getTodayList = getTodayList;
+module.exports.insertFormData = insertFormData;
