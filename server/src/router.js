@@ -59,17 +59,9 @@ function home(request, response) {
             response.writeHead(200, { 'Content-Type': 'text/html' });
             fs.createReadStream('../client/form_page/form.html').pipe(response);
         } else if (request.method == "POST") {
-            var form = new formidable.IncomingForm();
-            form.keepExtensions = true;
-            form.parse(request, function (error, fields, files) {
-                var oldPath = files.picture.path;
-                var newPath = `${imagesFolder}/${files.picture.name}`;
-                fs.rename(oldPath, newPath, error => {
-                    if (error) throw error;
-                    response.write("File Uploaded and Saved!");
-                    response.end();
-                });
-            });
+            db.insertFormData(request);
+            response.write("File Uploaded and Saved!");
+            response.end();
         }
     } else if (urlObject.pathname === "/today") {
         if (request.method == "GET") {
