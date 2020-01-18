@@ -3,6 +3,8 @@ const url = require('url');
 const formidable = require('formidable');
 const querystring = require('querystring');
 
+const db = require('./dbmanager');
+
 const imagesFolder = "./data/images/";
 const assetsFolder = "./data/assets/";
 
@@ -23,16 +25,11 @@ function home(request, response) {
         }
     } else if (urlObject.pathname === "/today_images") {
         if (request.method == "GET") {
-            var images = [];
-            fs.readdir(imagesFolder, (err, files) => {
-                files.forEach(file => {
-                    images.push(file);
-                });
-                headers["Content-Type"] = "application/json";
-                response.writeHead(200, headers);
-                response.write(JSON.stringify({ data: images }));
-                response.end();
-            });
+            let images = db.getTodayList();
+            headers["Content-Type"] = "application/json";
+            response.writeHead(200, headers);
+            response.write(JSON.stringify({ data: images }));
+            response.end();
         }
     } else if (urlObject.pathname === "/image") {
         if (request.method == "GET") {
