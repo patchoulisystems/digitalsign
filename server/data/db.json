@@ -1,49 +1,57 @@
 {
     "metadata": {
-        "imageNumber": 101,
-        "todayList": []
+        "imageNumber": 6,
+        "todayList": [
+            "image1.jpg",
+            "image2.jpg",
+            "image3.jpg",
+            "image4.jpg",
+            "image5.jpg",
+            "image6.jpg"
+        ],
+        "dateBuilt": "2020-01-18T00:37:50.605Z"
     },
     "entries": {
         "image1.jpg": {
             "name": "Vladimir",
             "lastname": "Ventura",
             "studentID": "00301144",
-            "dates": "02-12-2020",
+            "dates": "2020-01-11",
             "pictureName": "image1.jpg"
         },
         "image2.jpg": {
             "name": "Vladimir",
             "lastname": "Ventura",
             "studentID": "00301144",
-            "dates": "02-12-2020",
+            "dates": "2020-01-11",
             "pictureName": "image2.jpg"
         },
         "image3.jpg": {
             "name": "Vladimir",
             "lastname": "Ventura",
             "studentID": "00301144",
-            "dates": "02-12-2020",
+            "dates": "2020-01-11",
             "pictureName": "image3.jpg"
         },
         "image4.jpg": {
             "name": "Vladimir",
             "lastname": "Ventura",
             "studentID": "00301144",
-            "dates": "02-12-2020",
+            "dates": "2020-01-11",
             "pictureName": "image4.jpg"
         },
         "image5.jpg": {
             "name": "Vladimir",
             "lastname": "Ventura",
             "studentID": "00301144",
-            "dates": "02-12-2020",
+            "dates": "2020-01-11",
             "pictureName": "image5.jpg"
         },
         "image6.jpg": {
             "name": "Vladimir",
             "lastname": "Ventura",
             "studentID": "00301144",
-            "dates": "02-12-2020",
+            "dates": "2020-01-11",
             "pictureName": "image6.jpg"
         }
     }
