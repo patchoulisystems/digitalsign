@@ -1,58 +1,81 @@
 {
     "metadata": {
-        "imageNumber": 6,
+        "imageNumber": 10,
         "todayList": [
             "image1.jpg",
             "image2.jpg",
             "image3.jpg",
             "image4.jpg",
             "image5.jpg",
-            "image6.jpg"
+            "image6.jpg",
+            "image7.jpg",
+            "image9.jpg"
         ],
-        "dateBuilt": "2020-01-18T00:51:38.629Z"
+        "dateBuilt": "2020-01-18T01:40:00.276Z"
     },
     "entries": {
         "image1.jpg": {
-            "name": "Vladimir",
+            "firstname": "Vladimir",
             "lastname": "Ventura",
-            "studentID": "00301144",
-            "dates": "2020-01-11",
+            "studentid": "00301144",
+            "dates": "2020-01-18T01:37:47.985Z",
             "pictureName": "image1.jpg"
         },
+        "image10.JPG": {
+            "firstname": "DJ",
+            "lastname": "Kako",
+            "studentID": "2020-02-22T00:00:00.000Z",
+            "dates": "2020-02-22",
+            "pictureName": "image10.JPG"
+        },
         "image2.jpg": {
-            "name": "Vladimir",
+            "firstname": "Vladimir",
             "lastname": "Ventura",
-            "studentID": "00301144",
-            "dates": "2020-01-11",
+            "studentid": "00301144",
+            "dates": "2020-01-18T01:37:47.985Z",
             "pictureName": "image2.jpg"
         },
         "image3.jpg": {
-            "name": "Vladimir",
+            "firstname": "Vladimir",
             "lastname": "Ventura",
-            "studentID": "00301144",
-            "dates": "2020-01-11",
+            "studentid": "00301144",
+            "dates": "2020-01-18T01:37:47.985Z",
             "pictureName": "image3.jpg"
         },
         "image4.jpg": {
-            "name": "Vladimir",
+            "firstname": "Vladimir",
             "lastname": "Ventura",
-            "studentID": "00301144",
-            "dates": "2020-01-11",
+            "studentid": "00301144",
+            "dates": "2020-01-18T01:37:47.985Z",
             "pictureName": "image4.jpg"
         },
         "image5.jpg": {
-            "name": "Vladimir",
+            "firstname": "Vladimir",
             "lastname": "Ventura",
-            "studentID": "00301144",
-            "dates": "2020-01-11",
+            "studentid": "00301144",
+            "dates": "2020-01-18T01:37:47.985Z",
             "pictureName": "image5.jpg"
         },
         "image6.jpg": {
-            "name": "Vladimir",
+            "firstname": "Vladimir",
             "lastname": "Ventura",
-            "studentID": "00301144",
-            "dates": "2020-01-11",
+            "studentid": "00301144",
+            "dates": "2020-01-18T01:37:47.985Z",
             "pictureName": "image6.jpg"
+        },
+        "image7.jpg": {
+            "firstname": "Vladimir",
+            "lastname": "Ventura",
+            "studentid": "00301144",
+            "dates": "2020-01-18T01:37:47.985Z",
+            "pictureName": "image7.jpg"
+        },
+        "image9.jpg": {
+            "firstname": "Vladimir",
+            "lastname": "Ventura",
+            "studentid": "00301144",
+            "dates": "2020-01-18T01:37:47.985Z",
+            "pictureName": "image9.jpg"
         }
     }
 }
