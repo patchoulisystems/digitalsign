@@ -9,7 +9,7 @@ const imagesFolder = "./data/images/";
 const assetsFolder = "./data/assets/";
 
 function home(request, response) {
-    var urlObject = url.parse(`${request.headers.host}${request.url}`);
+    var urlObject = url.parse(`http://${request.headers.host}${request.url}`);
     const headers = {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
