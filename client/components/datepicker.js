@@ -33,9 +33,4 @@ $(document).ready(function() {
                 break;
         }
     });
-
-    $('#form').submit(function() {
-        console.log($('#dpfield'));
-        return false;
-    });
 });
