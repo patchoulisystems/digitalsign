@@ -3,10 +3,16 @@
 
 <body>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="./js/jquery.plugin.js"></script>
-    <script src="./js/jquery.datepick.js"></script>
-    <link rel="stylesheet" href="./index.css">
-    <script src="./index.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="./jquery.plugin.js"></script>
+    <script src="./jquery.datepick.js"></script>
+
+    <link rel="stylesheet" href="./datepicker.css">
+    <script src="./datepicker.js"></script>
 
     <input class="radio" id="radio-1" type="radio" name="radio" value="interval" />
     <label class="label" for="radio-1">Interval</label>
@@ -16,7 +22,6 @@
     <div id="datepicker"></div>
 
     <button type="button" id="reset">Reset</button>
-    {% comment %} KLUDGE: Creating an invisible text box so we can send it with the form's submit later on {% endcomment %}
     <input id="dpfield" name="dates" />
 </body>
 
