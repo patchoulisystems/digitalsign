@@ -1,6 +1,7 @@
 const fs = require('fs');
 const url = require('url');
 const formidable = require('formidable');
+const path = require('path');
 const querystring = require('querystring');
 
 const db = require('./dbmanager');

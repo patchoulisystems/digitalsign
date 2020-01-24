@@ -2,8 +2,8 @@ const fs = require('fs');
 const formidable = require('formidable');
 const path = require('path');
 
-const imagesFolder = "./data/images/";
-const dbLocation = "./data/db.json";
+const imagesFolder = './data/images/';
+const dbLocation = path.resolve(__dirname, '../data/db.json');
 
 let db = fs.readFileSync(dbLocation);
 db = JSON.parse(db);
