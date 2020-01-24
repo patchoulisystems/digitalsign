@@ -57,21 +57,15 @@ function home(request, response) {
         if (request.method == "GET") {
             var parsedQuerystring = querystring.parse(urlObject.query);
             var contentType;
-            switch (parsedQuerystring.name.split('.')) {
-                case 'js':
-                    contentType = "text/javascript";
-                    break;
-                case 'html':
-                    contentType = "text/html";
-                    break;
-                case 'css':
-                    contentType = "text/css";
-                    break;
-                default:
-                    break;
+            if (parsedQuerystring.resource.includes('js')) {
+                contentType = "text/javascript";
+            } else if (parsedQuerystring.resource.includes('css')) {
+                contentType = "text/css";
+            } else if (parsedQuerystring.resource.includes('html')) {
+                contentType = "text/html";
             }
             var stream = fs.createReadStream(
-                `${widgetsFolder}${parsedQuerystring.name}`
+                `${widgetsFolder}${parsedQuerystring.resource}`
             );
             stream.on("open", () => {
                 response.setHeader("Content-Type", contentType);
@@ -104,7 +98,7 @@ function home(request, response) {
 }
 
 function css(request, response) {
-    if (request.url.indexOf(".css") !== -1) {
+    if (request.url.indexOf(".css") !== -1 && !request.url.includes('?')) {
         var name = request.url.split(".")[0];
         var file;
         if (name === "/index") {
@@ -118,7 +112,7 @@ function css(request, response) {
 }
 
 function js(request, response) {
-    if (request.url.indexOf(".js") !== -1) {
+    if (request.url.indexOf(".js") !== -1 && !request.url.includes('?')) {
         var name = request.url.split(".")[0];
         var file;
         if (name === "/index") {
