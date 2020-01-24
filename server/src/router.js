@@ -1,12 +1,12 @@
 const fs = require('fs');
 const url = require('url');
-const formidable = require('formidable');
 const querystring = require('querystring');
 
 const db = require('./dbmanager');
 
 const imagesFolder = "./data/images/";
 const assetsFolder = "./data/assets/";
+const widgetsFolder = "../client/components/";
 
 function home(request, response) {
     var urlObject = url.parse(`http://${request.headers.host}${request.url}`);
@@ -14,7 +14,7 @@ function home(request, response) {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
         "Access-Control-Max-Age": 2592000 // 30 days
-        /** add other headers as per requirement */
+            /** add other headers as per requirement */
     };
     if (urlObject.pathname === '/') {
         if (request.method == "GET") {
@@ -53,8 +53,32 @@ function home(request, response) {
                 stream.pipe(response);
             });
         }
-    }
-    else if (urlObject.pathname === "/upload") {
+    } else if (urlObject.pathname === "/widget") {
+        if (request.method == "GET") {
+            var parsedQuerystring = querystring.parse(urlObject.query);
+            var contentType;
+            switch (parsedQuerystring.name.split('.')) {
+                case 'js':
+                    contentType = "text/javascript";
+                    break;
+                case 'html':
+                    contentType = "text/html";
+                    break;
+                case 'css':
+                    contentType = "text/css";
+                    break;
+                default:
+                    break;
+            }
+            var stream = fs.createReadStream(
+                `${widgetsFolder}${parsedQuerystring.name}`
+            );
+            stream.on("open", () => {
+                response.setHeader("Content-Type", contentType);
+                stream.pipe(response);
+            });
+        }
+    } else if (urlObject.pathname === "/upload") {
         if (request.method == "GET") {
             response.writeHead(200, { 'Content-Type': 'text/html' });
             fs.createReadStream('../client/form_page/form.html').pipe(response);
