@@ -1,7 +1,3 @@
-if (!process.argv.includes('dev') && !process.argv.includes('prod')) {
-    console.log("Please run the server with either 'dev' or 'prod' argument.");
-    process.exit();
-}
 const http = require("http");
 const router = require('./src/router');
 
@@ -12,20 +8,9 @@ const router = require('./src/router');
 // We can literally pass an argument like so: node app.js [argument] and pull it from process.argv array.
 // The first two values are the node's install path, and the app.js's path; the 3rd + will be the arguments
 // we pass along.
-const serverOptions = {
-    'dev': {
-        'hostname': '127.0.0.1',
-        'port': 3000
-    },
-    'prod': {
-        'hostname': '10.0.0.161',
-        'port': 80
-    }
-}
 
-const launchOption = process.argv[2];
-const port = serverOptions[launchOption]['port'];
-const hostname = serverOptions[launchOption]['hostname'];
+const port = 8080;
+const hostname = '0.0.0.0';
 
 const server = http.createServer((request, response) => {
     router.css(request, response);
