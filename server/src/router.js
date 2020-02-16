@@ -1,13 +1,17 @@
 const fs = require('fs');
 const url = require('url');
+<<<<<<< HEAD
 const formidable = require('formidable');
 const path = require('path');
+=======
+>>>>>>> 22c602dba5d5ec58ca2fb594c009d94c70dc5220
 const querystring = require('querystring');
 
 const db = require('./dbmanager');
 
 const imagesFolder = "./data/images/";
 const assetsFolder = "./data/assets/";
+const widgetsFolder = "../client/components/";
 
 function home(request, response) {
     var urlObject = url.parse(`http://${request.headers.host}${request.url}`);
@@ -15,7 +19,7 @@ function home(request, response) {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
         "Access-Control-Max-Age": 2592000 // 30 days
-        /** add other headers as per requirement */
+            /** add other headers as per requirement */
     };
     if (urlObject.pathname === '/') {
         if (request.method == "GET") {
@@ -54,8 +58,26 @@ function home(request, response) {
                 stream.pipe(response);
             });
         }
-    }
-    else if (urlObject.pathname === "/upload") {
+    } else if (urlObject.pathname === "/widget") {
+        if (request.method == "GET") {
+            var parsedQuerystring = querystring.parse(urlObject.query);
+            var contentType;
+            if (parsedQuerystring.resource.includes('js')) {
+                contentType = "text/javascript";
+            } else if (parsedQuerystring.resource.includes('css')) {
+                contentType = "text/css";
+            } else if (parsedQuerystring.resource.includes('html')) {
+                contentType = "text/html";
+            }
+            var stream = fs.createReadStream(
+                `${widgetsFolder}${parsedQuerystring.resource}`
+            );
+            stream.on("open", () => {
+                response.setHeader("Content-Type", contentType);
+                stream.pipe(response);
+            });
+        }
+    } else if (urlObject.pathname === "/upload") {
         if (request.method == "GET") {
             response.writeHead(200, { 'Content-Type': 'text/html' });
             fs.createReadStream('../client/form_page/form.html').pipe(response);
@@ -81,7 +103,7 @@ function home(request, response) {
 }
 
 function css(request, response) {
-    if (request.url.indexOf(".css") !== -1) {
+    if (request.url.indexOf(".css") !== -1 && !request.url.includes('?')) {
         var name = request.url.split(".")[0];
         var file;
         if (name === "/index") {
@@ -95,7 +117,7 @@ function css(request, response) {
 }
 
 function js(request, response) {
-    if (request.url.indexOf(".js") !== -1) {
+    if (request.url.indexOf(".js") !== -1 && !request.url.includes('?')) {
         var name = request.url.split(".")[0];
         var file;
         if (name === "/index") {

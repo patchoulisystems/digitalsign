@@ -5,8 +5,15 @@ var options = {
     dateFormat: 'yyyy-mm-dd',
     altField: '#dpfield'
 };
+$(document).ready(function() {
 
-const enableDatepicker = () => {
+    $("#reset").click(function() {
+        if ($("input[name='radio']:checked")) {
+            $("input[name='radio']:checked").prop('checked', false);
+        }
+        $('#datepicker').datepick('destroy');
+    });
+
     $("input[name='radio']").on('change', function() {
         var selected = $("input[name='radio']:checked").val();
         switch (selected) {
@@ -25,19 +32,5 @@ const enableDatepicker = () => {
             default:
                 break;
         }
-    });
-    $("#reset").click(function() {
-        if ($("input[name='radio']:checked")) {
-            $("input[name='radio']:checked").prop('checked', false);
-        }
-        $('#datepicker').datepick('destroy');
-    });
-}
-$(function() {
-    fetch('/widget?resource=datepicker.html').then(function(data) {
-        data.text().then(function(html) {
-            document.getElementById('datepicker-component').innerHTML = html;
-            enableDatepicker();
-        });
     });
 });

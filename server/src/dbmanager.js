@@ -13,9 +13,21 @@ const buildToday = () => {
     var files = fs.readdirSync(imagesFolder, []);
     var today = new Date();
     files.forEach(image => {
-        var imageDate = new Date(db.entries[image].dates);
-        if (imageDate <= today) {
-            todayList.push(image);
+        var dateType = db.entries[image].dateType.trim();
+        if (dateType == "interval") {
+            var unparsedDates = db.entries[image].dates.split(' ');
+            var leftmostDay = new Date(unparsedDates[0]);
+            var rightmostDay = new Date(unparsedDates[2]);
+            if (leftmostDay <= today || today <= rightmostDay) {
+                todayList.push(image);
+            }
+        } else if (dateType == 'multiple') {
+            db.entries[image].dates.split(',').forEach(function(date) {
+                var aDay = new Date(date);
+                if (aDay == today) {
+                    todayList.push(image);
+                }
+            });
         }
     });
     db.metadata["todayList"] = todayList;
@@ -43,21 +55,36 @@ const insertFormData = (response) => {
 
     form.parse(response, (error, fields, files) => {
         var imageToInsert = savePicture(files);
-        var date = new Date(fields.date.toString());
         db.entries[imageToInsert] = {
             "firstname": fields.firstname,
             "lastname": fields.lastname,
-            "studentID": date,
-            "dates": fields.date.toString(),
+            "studentID": fields.studentID,
+            "dateType": fields.radio,
+            "dates": fields.dates,
             "pictureName": imageToInsert
         };
         db.metadata['imageNumber']++;
         let jsonData = JSON.stringify(db);
         fs.writeFileSync(dbLocation, jsonData);
 
-        //This will be N eventually
-        if (date <= today){
-            buildToday();
+        if (fields.radio == 'interval') {
+            var parsedDates = fields.dates.split('-');
+            var leftmostDay = new Date(parsedDates[0]);
+            var rightmostDay = new Date(parsedDates[2]);
+            if (leftmostDay <= today || today <= rightmostDay) {
+                buildToday();
+            }
+        } else if (fields.radio == 'multiple') {
+            var hasToday = false;
+            fields.dates.split(',').forEach(function(date) {
+                var aDay = new Date(date);
+                if (aDay == today) {
+                    hasToday = true;
+                }
+            });
+            if (hasToday) {
+                buildToday();
+            }
         }
     });
 }
@@ -83,7 +110,8 @@ const initialize = () => {
                 "firstname": "Vladimir",
                 "lastname": "Ventura",
                 "studentid": "00301144",
-                "dates": today,
+                "dateType": 'interval',
+                "dates": '2020-01-01 - 2020-12-31',
                 "pictureName": image
             };
         });
