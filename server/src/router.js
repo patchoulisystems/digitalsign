@@ -1,10 +1,7 @@
 const fs = require('fs');
 const url = require('url');
-<<<<<<< HEAD
-const formidable = require('formidable');
-const path = require('path');
-=======
->>>>>>> 22c602dba5d5ec58ca2fb594c009d94c70dc5220
+//const formidable = require('formidable');
+//const path = require('path');
 const querystring = require('querystring');
 
 const db = require('./dbmanager');
