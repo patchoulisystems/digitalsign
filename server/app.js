@@ -1,5 +1,5 @@
 const http = require("http");
-const router = require('./src/router');
+const router = require("./src/router");
 
 // address is the address on ethernet interface, which is what we want to listen to
 // 80 is standard for http, may need to sudo node app.js to listen on port 80
@@ -10,14 +10,14 @@ const router = require('./src/router');
 // we pass along.
 
 const port = 8080;
-const hostname = '0.0.0.0';
+const hostname = "0.0.0.0";
 
 const server = http.createServer((request, response) => {
-    router.css(request, response);
-    router.js(request, response);
-    router.home(request, response);
+  router.css(request, response);
+  router.js(request, response);
+  router.home(request, response);
 });
 
 server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}`);
+  console.log(`Server running at http://${hostname}:${port}`);
 });
