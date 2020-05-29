@@ -117,7 +117,7 @@ function resolveAssets(response, request, urlObject) {
         `${assetsFolder}scripts/${parsedQuerystring.name}`
       );
       stream.on("open", () => {
-        response.setHeader("Content-Type", "image/png");
+        response.setHeader("Content-Type", "text/javascript");
         stream.pipe(response);
       });
     }
