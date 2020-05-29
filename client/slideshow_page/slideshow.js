@@ -24,26 +24,30 @@ async function loadImages() {
   });
 }
 
-function injectSlides() {
+const injectSlides = () => {
   var mainContainer = document.getElementById("slideshow-container");
+
   images.forEach(image => {
-    var imageContainer = document.createElement("div");
+    let imageContainer = document.createElement("div");
     imageContainer.setAttribute("class", "slide fade");
-    var imageItself = document.createElement("img");
+
+    let imageItself = document.createElement("img");
     imageItself.setAttribute("src", `/image?name=${image}`);
+
     imageContainer.appendChild(imageItself);
     mainContainer.appendChild(imageContainer);
   });
 }
 
-function showSlides() {
+const showSlides = () => {
   var index;
   var slides = document.getElementsByClassName("slide");
+
   for (index = 0; index < slides.length; index++) {
     slides[index].style.display = "none";
   }
+
   slideIndex++;
-  if (slideIndex > slides.length) slideIndex = 1;
-  slides[slideIndex - 1].style.display = "block";
+  slides[slideIndex % slides.length].style.display = "block";
   setTimeout(showSlides, 5000);
 }

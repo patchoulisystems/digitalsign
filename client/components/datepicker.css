@@ -10,18 +10,13 @@
 }
 
 .datepick,
-.label,
-#dpfield {
+.label {
     font-family: "Open Sans", sans-serif;
     margin: 0.5% 0.5%;
 }
 
 #radio {
     margin: 0.2% 0.2%;
-}
-
-#dpfield {
-    visibility: hidden;
 }
 
 .datepick-rtl {

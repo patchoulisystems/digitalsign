@@ -1,43 +1,56 @@
-var options = {
-    rangeSelect: true,
-    minDate: 0,
-    multiSelect: 0,
-    dateFormat: 'yyyy-mm-dd',
-    altField: '#dpfield'
-};
+$(() => {
+  fetch("/widget?resource=datepicker.html").then(data => {
+    data.text().then(html => {
+      document.getElementById("datepicker-component").innerHTML = html;
+      startDatepicker();
+    });
+  });
+});
 
-const enableDatepicker = () => {
-    $("input[name='radio']").on('change', function() {
-        var selected = $("input[name='radio']:checked").val();
-        switch (selected) {
-            case 'multiple':
-                options.rangeSelect = null;
-                options.multiSelect = 999;
-                $('#datepicker').datepick('destroy').datepick(options);
-                $('#dpfield').val('');
-                break;
-            case 'interval':
-                options.rangeSelect = true;
-                options.multiSelect = null;
-                $('#datepicker').datepick('destroy').datepick(options);
-                $('#dpfield').val('');
-                break;
-            default:
-                break;
+$(document).on("submit", "form", event => {
+  event.preventDefault();
+  let form = document.forms.namedItem("main-form");
+  let formData = new FormData(form);
+  let errors = false;
+
+  if (!formData.get("firstname")) {
+    alert("First Name is required");
+    errors = true;
+  } else if (!formData.get("lastname")) {
+    alert("Last Name is required");
+    errors = true;
+  } else if (!formData.get("studentid")) {
+    alert("Student ID is required");
+    errors = true;
+  } else if (!formData.get("picture").name) {
+    alert("A picture to upload is required!");
+    errors = true;
+  } else if (!parseDatepicker()) {
+    alert("Please finish choosing your dates!");
+    errors = true;
+  }
+
+  if (!errors) {
+    formData.append("dates", parseDatepicker());
+    $.ajax({
+      url: form.action,
+      type: "POST",
+      method: form.method,
+      data: formData,
+      contentType: false,
+      processData: false
+    })
+      .fail((xhr, error) => {
+        if (xhr.status == 400) {
+          alert(
+            "The request was unable to be completed. Please refresh the page or try again later."
+          );
         }
-    });
-    $("#reset").click(function() {
-        if ($("input[name='radio']:checked")) {
-            $("input[name='radio']:checked").prop('checked', false);
+      })
+      .done((response, status, xhr) => {
+        if (xhr.status == 200) {
+          alert("Your image has been successfully submitted!");
         }
-        $('#datepicker').datepick('destroy');
-    });
-}
-$(function() {
-    fetch('/widget?resource=datepicker.html').then(function(data) {
-        data.text().then(function(html) {
-            document.getElementById('datepicker-component').innerHTML = html;
-            enableDatepicker();
-        });
-    });
+      });
+  }
 });
