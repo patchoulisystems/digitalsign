@@ -1,27 +1,33 @@
+@font-face {
+  font-family: "Open Sans";
+  src: URL("/assets?name=fontOpenSans-Regular.ttf") format("truetype"),
+    URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
+}
+
 body {
-    background-color: #5891c4;
-    /* Temporal Color */
+  background-color: #5891c4;
+  /* Temporal Color */
 }
 
 .main-form {
-    font-family: "Open Sans", sans-serif;
-    margin: 10%;
+  font-family: "Open Sans", sans-serif;
+  margin: 10%;
 }
 
 .input,
 #reset {
-    display: block;
-    padding: 1%;
-    margin-bottom: 10px;
-    border: 2px #f0b310 solid;
-    border-radius: 5px;
+  display: block;
+  padding: 1%;
+  margin-bottom: 10px;
+  border: 2px #f0b310 solid;
+  border-radius: 5px;
 }
 
 button {
-    background-color: #f0b310;
+  background-color: #f0b310;
 }
 
 hr {
-    width: 80%;
-    border: 1px #f0b310 solid;
+  width: 80%;
+  border: 1px #f0b310 solid;
 }
