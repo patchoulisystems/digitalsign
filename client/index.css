@@ -1,3 +1,9 @@
+@font-face{
+  font-family: "Open Sans";
+  src: URL("/assets?name=fontOpenSans-Regular.ttf") format("truetype"),
+      URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
+}
+
 body {
   background-color: #1d80fe;
 }
