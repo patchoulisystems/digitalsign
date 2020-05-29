@@ -1,4 +1,6 @@
 # Not needed on git
 *.swp
 *.bak
-/node_modules # For this we can just npm i when we first clone
+
+# For this we can just npm i when we first clone
+/node_modules 
