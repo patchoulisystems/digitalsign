@@ -14,7 +14,7 @@ const db = require("./dbmanager");
 const headers = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
-  "Access-Control-Max-Age": 2592000 // 30 days
+  "Access-Control-Max-Age": 2592000, // 30 days
   /** add other headers as per requirement */
 };
 
@@ -88,13 +88,30 @@ function resolveAssets(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
     // TODO: Safety on no file found
-    var stream = fs.createReadStream(
-      `${assetsFolder}${parsedQuerystring.name}`
-    );
-    stream.on("open", () => {
-      response.setHeader("Content-Type", "image/jpg");
-      stream.pipe(response);
-    });
+    if (parsedQuerystring.name.indexOf(".png") !== -1) {
+      var stream = fs.createReadStream(
+        `${assetsFolder}${parsedQuerystring.name}`
+      );
+      stream.on("open", () => {
+        response.setHeader("Content-Type", "image/png");
+        stream.pipe(response);
+      });
+    } else if (parsedQuerystring.name.indexOf("font") !== -1) {
+      var fileName = parsedQuerystring.name.split("font")[1];
+      if (fileName.indexOf(".ttf") !== -1) {
+        var stream = fs.createReadStream(`${assetsFolder}/fonts/${fileName}`);
+        stream.on("open", () => {
+          response.setHeader("Content-Type", "application/x-font-ttf");
+          stream.pipe(response);
+        });
+      } else if (fileName.indexOf(".woff") !== -1) {
+        var stream = fs.createReadStream(`${assetsFolder}/fonts/${fileName}`);
+        stream.on("open", () => {
+          response.setHeader("Content-Type", "application/font-woff");
+          stream.pipe(response);
+        });
+      }
+    }
   } else {
     response.writeHead(404, "Not Found");
     response.end();
@@ -216,7 +233,7 @@ function resolvePictureList(response, request) {
   if (request.method === "POST") {
     let requestData = "";
 
-    request.on("data", function(incomingData) {
+    request.on("data", function (incomingData) {
       requestData += incomingData;
     });
 
@@ -238,7 +255,7 @@ function resolvePictureList(response, request) {
 }
 
 /**
- * This the endpoint that handles an incoming form with a set of pictures 
+ * This the endpoint that handles an incoming form with a set of pictures
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
@@ -323,7 +340,7 @@ function css(request, response) {
       file = fs.readFileSync(`../client${request.url}`, { encoding: "utf8" });
     } else {
       file = fs.readFileSync(`../client${name}_page${request.url}`, {
-        encoding: "utf8"
+        encoding: "utf8",
       });
     }
     response.writeHead(200, { "Content-Type": "text/css" });
@@ -344,7 +361,7 @@ function js(request, response) {
       file = fs.readFileSync(`../client${request.url}`, { encoding: "utf8" });
     } else {
       file = fs.readFileSync(`../client${name}_page${request.url}`, {
-        encoding: "utf8"
+        encoding: "utf8",
       });
     }
     response.writeHead(200, { "Content-Type": "text/javascript" });
