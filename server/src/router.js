@@ -105,12 +105,21 @@ function resolveAssets(response, request, urlObject) {
           stream.pipe(response);
         });
       } else if (fileName.indexOf(".woff") !== -1) {
-        var stream = fs.createReadStream(`${assetsFolder}/fonts/${fileName}`);
+        var stream = fs.createReadStream(`${assetsFolder}fonts/${fileName}`);
         stream.on("open", () => {
           response.setHeader("Content-Type", "application/font-woff");
           stream.pipe(response);
         });
       }
+    } else if (parsedQuerystring.name.indexOf(".js") !== -1) {
+      var fileName = parsedQuerystring.name;
+      var stream = fs.createReadStream(
+        `${assetsFolder}scripts/${parsedQuerystring.name}`
+      );
+      stream.on("open", () => {
+        response.setHeader("Content-Type", "image/png");
+        stream.pipe(response);
+      });
     }
   } else {
     response.writeHead(404, "Not Found");
