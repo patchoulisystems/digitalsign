@@ -2,5 +2,8 @@
 *.swp
 *.bak
 
+# the db.json changes all the time, and the server keeps poking it
+server/data/db.json
+
 # For this we can just npm i when we first clone
 /node_modules 
