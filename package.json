@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "formidable": "^1.2.1",
+    "formidable": "^1.2.2",
     "fs": "0.0.1-security",
     "http": "0.0.0",
     "querystring": "^0.2.0",
