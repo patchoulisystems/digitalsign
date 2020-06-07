@@ -14,22 +14,26 @@
     <div class="main-container">
       <img class="necc-logo" src="/assets?name=necclogo.png" />
       <div class="buttons-container">
-        <div class="button">
+        <button class="button" sendTo="/today">
           <span>
-            <a href="/today" target="_blank">Display Today's Pictures</a>
+            Display Today's Pictures
           </span>
-        </div>
-        <button class="button">
-          <a href="/edit_day" target="_blank">
-            Create Picture List
-          </a>
         </button>
-        <button class="button">
-          <a href="/upload" target="_blank">Submit a Picture </a>
+        <button class="button" sendTo="/edit_day">
+          <span>
+            Create Picture List from existing pictures
+          </span>
         </button>
-        <div class="">
-          <a class="button" href="/slideshow_settings" target="_blank">Slideshow Settings </a>
-        </div>
+        <button class="button" sendTo="/upload">
+          <span>
+            Submit a Picture
+          </span>
+        </button>
+        <button class="button" sendTo="/slideshow_settings">
+          <span>
+            Slideshow Settings
+          </span>
+        </button>
       </div>
     </div>
   </body>
