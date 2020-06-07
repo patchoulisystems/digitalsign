@@ -1,13 +1,17 @@
 const endpoint = "/today_images";
+const settingsEndpoint = "/settings";
 
 var slideIndex = 0;
 var images = [];
+var settings = {};
 
 document.onreadystatechange = () => {
   if (document.readyState === "complete") {
     loadImages().then(() => {
-      injectSlides();
-      showSlides();
+      loadSettings().then(() => {
+        injectSlides();
+        showSlides();
+      });
     });
   }
 };
@@ -22,14 +26,25 @@ async function loadImages() {
     });
 }
 
+async function loadSettings() {
+  return fetch(settingsEndpoint)
+    .then((response) => response.json())
+    .then((data) => {
+      settings = data.data;
+    });
+}
+
 function injectSlides() {
   var mainContainer = document.getElementById("slideshow-container");
 
   images.forEach((image) => {
     let imageContainer = document.createElement("div");
     imageContainer.setAttribute("class", "slide animatable");
-    imageContainer.style.setProperty("--animation", "dropdown");
-    imageContainer.style.setProperty("--anim-duration", "2.5s");
+    imageContainer.style.setProperty("--animation", settings.animationName);
+    imageContainer.style.setProperty(
+      "--anim-duration",
+      `${settings.animationSpeed}s`
+    );
     let imageItself = document.createElement("img");
     imageItself.setAttribute("src", `/image?name=${image}`);
 
@@ -48,5 +63,5 @@ const showSlides = () => {
 
   slideIndex++;
   slides[slideIndex % slides.length].style.display = "block";
-  setTimeout(showSlides, 5000);
+  setTimeout(showSlides, settings.timeBetweenPictures);
 };
