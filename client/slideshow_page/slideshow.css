@@ -20,6 +20,8 @@ img {
   animation-duration: 1.5s;
   -webkit-animation: fade;
   -webkit-animation-duration: 1.5s;
+  -moz-animation: fade;
+  -moz-animation-duration: 1.5s;
 }
 
 .rotate {
@@ -27,6 +29,8 @@ img {
   animation-duration: 1.5s;
   -webkit-animation: rotate;
   -webkit-animation-duration: 1.5s;
+  -moz-animation: rotate;
+  -moz-animation-duration: 1.5;
 }
 
 @keyframes fade {
