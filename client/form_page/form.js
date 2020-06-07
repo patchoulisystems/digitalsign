@@ -1,13 +1,13 @@
 $(() => {
-  fetch("/widget?resource=datepicker.html").then(data => {
-    data.text().then(html => {
+  fetch("/widget?resource=datepicker.html").then((data) => {
+    data.text().then((html) => {
       document.getElementById("datepicker-component").innerHTML = html;
       startDatepicker();
     });
   });
 });
 
-$(document).on("submit", "form", event => {
+$(document).on("submit", "form", (event) => {
   event.preventDefault();
   let form = document.forms.namedItem("main-form");
   let formData = new FormData(form);
@@ -38,7 +38,7 @@ $(document).on("submit", "form", event => {
       method: form.method,
       data: formData,
       contentType: false,
-      processData: false
+      processData: false,
     })
       .fail((xhr, error) => {
         if (xhr.status == 400) {
@@ -50,6 +50,7 @@ $(document).on("submit", "form", event => {
       .done((response, status, xhr) => {
         if (xhr.status == 200) {
           alert("Your image has been successfully submitted!");
+          form.reset();
         }
       });
   }
