@@ -1,3 +1,17 @@
+var modal;
+var modalContent;
+
+$(() => {
+  modal = $("#modal");
+  modalContent = $(modal).find('p[class="modal-text"]');
+  $('button[class="close"]').click(() => {
+    modal.css("display", "none");
+  });
+  $(window).click(() => {
+    modal.css("display", "none");
+  });
+});
+
 $(document).on("submit", "form", (event) => {
   event.preventDefault();
   let form = document.forms.namedItem("main-form");
@@ -42,14 +56,16 @@ $(document).on("submit", "form", (event) => {
     })
       .fail((xhr, error) => {
         if (xhr.status == 400) {
-          alert(
+          modalContent.text(
             "The request was unable to be completed. Please refresh the page or try again later."
           );
+          modal.css("display", "block");
         }
       })
       .done((response, status, xhr) => {
         if (xhr.status == 200) {
-          alert("Your settings have been submitted successfulyl!");
+          modalContent.text("Your settings have been submitted successfully!");
+          modal.css("display", "block");
           form.reset();
         }
       });
