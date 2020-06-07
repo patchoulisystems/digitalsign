@@ -27,8 +27,9 @@ function injectSlides() {
 
   images.forEach((image) => {
     let imageContainer = document.createElement("div");
-    imageContainer.setAttribute("class", "slide fade");
-
+    imageContainer.setAttribute("class", "slide animatable");
+    imageContainer.style.setProperty("--animation", "dropdown");
+    imageContainer.style.setProperty("--anim-duration", "2.5s");
     let imageItself = document.createElement("img");
     imageItself.setAttribute("src", `/image?name=${image}`);
 
