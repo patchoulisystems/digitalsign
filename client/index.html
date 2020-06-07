@@ -7,28 +7,28 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="index.css" />
+    <script src="/assets?name=jquery-1.12.1.min.js"></script>
+    <script src="/index.js"></script>
   </head>
   <body>
     <div class="main-container">
       <img class="necc-logo" src="/assets?name=necclogo.png" />
       <div class="buttons-container">
-        <div>
-          <a id="button" href="/today" target="_blank"
-            >Display Today's Pictures</a
-          >
+        <div class="button">
+          <span>
+            <a href="/today" target="_blank">Display Today's Pictures</a>
+          </span>
         </div>
-        <div>
-          <a id="button" href="/edit_day" target="_blank">
+        <button class="button">
+          <a href="/edit_day" target="_blank">
             Create Picture List
           </a>
-        </div>
-        <div>
-          <a id="button" href="/upload" target="_blank">Submit a Picture </a>
-        </div>
-        <div>
-          <a id="button" href="/slideshow_settings" target="_blank"
-            >Slideshow Settings
-          </a>
+        </button>
+        <button class="button">
+          <a href="/upload" target="_blank">Submit a Picture </a>
+        </button>
+        <div class="">
+          <a class="button" href="/slideshow_settings" target="_blank">Slideshow Settings </a>
         </div>
       </div>
     </div>
