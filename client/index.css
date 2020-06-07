@@ -1,9 +1,7 @@
-@font-face{
+@font-face {
   font-family: "Open Sans";
-  src: URL("/assets?name=fontOpenSans-Regular.ttf") format("truetype"),
-      URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
+  src: URL("/assets?name=fontOpenSans-Regular.ttf") format("truetype"), URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
 }
-
 body {
   background-color: #1d80fe;
 }
@@ -11,17 +9,49 @@ body {
 .buttons-container {
   font-family: "Open Sans", sans-serif;
   margin: auto;
-  width: 40%;
+  width: 80%;
   padding: 10%;
 }
+
 /* Buttons properties */
-#button {
-  background-color: #fbe21f; /* Button's background color */
-  border: 1px solid #d0ba0e; /* I tested that the color must be solid, it wasn't working for me otherwise */
-  color: black; /* Text color */
-  padding: 10px 24px; /* Wide padding, and then High padding */
-  cursor: pointer; /* On hover, what cursor to turn into */
-  display: block; /* This makes them appear below each other */
-  width: 65%; /* Just to make all buttons the same width */
+.button {
+  background: #fbe21f;
+  /* Button's background color */
+  border: 1px solid #d0ba0e;
+  /* I tested that the color must be solid, it wasn't working for me otherwise */
+  color: black;
+  /* Text color */
+  padding: 10px 24px;
+  /* Wide padding, and then High padding */
+  cursor: pointer;
+  /* On hover, what cursor to turn into */
+  display: block;
+  /* This makes them appear below each other */
+  width: 65%;
+  /* Just to make all buttons the same width */
   text-decoration: none;
+  overflow: hidden;
+  appearance: none;
+  position: relative;
 }
+.button span {
+  position: relative;
+  pointer-events: none;
+}
+.button::before {
+  --size: 0;
+  content: "";
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--size);
+  height: var(--size);
+  background: radial-gradient(circle closest-side, #ffee6b, transparent);
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease;
+}
+.button:hover::before {
+  --size: 400px;
+}
+
+/*# sourceMappingURL=index.css.map */
