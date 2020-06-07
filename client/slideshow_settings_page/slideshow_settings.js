@@ -1,14 +1,9 @@
-var modal;
-var modalContent;
-
 $(() => {
-  modal = $("#modal");
-  modalContent = $(modal).find('p[class="modal-text"]');
-  $('button[class="close"]').click(() => {
-    modal.css("display", "none");
-  });
-  $(window).click(() => {
-    modal.css("display", "none");
+  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
+    data.text().then((html) => {
+      $("#modal").html(html);
+      startModal();
+    });
   });
 });
 
@@ -56,16 +51,14 @@ $(document).on("submit", "form", (event) => {
     })
       .fail((xhr, error) => {
         if (xhr.status == 400) {
-          modalContent.text(
+          displayModal(
             "The request was unable to be completed. Please refresh the page or try again later."
           );
-          modal.css("display", "block");
         }
       })
       .done((response, status, xhr) => {
         if (xhr.status == 200) {
-          modalContent.text("Your settings have been submitted successfully!");
-          modal.css("display", "block");
+          displayModal("Your settings have been submitted successfully!");
           form.reset();
         }
       });

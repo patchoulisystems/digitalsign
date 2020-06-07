@@ -6,6 +6,12 @@
     <script src="/assets?name=jquery-1.12.1.min.js"></script>
     <script src="/slideshow_settings.js"></script>
     <link rel="stylesheet" type="text/css" href="/slideshow_settings.css" />
+    <script src="/widget?widgetName=modal&resource=modal.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=modal&resource=modal.css"
+    />
     <title>Slideshow Settings</title>
   </head>
   <body>
@@ -53,11 +59,6 @@
         <button class="input" type="submit">CLICK HERE</button>
       </form>
     </div>
-    <div id="modal" class="modal">
-      <div class="modal-content">
-        <p class="modal-text"></p>
-        <button class="close input">OK</button>
-      </div>
-    </div>
+    <div id="modal" class="modal"></div>
   </body>
 </html>

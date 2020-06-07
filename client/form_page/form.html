@@ -13,6 +13,12 @@
       rel="stylesheet"
       href="/widget?widgetName=datepicker&resource=datepicker.css"
     />
+    <script src="/widget?widgetName=modal&resource=modal.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=modal&resource=modal.css"
+    />
     <link rel="stylesheet" type="text/css" href="/form.css" />
     <title>Form</title>
   </head>
@@ -63,9 +69,10 @@
           placeholder="1920x1080 Pictures Only"
         />
         <label for="date">Date(s) to Display the Image</label>
-        <div id="datepicker-component"></div>
         <button type="submit" class="input">Submit</button>
+        <div id="datepicker-component"></div>
       </form>
+      <div id="modal"></div>
     </div>
   </body>
 </html>
