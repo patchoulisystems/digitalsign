@@ -127,6 +127,14 @@ function resolveAssets(response, request, urlObject) {
         response.setHeader("Content-Type", "text/javascript");
         stream.pipe(response);
       });
+    } else if (parsedQuerystring.name.indexOf(".ico") !== -1) {
+      var stream = fs.createReadStream(
+        `${assetsFolder}${parsedQuerystring.name}`
+      );
+      stream.on("open", () => {
+        response.setHeader("Content-Type", "image/x-icon");
+        stream.pipe(response);
+      });
     }
   } else {
     response.writeHead(404, "Not Found");
