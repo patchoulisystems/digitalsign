@@ -20,21 +20,12 @@ img {
   display: none;
 }
 
-.fade {
+.animatable {
   animation: var(--animation);
   animation-duration: var(--anim-duration);
   -webkit-animation: var(--animation);
   -webkit-animation-duration: var(--anim-duration);
   -moz-animation: var(--animation);
-  -moz-animation-duration: var(--anim-duration);
-}
-
-.rotate {
-  animation: rotate;
-  animation-duration: var(--anim-duration);
-  -webkit-animation: rotate;
-  -webkit-animation-duration: var(--anim-duration);
-  -moz-animation: rotate;
   -moz-animation-duration: var(--anim-duration);
 }
 
