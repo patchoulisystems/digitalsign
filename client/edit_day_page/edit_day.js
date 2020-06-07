@@ -1,11 +1,13 @@
 $(() => {
-  fetch("/widget?resource=datepicker.html").then(data => {
-    data.text().then(html => {
-      document.getElementById("datepicker-component").innerHTML = html;
-      startDatepicker();
-    });
-  });
-  $(".sendData").click(event => {
+  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
+    (data) => {
+      data.text().then((html) => {
+        document.getElementById("datepicker-component").innerHTML = html;
+        startDatepicker();
+      });
+    }
+  );
+  $(".sendData").click((event) => {
     onSubmit();
   });
   openFrame();
@@ -16,13 +18,13 @@ const openFrame = () => {
   columns.innerHTML = "";
   let builtImages = [];
 
-  $.get("/dated_images").then(response => {
-    response.data.forEach(image => {
+  $.get("/dated_images").then((response) => {
+    response.data.forEach((image) => {
       let singlePicture = document.createElement("div");
       singlePicture.setAttribute("class", "single-picture picture-unselected");
       singlePicture.setAttribute("id", image);
 
-      singlePicture.onclick = function() {
+      singlePicture.onclick = function () {
         onSinglePictureClick(image);
       };
 
@@ -47,11 +49,11 @@ const openFrame = () => {
   $("#frame").css({
     transition: "height 0ms 0ms, opacity 600ms 0ms",
     opacity: 1,
-    height: "auto"
+    height: "auto",
   });
 };
 
-const onSinglePictureClick = pictureName => {
+const onSinglePictureClick = (pictureName) => {
   let singlePicture = document.getElementById(pictureName);
   let singlePictureOverlay = singlePicture.getElementsByClassName("overlay")[0];
   togglePictureClass(singlePicture, singlePictureOverlay);
@@ -71,7 +73,7 @@ const togglePictureClass = (picture, overlay) => {
   }
 };
 
-const onSubmit = event => {
+const onSubmit = (event) => {
   let selectedPicturesNames = [];
   let selectedPicturesElements = Array.from(
     document.getElementsByClassName("picture-selected")
@@ -92,7 +94,7 @@ const onSubmit = event => {
   }
 
   if (!errors) {
-    selectedPicturesElements.forEach(element => {
+    selectedPicturesElements.forEach((element) => {
       selectedPicturesNames.push(element.id);
     });
 
@@ -103,7 +105,7 @@ const onSubmit = event => {
       data: JSON.stringify({
         dateType: dateType,
         dates: dateToSend,
-        pictures: selectedPicturesNames
+        pictures: selectedPicturesNames,
       }),
       contentType: "application/json",
     };

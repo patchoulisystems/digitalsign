@@ -1,10 +1,12 @@
 $(() => {
-  fetch("/widget?resource=datepicker.html").then((data) => {
-    data.text().then((html) => {
-      document.getElementById("datepicker-component").innerHTML = html;
-      startDatepicker();
-    });
-  });
+  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
+    (data) => {
+      data.text().then((html) => {
+        document.getElementById("datepicker-component").innerHTML = html;
+        startDatepicker();
+      });
+    }
+  );
 });
 
 $(document).on("submit", "form", (event) => {
