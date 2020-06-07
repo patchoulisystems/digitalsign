@@ -9,7 +9,6 @@ body {
 }
 
 .buttons-container {
-  font-family: "Open Sans", sans-serif;
   margin: auto;
   width: 80%;
   padding: 10%;
@@ -29,8 +28,18 @@ body {
   position: relative;
 
   span {
+    font-family: "Open Sans", sans-serif;
+    font-size: large;
     position: relative;
     pointer-events: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active::before {
+    background: radial-gradient(circle closest-side, #1d80fe, transparent);
   }
 
   &::before {

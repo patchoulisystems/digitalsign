@@ -7,7 +7,6 @@ body {
 }
 
 .buttons-container {
-  font-family: "Open Sans", sans-serif;
   margin: auto;
   width: 80%;
   padding: 10%;
@@ -35,8 +34,16 @@ body {
   position: relative;
 }
 .button span {
+  font-family: "Open Sans", sans-serif;
+  font-size: large;
   position: relative;
   pointer-events: none;
+}
+.button:focus {
+  outline: none;
+}
+.button:active::before {
+  background: radial-gradient(circle closest-side, #1d80fe, transparent);
 }
 .button::before {
   --size: 0;
