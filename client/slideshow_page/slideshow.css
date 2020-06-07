@@ -1,3 +1,7 @@
+:root {
+  --anim-duration: 1.5s;
+}
+
 #slideshow-container,
 body,
 html {
@@ -17,20 +21,20 @@ img {
 
 .fade {
   animation: fade;
-  animation-duration: 1.5s;
+  animation-duration: var(--anim-duration);
   -webkit-animation: fade;
-  -webkit-animation-duration: 1.5s;
+  -webkit-animation-duration: var(--anim-duration);
   -moz-animation: fade;
-  -moz-animation-duration: 1.5s;
+  -moz-animation-duration: var(--anim-duration);
 }
 
 .rotate {
   animation: rotate;
-  animation-duration: 1.5s;
+  animation-duration: var(--anim-duration);
   -webkit-animation: rotate;
-  -webkit-animation-duration: 1.5s;
+  -webkit-animation-duration: var(--anim-duration);
   -moz-animation: rotate;
-  -moz-animation-duration: 1.5;
+  -moz-animation-duration: var(--anim-duration);
 }
 
 @keyframes fade {
