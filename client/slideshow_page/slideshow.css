@@ -22,13 +22,11 @@ img {
   -webkit-animation-duration: 1.5s;
 }
 
-@-webkit-keyframes fade {
-  from {
-    opacity: 0.4;
-  }
-  to {
-    opacity: 1;
-  }
+.rotate {
+  animation: rotate;
+  animation-duration: 1.5s;
+  -webkit-animation: rotate;
+  -webkit-animation-duration: 1.5s;
 }
 
 @keyframes fade {
@@ -40,14 +38,47 @@ img {
   }
 }
 
-.rotate {
-  animation: rotate;
-  animation-duration: 1.5s;
-  -webkit-animation: rotate;
-  -webkit-animation-duration: 1.5s;
+@-webkit-keyframes fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes rotate {
+  from {
+    opacity: 0.1;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes rotate {
+  from {
+    opacity: 0.1;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes rotate {
   from {
     opacity: 0.1;
     transform: rotate(0deg);
