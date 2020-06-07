@@ -10,6 +10,7 @@ const fs = require("fs");
 const url = require("url");
 const querystring = require("querystring");
 const db = require("./dbmanager");
+const formidable = require("formidable");
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -73,9 +74,11 @@ function home(request, response) {
       resolveDatedImages(response, request.method, urlObject);
       break;
     case "/slideshow_settings":
-      resolveSettingsPage(response, request.method, urlObject);
+      resolveSettingsPage(response, request, urlObject);
+      break;
     case "/settings":
       resolveSettings(response, request.method, urlObject);
+      break;
     default:
       resolveOptions(response, request);
       break;
@@ -330,7 +333,7 @@ function resolveDatedImages(response, method, urlObject) {
  * @param {String} method - The method of the request sent by the Client
  * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveSettingsPage(response, method, urlObject) {
+function resolveSettingsPage(response, request, urlObject) {
   if (request.method == "GET") {
     let file = fs.readFileSync(
       "../client/slideshow_settings_page/slideshow_settings.html"
@@ -339,6 +342,24 @@ function resolveSettingsPage(response, method, urlObject) {
     response.writeHead(200, headers);
     response.write(file);
     response.end();
+  } else if (request.method == "POST") {
+    let form = new formidable.IncomingForm({ multiples: true });
+    form.keepExtensions = true;
+
+    form.parse(request, (error, fields, files) => {
+      if (
+        !fields.animationSpeed ||
+        !fields.animationName ||
+        !fields.timeBetweenPictures
+      ) {
+        response.writeHead(400, "Bad Request");
+        response.end();
+      } else {
+        fs.writeFileSync("./data/settings.json", JSON.stringify(fields));
+        response.writeHead(200, "OK");
+        response.end();
+      }
+    });
   } else {
     response.writeHead(404, "Not Found");
     response.end();
