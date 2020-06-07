@@ -153,7 +153,7 @@ function resolveWidget(response, request, urlObject) {
       contentType = "text/html";
     }
     var stream = fs.createReadStream(
-      `${widgetsFolder}${parsedQuerystring.resource}`
+      `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`
     );
     stream.on("open", () => {
       response.setHeader("Content-Type", contentType);
