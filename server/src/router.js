@@ -72,6 +72,8 @@ function home(request, response) {
     case "/dated_images":
       resolveDatedImages(response, request.method, urlObject);
       break;
+    case "/settings":
+      resolveSettings(response, request.method, urlObject);
     default:
       resolveOptions(response, request);
       break;
@@ -318,6 +320,15 @@ function resolveDatedImages(response, method, urlObject) {
     response.write(JSON.stringify({ data: datedImages }));
   } else response.writeHead(404, "Not Found");
   response.end();
+}
+
+function resolveSettings(response, method) {
+  if (method == "GET") {
+    let settings = fs.readFileSync("./data/settings.json");
+    settings = JSON.parse(settings);
+    response.write(JSON.stringify({ data: settings }));
+    response.end();
+  }
 }
 
 /**
