@@ -7,6 +7,12 @@ $(() => {
       });
     }
   );
+  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
+    data.text().then((html) => {
+      $("#modal").html(html);
+      startModal();
+    });
+  });
   $(".sendData").click((event) => {
     onSubmit();
   });
@@ -113,14 +119,16 @@ const onSubmit = (event) => {
     $.ajax(payload)
       .fail((xhr, error) => {
         if (xhr.status == 400) {
-          alert(
+          displayModal(
             "The request was unable to be completed. Please refresh the page or try again later."
           );
+          clearDatepicker();
         }
       })
       .done((response, status, xhr) => {
         if (xhr.status == 200) {
-          alert("Your image has been successfully submitted!");
+          displayModal("Your image has been successfully submitted!");
+          clearDatepicker();
         }
       });
   }
