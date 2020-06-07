@@ -72,6 +72,8 @@ function home(request, response) {
     case "/dated_images":
       resolveDatedImages(response, request.method, urlObject);
       break;
+    case "/slideshow_settings":
+      resolveSettingsPage(response, request.method, urlObject);
     case "/settings":
       resolveSettings(response, request.method, urlObject);
     default:
@@ -322,6 +324,32 @@ function resolveDatedImages(response, method, urlObject) {
   response.end();
 }
 
+/**
+ * This the endpoint that resolves the slideshow settings page
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {String} method - The method of the request sent by the Client
+ * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
+ */
+function resolveSettingsPage(response, method, urlObject) {
+  if (request.method == "GET") {
+    let file = fs.readFileSync(
+      "../client/slideshow_settings_page/slideshow_settings.html"
+    );
+    headers["Content-Type"] = "text/html";
+    response.writeHead(200, headers);
+    response.write(file);
+    response.end();
+  } else {
+    response.writeHead(404, "Not Found");
+    response.end();
+  }
+}
+
+/**
+ * This the endpoint that resolves the settings file
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {String} method - The method of the request sent by the Client
+ */
 function resolveSettings(response, method) {
   if (method == "GET") {
     let settings = fs.readFileSync("./data/settings.json");
