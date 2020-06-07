@@ -37,7 +37,7 @@ hr {
   border: 1px #f0b310 solid;
 }
 
-#settings-modal {
+#modal {
   font-family: "Open Sans", sans-serif;
   display: none;
   position: fixed;
