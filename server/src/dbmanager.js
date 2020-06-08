@@ -277,7 +277,7 @@ const getImageListFromDate = (dateType, dateString) => {
   return imageList;
 };
 
-const pictureList = (data) => {
+const removeFromExcludeds = (data) => {
   for (const excludeList in db.metadata["builtExcludeLists"]) {
     let currentExcludeList = db.metadata["builtExcludeLists"][excludeList];
     console.log("Current exclude list: ", currentExcludeList);
@@ -387,7 +387,10 @@ const pictureList = (data) => {
     }
     db.metadata["builtExcludeLists"][excludeList] = currentExcludeList;
   }
+}
 
+const pictureList = (data) => {
+  removeFromExcludeds(data);
   let listName = `list${db.metadata["builtListsNumber"]}`;
   console.log("OG BEL: ", db.metadata["builtExcludeLists"]);
   db.metadata["builtLists"][listName] = data;
