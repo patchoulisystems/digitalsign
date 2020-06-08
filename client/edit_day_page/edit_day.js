@@ -75,13 +75,13 @@ const onSubmit = (event) => {
   let errors = false;
 
   if (selectedPicturesElements.length == 0) {
-    alert("Please select at least one picture!");
+    displayModal("Please select at least one picture!");
     errors = true;
   }
 
   // Just to avoid one alert after another
   if (dateToSend.length == 0 && errors == false) {
-    alert("Please finish the date selection!");
+    displayModal("Please finish the date selection!");
     errors = true;
   }
 
