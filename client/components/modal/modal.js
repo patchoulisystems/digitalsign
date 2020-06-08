@@ -1,13 +1,11 @@
 var modal;
 var modalContent;
 
-$(() => {
-  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
-    data.text().then((html) => {
-      $("#modal").html(html);
-      startModal();
-      startGlitter();
-    });
+fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
+  data.text().then((html) => {
+    $("#modal").html(html);
+    startModal();
+    // startGlitter();
   });
 });
 
