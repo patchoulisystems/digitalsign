@@ -6,6 +6,7 @@ $(() => {
     data.text().then((html) => {
       $("#modal").html(html);
       startModal();
+      startGlitter();
     });
   });
 });
