@@ -92,6 +92,11 @@ const buildToday = () => {
     }
   });
 
+  // TODO: Exclude the picture we don't want on the day here
+  // We should clean the exclude array for a day 
+  // Or we can create "exclude lists" where they're basically the same as 
+  // the include lists but doing the opposite
+
   db.metadata["todayList"] = todayList;
   db.metadata["dateBuilt"] = today;
   let jsonData = JSON.stringify(db);
