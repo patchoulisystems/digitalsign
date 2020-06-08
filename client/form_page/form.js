@@ -5,19 +5,19 @@ $(document).on("submit", "form", (event) => {
   let errors = false;
 
   if (!formData.get("firstname")) {
-    alert("First Name is required");
+    displayModal("First Name is required");
     errors = true;
   } else if (!formData.get("lastname")) {
-    alert("Last Name is required");
+    displayModal("Last Name is required");
     errors = true;
   } else if (!formData.get("studentid")) {
-    alert("Student ID is required");
+    displayModal("Student ID is required");
     errors = true;
   } else if (!formData.get("picture").name) {
-    alert("A picture to upload is required!");
+    displayModal("A picture to upload is required!");
     errors = true;
   } else if (!parseDatepicker()) {
-    alert("Please finish choosing your dates!");
+    displayModal("Please finish choosing your dates!");
     errors = true;
   }
 
