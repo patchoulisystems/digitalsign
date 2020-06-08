@@ -79,6 +79,7 @@ $(() => {
       data.text().then((html) => {
         document.getElementById("datepicker-component").innerHTML = html;
         startDatepicker();
+        startGlitter();
       });
     }
   );
