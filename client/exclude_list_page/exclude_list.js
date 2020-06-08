@@ -70,6 +70,61 @@ const togglePictureClass = (picture, overlay) => {
   }
 };
 
+const onSubmit = () => {
+  let selectedPicturesNames = [];
+  let selectedPicturesElements = Array.from(
+    document.getElementsByClassName("picture-selected")
+  );
+  let dateToSend = parseDatepicker();
+  let dateType = $("input[name='radio']:checked").val();
+  let errors = false;
+
+  if (selectedPicturesElements.length == 0) {
+    alert("Please select at least one picture!");
+    errors = true;
+  }
+
+  // Just to avoid one alert after another
+  if (dateToSend.length == 0 && errors == false) {
+    alert("Please finish the date selection!");
+    errors = true;
+  }
+
+  if (!errors) {
+    selectedPicturesElements.forEach((element) => {
+      selectedPicturesNames.push(element.id);
+    });
+
+    let payload = {
+      method: "POST",
+      type: "POST",
+      url: "/exclude_list",
+      data: JSON.stringify({
+        dateType: dateType,
+        dates: dateToSend,
+        pictures: selectedPicturesNames,
+      }),
+      contentType: "application/json",
+    };
+
+    $.ajax(payload)
+      .fail((xhr, error) => {
+        if (xhr.status == 400) {
+          alert(
+            "The request was unable to be completed. Please refresh the page or try again later."
+          );
+          clearDatepicker();
+        }
+      })
+      .done((response, status, xhr) => {
+        if (xhr.status == 200) {
+          alert("Your image has been successfully submitted!");
+          clearDatepicker();
+        }
+      });
+  }
+};
+
 const onRequest = () => {
   let dateToSend = parseDatepicker();
   let dateType = $("input[name='radio']:checked").val();
