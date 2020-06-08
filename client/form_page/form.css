@@ -15,7 +15,7 @@ body {
 }
 
 .input,
-#reset {
+.button {
   display: block;
   padding: 1%;
   margin-bottom: 10px;
@@ -23,8 +23,8 @@ body {
   border-radius: 5px;
 }
 
-button {
-  background-color: #f0b310;
+.button {
+  background: #f0b310;
 }
 
 hr {

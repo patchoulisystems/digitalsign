@@ -13,6 +13,11 @@
       rel="stylesheet"
       href="/widget?widgetName=datepicker&resource=datepicker.css"
     />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=buttonglitter&resource=buttonglitter.css"
+    />
     <link rel="stylesheet" type="text/css" href="/form.css" />
     <title>Form</title>
   </head>
@@ -62,13 +67,18 @@
           class="input"
           placeholder="1920x1080 Pictures Only"
         />
-        <label for="date">Date(s) to Display the Image</label>
-        <button type="submit" class="input">Submit</button>
+        <label for="date">Date(s) to Display the Image(s)</label>
         <div id="datepicker-component"></div>
+        <button type="submit" class="input button">
+          <span>
+            Submit Picture(s)
+          </span>
+        </button>
       </form>
       <div id="modal"></div>
     </div>
     <script src="/assets?name=jquery-1.12.1.min.js"></script>
+    <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>
     <script src="/widget?widgetName=datepicker&resource=jquery.plugin.js"></script>
     <script src="/widget?widgetName=datepicker&resource=jquery.datepick.js"></script>
     <script src="/widget?widgetName=datepicker&resource=datepicker.js"></script>
