@@ -1,6 +1,15 @@
 var modal;
 var modalContent;
 
+$(() => {
+  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
+    data.text().then((html) => {
+      $("#modal").html(html);
+      startModal();
+    });
+  });
+});
+
 const startModal = () => {
   modal = $("#modal");
   modalContent = $(modal).find('p[id="modal-text"]');
