@@ -5,19 +5,19 @@ $(document).on("submit", "form", (event) => {
   let errors = false;
 
   if (!formData.get("animationName")) {
-    alert("Error getting the animation name");
+    displayModal("Error getting the animation name");
     errors = true;
   } else if (!formData.get("animationSpeed")) {
-    alert("Animation Speed is required");
+    displayModal("Animation Speed is required");
     errors = true;
   } else if (formData.get("animationSpeed") < 0.1) {
-    alert("Animation Speed must be at least 0.1");
+    displayModal("Animation Speed must be at least 0.1");
     errors = true;
   } else if (!formData.get("timeBetweenPictures")) {
-    alert("Time Between Pictures is required");
+    displayModal("Time Between Pictures is required");
     errors = true;
   } else if (formData.get("timeBetweenPictures") < 0) {
-    alert("Time Between Pictures cannot be less than 0!");
+    displayModal("Time Between Pictures cannot be less than 0!");
     errors = true;
   }
 

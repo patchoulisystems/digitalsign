@@ -9,6 +9,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="/slideshow_settings.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=buttonglitter&resource=buttonglitter.css"
+    />
     <title>Slideshow Settings</title>
   </head>
   <body>
@@ -53,11 +58,16 @@
           type="number"
           class="input"
         />
-        <button class="input" type="submit">CLICK HERE</button>
+        <button class="input button" type="submit">
+          <span>
+            Submit Settings
+          </span>
+        </button>
       </form>
     </div>
     <div id="modal" class="modal"></div>
     <script src="/assets?name=jquery-1.12.1.min.js"></script>
+    <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>
     <script src="/widget?widgetName=modal&resource=modal.js"></script>
     <script src="/slideshow_settings.js"></script>
   </body>

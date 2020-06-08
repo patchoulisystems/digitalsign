@@ -6,7 +6,7 @@
 
 body {
   background-color: #5891c4;
-  /* Temporal Color */
+  /* TODO: Temporal Color */
 }
 
 .main-form {
@@ -14,8 +14,7 @@ body {
   margin: 10%;
 }
 
-.input,
-#reset {
+.input {
   display: block;
   padding: 1%;
   margin-bottom: 10px;
@@ -23,12 +22,12 @@ body {
   border-radius: 5px;
 }
 
-button {
-  background-color: #f0b310;
+.button {
+  background: #f0b310;
 }
 
-button:hover,
-button:focus {
+.button:hover,
+.button:focus {
   cursor: pointer;
 }
 
