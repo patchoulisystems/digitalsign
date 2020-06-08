@@ -70,8 +70,11 @@ function home(request, response) {
     case "/edit_day":
       resolveEditDay(response, request);
       break;
+    case "/exclude_list":
+      resolveExcludePage(response, request, urlObject);
+      break;
     case "/dated_images":
-      resolveDatedImages(response, request.method, urlObject);
+      resolveDatedImages(response, request, urlObject);
       break;
     case "/slideshow_settings":
       resolveSettingsPage(response, request, urlObject);
@@ -321,18 +324,36 @@ function resolveEditDay(response, request) {
  * @param {String} method - The method of the request sent by the Client
  * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveDatedImages(response, method, urlObject) {
-  if (method == "GET") {
-    let parsedQuerystring = querystring.parse(urlObject.query);
-    let datedImages = db.getImageListFromDate(
-      parsedQuerystring.date,
-      parsedQuerystring.datetype
-    );
+function resolveDatedImages(response, request, urlObject) {
+  if (request.method == "POST") {
+    let requestData = "";
+
+    request.on("data", function (incomingData) {
+      requestData += incomingData;
+    });
+
+    request.on("end", () => {
+      requestData = JSON.parse(requestData);
+      headers["Content-Type"] = "application/json";
+      let responseData = {};
+      responseData = db.getImageListFromDate(
+        requestData["dateType"],
+        requestData["dates"]
+      );
+      response.writeHead(200, headers);
+      response.write(JSON.stringify({ data: responseData }));
+      response.end();
+    });
+  } else if (request.method === "GET") {
+    let datedImages = db.getImageListFromDate();
     headers["Content-Type"] = "application/json";
     response.writeHead(200, headers);
     response.write(JSON.stringify({ data: datedImages }));
-  } else response.writeHead(404, "Not Found");
-  response.end();
+    response.end();
+  } else {
+    response.writeHead(404, "Not Found");
+    response.end();
+  }
 }
 
 /**
@@ -368,6 +389,18 @@ function resolveSettingsPage(response, request, urlObject) {
         response.end();
       }
     });
+  } else {
+    response.writeHead(404, "Not Found");
+    response.end();
+  }
+}
+function resolveExcludePage(response, request, urlObject) {
+  if (request.method == "GET") {
+    let file = fs.readFileSync("../client/exclude_list_page/exclude_list.html");
+    headers["Content-Type"] = "text/html";
+    response.writeHead(200, headers);
+    response.write(file);
+    response.end();
   } else {
     response.writeHead(404, "Not Found");
     response.end();
