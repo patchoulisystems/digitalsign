@@ -1,12 +1,3 @@
-$(() => {
-  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
-    data.text().then((html) => {
-      $("#modal").html(html);
-      startModal();
-    });
-  });
-});
-
 $(document).on("submit", "form", (event) => {
   event.preventDefault();
   let form = document.forms.namedItem("main-form");
@@ -33,6 +24,7 @@ $(document).on("submit", "form", (event) => {
   // For an easier UX on the settings side, we make the conversion to miliseconds here
   // We add the animation speed to the time between pictures because the moment the picture is
   // being rendered (as soon as the animation starts) the countdown for the next picture starts
+  // TODO: Move this to server side
   formData.set(
     "timeBetweenPictures",
     (parseFloat(formData.get("timeBetweenPictures")) +

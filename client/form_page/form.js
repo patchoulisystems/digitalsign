@@ -1,20 +1,3 @@
-$(() => {
-  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
-    (data) => {
-      data.text().then((html) => {
-        document.getElementById("datepicker-component").innerHTML = html;
-        startDatepicker();
-      });
-    }
-  );
-  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
-    data.text().then((html) => {
-      $("#modal").html(html);
-      startModal();
-    });
-  });
-});
-
 $(document).on("submit", "form", (event) => {
   event.preventDefault();
   let form = document.forms.namedItem("main-form");
