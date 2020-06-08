@@ -401,6 +401,26 @@ function resolveExcludePage(response, request, urlObject) {
     response.writeHead(200, headers);
     response.write(file);
     response.end();
+  } else if (request.method == "POST") {
+    let requestData = "";
+
+    request.on("data", function (incomingData) {
+      requestData += incomingData;
+    });
+
+    request.on("end", () => {
+      requestData = JSON.parse(requestData);
+      if (
+        !requestData.dates ||
+        !requestData.dateType ||
+        !requestData.pictures
+      ) {
+        response.writeHead(400, "Bad Request");
+      }
+      responseData = db.excludeListFromData(requestData);
+      response.writeHead(200, "OK");
+      response.end();
+    });
   } else {
     response.writeHead(404, "Not Found");
     response.end();

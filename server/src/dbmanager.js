@@ -96,7 +96,7 @@ const buildToday = () => {
   // We should clean the exclude array for a day
   // Or we can create "exclude lists" where they're basically the same as
   // the include lists but doing the opposite
-
+  todayList = filterExclude(todayList);
   db.metadata["todayList"] = todayList;
   db.metadata["dateBuilt"] = today;
   let jsonData = JSON.stringify(db);
@@ -121,6 +121,19 @@ const getTodayList = () => {
   } else {
     return db.metadata["todayList"];
   }
+};
+
+const filterExclude = (list) => {
+  let resultList = list;
+  if (db.metadata["builtExcludeLists"]) {
+    for (const excludeList in db.metadata["builtExcludeLists"]) {
+      const currentExcludeList = db.metadata["builtExcludeLists"][excludeList];
+      resultList = resultList.filter((picture) =>
+        !currentExcludeList.pictures.includes(picture)
+      );
+    }
+  }
+  return resultList;
 };
 
 const getImageListFromDate = (dateType, dateString) => {
@@ -160,11 +173,14 @@ const getImageListFromDate = (dateType, dateString) => {
           new Date(imageParsedDates[2]).getUTCDate()
         );
 
-        if (imageLowestDate <= lowerDate && greaterDate <= imageGreaterDate && !imageList.includes(image)) {
+        if (
+          imageLowestDate <= lowerDate &&
+          greaterDate <= imageGreaterDate &&
+          !imageList.includes(image)
+        ) {
           imageList.push(image);
         }
-      } 
-      else if (db.entries[image].dateType.trim() == "multiple") {
+      } else if (db.entries[image].dateType.trim() == "multiple") {
         let imageDates = db.entries[image].dates
           .split(",")
           .filter((element) => {
@@ -176,14 +192,17 @@ const getImageListFromDate = (dateType, dateString) => {
             new Date(date).getUTCMonth(),
             new Date(date).getUTCDate()
           );
-          if (lowerDate <= imageDate && imageDate <= greaterDate && !imageList.includes(image)) {
+          if (
+            lowerDate <= imageDate &&
+            imageDate <= greaterDate &&
+            !imageList.includes(image)
+          ) {
             imageList.push(image);
           }
         });
       }
     });
-  }
-  else if (dateType == "multiple") {
+  } else if (dateType == "multiple") {
     let incomingDates = dateString.split(",").filter((date) => {
       return date !== ",";
     });
@@ -351,7 +370,15 @@ const savePicture = (file) => {
   return fileName;
 };
 
-//We'l probably delete this
+const excludeListFromData = (data) => {
+  let excludeListName = `excludeList${db.metadata["builtExcludeListsNumber"]}`;
+  db.metadata["builtExcludeLists"][excludeListName] = data;
+  db.metadata["builtExcludeListsNumber"]++;
+  let jsonData = JSON.stringify(db);
+  fs.writeFileSync(dbLocation, jsonData);
+};
+
+// TODO: Solve this
 const initialize = () => {
   fs.readdir(imagesFolder, (err, files) => {
     files.forEach((image) => {
@@ -373,3 +400,4 @@ module.exports.getTodayList = getTodayList;
 module.exports.insertFormData = insertFormData;
 module.exports.getImageListFromDate = getImageListFromDate;
 module.exports.pictureList = pictureList;
+module.exports.excludeListFromData = excludeListFromData;
