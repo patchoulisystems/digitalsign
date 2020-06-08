@@ -11,15 +11,24 @@
       rel="stylesheet"
       href="/widget?widgetName=datepicker&resource=datepicker.css"
     />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=buttonglitter&resource=buttonglitter.css"
+    />
     <link rel="stylesheet" href="/edit_day.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Edit A Day</title>
+    <title>Picture List for Dates</title>
   </head>
   <body>
     <div class="main-container">
       <div id="datepicker-component"></div>
-      <button class="sendData">Send Picture List</button>
+      <button class="sendData button">
+        <span>
+          Send Picture List
+        </span>
+      </button>
       <div id="frame" class="picture-row">
         <div class="picture-column"></div>
         <div class="picture-column"></div>
@@ -34,5 +43,6 @@
     <script src="/widget?widgetName=datepicker&resource=datepicker.js"></script>
     <script src="/widget?widgetName=modal&resource=modal.js"></script>
     <script src="/edit_day.js"></script>
+    <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>
   </body>
 </html>

@@ -5,16 +5,31 @@ body {
   margin: 0;
 }
 
-.main-container{
+.main-container {
   display: block;
 }
 
-#datepicker-component{
+#datepicker-component {
   display: inline-block;
 }
 
-.main-container, #datepicker-component{
+.main-container,
+#datepicker-component {
   text-align: center;
+}
+
+.button {
+  display: block;
+  padding: 1%;
+  margin-bottom: 10px;
+  border: 2px #f0b310 solid;
+  border-radius: 5px;
+  background: #f0b310;
+}
+
+.button:hover,
+.button:focus {
+  cursor: pointer;
 }
 
 .picture-row {
@@ -64,11 +79,11 @@ img {
   opacity: 1;
 }
 
-.picture-unselected:hover img{
+.picture-unselected:hover img {
   opacity: 0.2;
 }
 
-.overlay{
+.overlay {
   position: absolute;
   top: 0;
   left: 0;
