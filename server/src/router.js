@@ -316,7 +316,7 @@ function resolveEditDay(response, request) {
 }
 
 /**
- * This the endpoint that resolves the Index page
+ * This the endpoint that builds a list of images based on a date
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
