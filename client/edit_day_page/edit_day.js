@@ -75,13 +75,13 @@ const onSubmit = (event) => {
   let errors = false;
 
   if (selectedPicturesElements.length == 0) {
-    displayModal("Please select at least one picture!");
+    alert("Please select at least one picture!");
     errors = true;
   }
 
   // Just to avoid one alert after another
   if (dateToSend.length == 0 && errors == false) {
-    displayModal("Please finish the date selection!");
+    alert("Please finish the date selection!");
     errors = true;
   }
 
@@ -105,7 +105,7 @@ const onSubmit = (event) => {
     $.ajax(payload)
       .fail((xhr, error) => {
         if (xhr.status == 400) {
-          displayModal(
+          alert(
             "The request was unable to be completed. Please refresh the page or try again later."
           );
           clearDatepicker();
@@ -113,7 +113,7 @@ const onSubmit = (event) => {
       })
       .done((response, status, xhr) => {
         if (xhr.status == 200) {
-          displayModal("Your image has been successfully submitted!");
+          alert("Your image has been successfully submitted!");
           clearDatepicker();
         }
       });
