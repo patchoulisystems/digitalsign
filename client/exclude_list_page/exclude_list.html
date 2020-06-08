@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/assets?name=favicon.ico"
+    />
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="/widget?widgetName=datepicker&resource=datepicker.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=buttonglitter&resource=buttonglitter.css"
+    />
+    <link rel="stylesheet" href="/exclude_list.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Exclude Picture List for Dates</title>
+  </head>
+  <body>
+    <div class="main-container">
+      <div id="datepicker-component"></div>
+      <button class="getData button">
+        <span>
+          Get pictures within this date(s)
+        </span>
+      </button>
+      <div id="frame" class="picture-row">
+        <div class="picture-column"></div>
+        <div class="picture-column"></div>
+        <div class="picture-column"></div>
+        <div class="picture-column"></div>
+      </div>
+      <button class="sendData button">
+        <span>
+          Exclude pictures from this date(s)
+        </span>
+      </button>
+    </div>
+    <script src="/assets?name=jquery-1.12.1.min.js"></script>
+    <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>
+    <script src="/widget?widgetName=datepicker&resource=jquery.plugin.js"></script>
+    <script src="/widget?widgetName=datepicker&resource=jquery.datepick.js"></script>
+    <script src="/widget?widgetName=datepicker&resource=datepicker.js"></script>
+    <script src="/exclude_list.js"></script>
+  </body>
+</html>
