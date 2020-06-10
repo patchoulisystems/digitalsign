@@ -25,16 +25,39 @@ body {
   width: 20vw;
   height: 1vw;
   padding-left: 9vw;
-  font-size: 0.65vw;
+  font-size: 0.85vw;
+}
+
+.row {
+  padding-top: 1%;
+}
+
+.firstlast {
+  float: left;
+  justify-content: left;
+  padding-left: 0.25%;
+}
+
+.row > div > label,
+.row > div > input {
+  display: block;
+  text-align: left;
+}
+
+.studentidpics {
+  display: inline-block;
 }
 
 .dates-container {
-  text-align: center;
+  float: right;
+  text-align: left;
+  display: block;
+  justify-content: center;
 }
 
-#datepicker {
-  display: flex;
-  justify-content: center;
+.submit-button {
+  padding-top: 5%;
+  text-align: center;
 }
 
 .input,
@@ -51,4 +74,43 @@ body {
 hr {
   width: 80%;
   border: 1px #f0b310 solid;
+}
+
+@media screen and (max-width: 1501px) {
+  span {
+    font-size: 3vw;
+  }
+  .title {
+    font-size: 4vw;
+  }
+  .description {
+    font-size: 2vw;
+  }
+}
+@media screen and (max-width: 1000px) {
+  span {
+    font-size: 5vw;
+  }
+  .title {
+    font-size: 6vw;
+  }
+  .description {
+    font-size: 3vw;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .title {
+    display: flex;
+    justify-content: center;
+    padding-right: 0;
+    padding-bottom: 1vw;
+  }
+
+  .description {
+    padding-left: 0;
+    justify-content: center;
+    padding-top: 1vw;
+    width: auto;
+  }
 }
