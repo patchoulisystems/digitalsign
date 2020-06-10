@@ -5,12 +5,35 @@
 }
 
 body {
+  font-family: "Open Sans", sans-serif;
   background-color: #5891c4;
-  /* Temporal Color */
+}
+
+.main-container,
+.top-bar,
+.main-form {
+  text-align: center;
+}
+
+.title,
+.description {
+  display: inline-block;
+}
+
+.title {
+  font-size: 2vw;
+  color: white;
+  padding-right: 9vw;
+}
+
+.description {
+  width: 20vw;
+  height: 1vw;
+  padding-left: 9vw;
+  font-size: 0.65vw;
 }
 
 .main-form {
-  font-family: "Open Sans", sans-serif;
   margin: 10%;
 }
 
