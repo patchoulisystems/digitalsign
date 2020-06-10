@@ -32,7 +32,6 @@
 
 .button span {
   font-family: "Open Sans", sans-serif;
-  font-size: large;
   position: relative;
   pointer-events: none;
 }
