@@ -114,7 +114,7 @@ function resolveAssets(response, request, urlObject) {
       } catch (err) {
         // TODO: Logging here
         console.log(err);
-        response.writeHead(404, "Not Found");
+        response.writeHead(500, "Internal Server Error");
         response.end();
       }
     } else if (parsedQuerystring.name.indexOf("font") !== -1) {
@@ -146,7 +146,7 @@ function resolveAssets(response, request, urlObject) {
       } catch (err) {
         // TODO: Logging here
         console.log(err);
-        response.writeHead(404, "Not Found");
+        response.writeHead(500, "Internal Server Error");
         response.end();
       }
     } else if (parsedQuerystring.name.indexOf(".js") !== -1) {
@@ -166,7 +166,7 @@ function resolveAssets(response, request, urlObject) {
         }
       } catch (err) {
         // TODO: Logging here
-        response.writeHead(404, "Not Found");
+        response.writeHead(500, "Internal Server Error");
         response.end();
       }
     } else if (parsedQuerystring.name.indexOf(".ico") !== -1) {
@@ -185,7 +185,7 @@ function resolveAssets(response, request, urlObject) {
         }
       } catch (err) {
         // TODO: Logging here
-        response.writeHead(404, "Not Found");
+        response.writeHead(500, "Internal Server Error");
         response.end();
       }
     } else {
@@ -193,7 +193,7 @@ function resolveAssets(response, request, urlObject) {
       response.end();
     }
   } else {
-    response.writeHead(400, "Bad Request");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -230,11 +230,11 @@ function resolveWidget(response, request, urlObject) {
     } catch (err) {
       // TODO: Logging here
       console.log(err);
-      response.writeHead(404, "Not Found");
+      response.writeHead(500, "Internal Server Error");
       response.end();
     }
   } else {
-    response.writeHead(400, "Bad Request");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -246,12 +246,24 @@ function resolveWidget(response, request, urlObject) {
  */
 function resolveIndex(response, method) {
   if (method == "GET") {
-    let file = fs.readFileSync("../client/index.html");
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.write(file);
-    response.end();
+    try {
+      if (fs.existsSync("../client/index.html")) {
+        let file = fs.readFileSync("../client/index.html");
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.write(file);
+        response.end();
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -309,15 +321,18 @@ function resolveImage(response, request, urlObject) {
           response.setHeader("Content-Type", "image/jpg");
           stream.pipe(response);
         });
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
       }
     } catch (err) {
-      response.writeHead(400, "Bad Request");
-      response.end();
       // TODO: Whenever we do logging, here's a good place to start
       console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
     }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
