@@ -207,24 +207,34 @@ function resolveAssets(response, request, urlObject) {
 function resolveWidget(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
+    var filePath = `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`;
     var contentType;
-    // TODO: Safety on no file found
-    if (parsedQuerystring.resource.includes("js")) {
-      contentType = "text/javascript";
-    } else if (parsedQuerystring.resource.includes("css")) {
-      contentType = "text/css";
-    } else if (parsedQuerystring.resource.includes("html")) {
-      contentType = "text/html";
+    try {
+      if (fs.existsSync(filePath)) {
+        if (parsedQuerystring.resource.includes("js")) {
+          contentType = "text/javascript";
+        } else if (parsedQuerystring.resource.includes("css")) {
+          contentType = "text/css";
+        } else if (parsedQuerystring.resource.includes("html")) {
+          contentType = "text/html";
+        }
+        var stream = fs.createReadStream(filePath);
+        stream.on("open", () => {
+          response.setHeader("Content-Type", contentType);
+          stream.pipe(response);
+        });
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(404, "Not Found");
+      response.end();
     }
-    var stream = fs.createReadStream(
-      `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`
-    );
-    stream.on("open", () => {
-      response.setHeader("Content-Type", contentType);
-      stream.pipe(response);
-    });
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(400, "Bad Request");
     response.end();
   }
 }
