@@ -77,7 +77,7 @@ function home(request, response) {
       resolveDatedImages(response, request);
       break;
     case "/slideshow_settings":
-      resolveSettingsPage(response, request, urlObject);
+      resolveSettingsPage(response, request);
       break;
     case "/settings":
       resolveSettings(response, request.method, urlObject);
@@ -516,40 +516,81 @@ function resolveDatedImages(response, request) {
  * This the endpoint that resolves the slideshow settings page
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
- * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveSettingsPage(response, request, urlObject) {
-  if (request.method == "GET") {
-    let file = fs.readFileSync(
-      "../client/slideshow_settings_page/slideshow_settings.html"
-    );
-    headers["Content-Type"] = "text/html";
-    response.writeHead(200, headers);
-    response.write(file);
-    response.end();
-  } else if (request.method == "POST") {
-    let form = new formidable.IncomingForm({ multiples: true });
-    form.keepExtensions = true;
 
-    form.parse(request, (error, fields, files) => {
+function resolveSettingsPage(response, request) {
+  if (request.method == "GET") {
+    try {
       if (
-        !fields.animationSpeed ||
-        !fields.animationName ||
-        !fields.timeBetweenPictures
+        fs.existsSync(
+          "../client/slideshow_settings_page/slideshow_settings.html"
+        )
       ) {
-        response.writeHead(400, "Bad Request");
+        let file = fs.readFileSync(
+          "../client/slideshow_settings_page/slideshow_settings.html"
+        );
+        headers["Content-Type"] = "text/html";
+        response.writeHead(200, headers);
+        response.write(file);
         response.end();
       } else {
-        fs.writeFileSync("./data/settings.json", JSON.stringify(fields));
-        response.writeHead(200, "OK");
+        response.writeHead(404, "Not Found");
         response.end();
       }
-    });
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
+  } else if (request.method == "POST") {
+    try {
+      let form = new formidable.IncomingForm({ multiples: true });
+      form.keepExtensions = true;
+
+      form.parse(request, (error, fields, files) => {
+        if (
+          !fields.animationSpeed ||
+          !fields.animationName ||
+          !fields.timeBetweenPictures
+        ) {
+          response.writeHead(400, "Bad Request");
+          response.end();
+        } else {
+          try {
+            if (fs.existsSync("./data/settings.json")) {
+              fs.writeFileSync("./data/settings.json", JSON.stringify(fields));
+              response.writeHead(200, "OK");
+              response.end();
+            } else {
+              response.writeHead(400, "Bad Request");
+              response.end();
+            }
+          } catch (err) {
+            // TODO: Logging here
+            console.log(err);
+            response.writeHead(500, "Internal Server Error");
+            response.end();
+          }
+        }
+      });
+    } catch (err) {
+      // TODO: Logging here. This time most likely we didn't recieve the form at all; Formidable couldn't parse.
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
+
+/**
+ * This the endpoint that resolves the slideshow settings page
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {String} method - The method of the request sent by the Client
+ */
 function resolveExcludePage(response, request, urlObject) {
   if (request.method == "GET") {
     let file = fs.readFileSync("../client/exclude_list_page/exclude_list.html");
