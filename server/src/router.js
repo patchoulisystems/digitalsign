@@ -650,13 +650,26 @@ function resolveExcludePage(response, request) {
  */
 function resolveSettings(response, method) {
   if (method == "GET") {
-    let settings = fs.readFileSync("./data/settings.json");
-    settings = JSON.parse(settings);
-    response.write(JSON.stringify({ data: settings }));
+    try {
+      if (fs.existsSync("./data/settings.json")) {
+        let settings = fs.readFileSync("./data/settings.json");
+        settings = JSON.parse(settings);
+        response.write(JSON.stringify({ data: settings }));
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
+  } else {
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
 
+// TODO: Make a proper Options file
 /**
  * This the endpoint that resolves whenever the options of the web app are requested.
  * Definitively needs more work because this actually does nothing.
@@ -667,8 +680,8 @@ function resolveOptions(response, request) {
   if (request.method === "OPTIONS") {
     response.writeHead(200, headers);
     response.end();
-    return;
   } else {
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
