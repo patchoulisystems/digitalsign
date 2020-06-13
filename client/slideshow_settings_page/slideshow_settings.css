@@ -4,10 +4,10 @@
     URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
 }
 
-/* TODO: Temporary color */
 body {
-  font-family: "Open Sans", sans-serif;
+  /* TODO: Temporal Color */
   background-color: #5891c4;
+  font-family: "Open Sans", sans-serif;
   text-align: center;
 }
 
@@ -22,19 +22,6 @@ body {
   padding-right: 9vw;
 }
 
-.main-form {
-  padding-left: 30%;
-  padding-right: 30%;
-}
-
-#reset-button {
-  float: left;
-}
-
-.submit {
-  float: right;
-}
-
 .description {
   width: 20vw;
   height: 1vw;
@@ -42,29 +29,23 @@ body {
   font-size: 0.85vw;
 }
 
-.inputs {
-  float: left;
-  justify-content: left;
+.holder {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+  padding: 1%;
 }
 
-.inputs > label,
-.inputs > input {
-  padding: 3%;
+.holder > label, 
+.holder > input, 
+.holder > select {
   display: block;
   text-align: left;
 }
 
-.studentidpics {
-  display: inline-block;
-}
-
-.dates-container {
-  float: right;
-  text-align: left;
-}
-
-.input,
-.button {
+.input {
+  padding: 1%;
   margin-bottom: 10px;
   border: 2px #f0b310 solid;
   border-radius: 5px;
@@ -72,6 +53,11 @@ body {
 
 .button {
   background: #f0b310;
+}
+
+.button:hover,
+.button:focus {
+  cursor: pointer;
 }
 
 hr {

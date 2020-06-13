@@ -21,17 +21,16 @@
       type="text/css"
       href="/widget?widgetName=modal&resource=modal.css"
     />
-    <link rel="stylesheet" href="/edit_day.css" />
+    <link rel="stylesheet" href="/exclude_list.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Picture List for Dates</title>
+    <title>Exclude Picture List for Dates</title>
   </head>
   <body>
     <div class="main-container">
-      <div id="modal" class="modal"></div>
       <div class="top-bar">
         <h1 class="title">
-          Create a Picture List
+          Exclude List
         </h1>
         <p class="description">
           The moment the man devoured the fruit of knowledge, it sealed its
@@ -40,10 +39,11 @@
         </p>
       </div>
       <hr />
+      <div id="modal" class="modal"></div>
       <div id="datepicker-component">
-        <button class="sendData button">
+        <button class="getData button">
           <span>
-            Send Picture List
+            Get pictures
           </span>
         </button>
       </div>
@@ -53,6 +53,11 @@
         <div class="picture-column"></div>
         <div class="picture-column"></div>
       </div>
+      <button class="sendData button">
+        <span>
+          Exclude pictures from this date(s)
+        </span>
+      </button>
     </div>
     <script src="/assets?name=jquery-1.12.1.min.js"></script>
     <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>
@@ -60,6 +65,6 @@
     <script src="/widget?widgetName=datepicker&resource=jquery.datepick.js"></script>
     <script src="/widget?widgetName=datepicker&resource=datepicker.js"></script>
     <script src="/widget?widgetName=modal&resource=modal.js"></script>
-    <script src="/edit_day.js"></script>
+    <script src="/exclude_list.js"></script>
   </body>
 </html>

@@ -10,6 +10,7 @@ const fs = require("fs");
 const url = require("url");
 const querystring = require("querystring");
 const db = require("./dbmanager");
+const formidable = require("formidable");
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -69,8 +70,17 @@ function home(request, response) {
     case "/edit_day":
       resolveEditDay(response, request);
       break;
+    case "/exclude_list":
+      resolveExcludePage(response, request, urlObject);
+      break;
     case "/dated_images":
-      resolveDatedImages(response, request.method, urlObject);
+      resolveDatedImages(response, request, urlObject);
+      break;
+    case "/slideshow_settings":
+      resolveSettingsPage(response, request, urlObject);
+      break;
+    case "/settings":
+      resolveSettings(response, request.method, urlObject);
       break;
     default:
       resolveOptions(response, request);
@@ -120,6 +130,14 @@ function resolveAssets(response, request, urlObject) {
         response.setHeader("Content-Type", "text/javascript");
         stream.pipe(response);
       });
+    } else if (parsedQuerystring.name.indexOf(".ico") !== -1) {
+      var stream = fs.createReadStream(
+        `${assetsFolder}${parsedQuerystring.name}`
+      );
+      stream.on("open", () => {
+        response.setHeader("Content-Type", "image/x-icon");
+        stream.pipe(response);
+      });
     }
   } else {
     response.writeHead(404, "Not Found");
@@ -146,7 +164,7 @@ function resolveWidget(response, request, urlObject) {
       contentType = "text/html";
     }
     var stream = fs.createReadStream(
-      `${widgetsFolder}${parsedQuerystring.resource}`
+      `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`
     );
     stream.on("open", () => {
       response.setHeader("Content-Type", contentType);
@@ -301,23 +319,126 @@ function resolveEditDay(response, request) {
 }
 
 /**
- * This the endpoint that resolves the Index page
+ * This the endpoint that builds a list of images based on a date
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveDatedImages(response, method, urlObject) {
-  if (method == "GET") {
-    let parsedQuerystring = querystring.parse(urlObject.query);
-    let datedImages = db.getImageListFromDate(
-      parsedQuerystring.date,
-      parsedQuerystring.datetype
-    );
+function resolveDatedImages(response, request, urlObject) {
+  if (request.method == "POST") {
+    let requestData = "";
+
+    request.on("data", function (incomingData) {
+      requestData += incomingData;
+    });
+
+    request.on("end", () => {
+      requestData = JSON.parse(requestData);
+      headers["Content-Type"] = "application/json";
+      let responseData = {};
+      responseData = db.getImageListFromDate(
+        requestData["dateType"],
+        requestData["dates"]
+      );
+      response.writeHead(200, headers);
+      response.write(JSON.stringify({ data: responseData }));
+      response.end();
+    });
+  } else if (request.method === "GET") {
+    let datedImages = db.getImageListFromDate();
     headers["Content-Type"] = "application/json";
     response.writeHead(200, headers);
     response.write(JSON.stringify({ data: datedImages }));
-  } else response.writeHead(404, "Not Found");
-  response.end();
+    response.end();
+  } else {
+    response.writeHead(404, "Not Found");
+    response.end();
+  }
+}
+
+/**
+ * This the endpoint that resolves the slideshow settings page
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {String} method - The method of the request sent by the Client
+ * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
+ */
+function resolveSettingsPage(response, request, urlObject) {
+  if (request.method == "GET") {
+    let file = fs.readFileSync(
+      "../client/slideshow_settings_page/slideshow_settings.html"
+    );
+    headers["Content-Type"] = "text/html";
+    response.writeHead(200, headers);
+    response.write(file);
+    response.end();
+  } else if (request.method == "POST") {
+    let form = new formidable.IncomingForm({ multiples: true });
+    form.keepExtensions = true;
+
+    form.parse(request, (error, fields, files) => {
+      if (
+        !fields.animationSpeed ||
+        !fields.animationName ||
+        !fields.timeBetweenPictures
+      ) {
+        response.writeHead(400, "Bad Request");
+        response.end();
+      } else {
+        fs.writeFileSync("./data/settings.json", JSON.stringify(fields));
+        response.writeHead(200, "OK");
+        response.end();
+      }
+    });
+  } else {
+    response.writeHead(404, "Not Found");
+    response.end();
+  }
+}
+function resolveExcludePage(response, request, urlObject) {
+  if (request.method == "GET") {
+    let file = fs.readFileSync("../client/exclude_list_page/exclude_list.html");
+    headers["Content-Type"] = "text/html";
+    response.writeHead(200, headers);
+    response.write(file);
+    response.end();
+  } else if (request.method == "POST") {
+    let requestData = "";
+
+    request.on("data", function (incomingData) {
+      requestData += incomingData;
+    });
+
+    request.on("end", () => {
+      requestData = JSON.parse(requestData);
+      if (
+        !requestData.dates ||
+        !requestData.dateType ||
+        !requestData.pictures
+      ) {
+        response.writeHead(400, "Bad Request");
+      }
+      responseData = db.excludeListFromData(requestData);
+      response.writeHead(200, "OK");
+      response.end();
+    });
+  } else {
+    response.writeHead(404, "Not Found");
+    response.end();
+  }
+}
+
+/**
+ * This the endpoint that resolves the settings file
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {String} method - The method of the request sent by the Client
+ */
+function resolveSettings(response, method) {
+  if (method == "GET") {
+    let settings = fs.readFileSync("./data/settings.json");
+    settings = JSON.parse(settings);
+    response.write(JSON.stringify({ data: settings }));
+    response.end();
+  }
 }
 
 /**

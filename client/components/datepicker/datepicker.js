@@ -2,7 +2,7 @@ var options = {
   rangeSelect: true,
   minDate: 0,
   multiSelect: null,
-  dateFormat: "yyyy-mm-dd"
+  dateFormat: "yyyy-mm-dd",
 };
 
 const startDatepicker = () => {
@@ -18,17 +18,13 @@ const attachOnChange = () => {
       case "multiple":
         options.rangeSelect = null;
         options.multiSelect = 999;
-        $("#datepicker")
-          .datepick("destroy")
-          .datepick(options);
+        $("#datepicker").datepick("destroy").datepick(options);
         $("#dpfield").val("");
         break;
       case "interval":
         options.rangeSelect = true;
         options.multiSelect = null;
-        $("#datepicker")
-          .datepick("destroy")
-          .datepick(options);
+        $("#datepicker").datepick("destroy").datepick(options);
         $("#dpfield").val("");
         break;
       default:
@@ -37,8 +33,15 @@ const attachOnChange = () => {
   });
 };
 
+const clearDatepicker = () => {
+  if ($("input[name='radio']:checked")) {
+    $("input[name='radio']:checked").prop("checked", false);
+  }
+  $("#datepicker").datepick("destroy");
+};
+
 const onResetPress = () => {
-  $("#reset").click(() => {
+  $("#reset-button").click(() => {
     if ($("input[name='radio']:checked")) {
       $("input[name='radio']:checked").prop("checked", false);
     }
@@ -55,10 +58,11 @@ const parseDatepicker = () => {
     let dates = $("#datepicker").datepick("getDate");
     let formatedLeft = $.datepick.formatDate("yyyy-mm-dd", dates[0]);
     let formatedRight = $.datepick.formatDate("yyyy-mm-dd", dates[1]);
-    if (formatedLeft && formatedRight) resultDateString = `${formatedLeft} - ${formatedRight}`;
+    if (formatedLeft && formatedRight)
+      resultDateString = `${formatedLeft} - ${formatedRight}`;
   } else if (radioValue == "multiple") {
     let dates = $("#datepicker").datepick("getDate");
-    dates.forEach(date => {
+    dates.forEach((date) => {
       let formated = $.datepick.formatDate("yyyy-mm-dd", date);
       resultDateString += formated;
       if (date != dates[dates.length - 1]) {

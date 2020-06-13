@@ -19,6 +19,23 @@ hr {
   display: block;
 }
 
+#datepicker-component {
+  display: inline-block;
+}
+
+.main-container,
+#datepicker-component {
+  text-align: center;
+}
+
+#reset-button {
+  float: left;
+}
+
+.getData {
+  float: right;
+}
+
 .title,
 .description {
   display: inline-block;
@@ -37,24 +54,8 @@ hr {
   font-size: 0.85vw;
 }
 
-#datepicker-component {
-  display: inline-block;
-}
-
-.main-container,
-#datepicker-component {
-  text-align: center;
-}
-
-#reset-button {
-  float: left;
-}
-
-.sendData {
-  float: right;
-}
-
 .button {
+  padding: 1%;
   margin-bottom: 10px;
   border: 2px #f0b310 solid;
   border-radius: 5px;
@@ -76,8 +77,9 @@ hr {
 }
 
 .picture-column {
-  flex: 15%;
-  max-width: 30%;
+  z-index: 0;
+  flex: 25%;
+  max-width: 25%;
   padding: 0 4px;
 }
 
@@ -87,7 +89,7 @@ img {
   width: 100%;
   transition: width 2s;
   opacity: 1;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.5s ease;
 }
 
 @media screen and (max-width: 800px) {
@@ -168,7 +170,7 @@ img {
 
 .unselected {
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.5s ease;
 }
 
 .selected {
