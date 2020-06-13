@@ -304,13 +304,20 @@ function resolveToday(request, response) {
  */
 function resolveTodayImages(response, method) {
   if (method == "GET") {
-    let images = db.getTodayList();
-    headers["Content-Type"] = "application/json";
-    response.writeHead(200, headers);
-    response.write(JSON.stringify({ data: images }));
-    response.end();
+    try {
+      let images = db.getTodayList();
+      headers["Content-Type"] = "application/json";
+      response.writeHead(200, headers);
+      response.write(JSON.stringify({ data: images }));
+      response.end();
+    } catch (err) {
+      // TODO: Logging here. Also log in the db.getTodayList
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
