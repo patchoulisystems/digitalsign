@@ -746,18 +746,48 @@ function css(request, response) {
  */
 function js(request, response) {
   if (request.url.indexOf(".js") !== -1 && !request.url.includes("?")) {
-    var name = request.url.split(".")[0];
-    var file;
-    if (name === "/index") {
-      file = fs.readFileSync(`../client${request.url}`, { encoding: "utf8" });
+    if (request.method == "GET") {
+      var name = request.url.split(".")[0];
+      var file;
+      if (name === "/index") {
+        try {
+          if (fs.existsSync(`../client${request.url}`)) {
+            file = fs.readFileSync(`../client${request.url}`, {
+              encoding: "utf8",
+            });
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } catch (err) {
+          // TODO: Logging here
+          response.writeHead(500, "Internal Server Error");
+          response.end();
+        }
+      } else {
+        try {
+          if (fs.existsSync(`../client${name}_page${request.url}`)) {
+            file = fs.readFileSync(`../client${name}_page${request.url}`, {
+              encoding: "utf8",
+            });
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } catch (err) {
+          // TODO: Logging here
+          console.log(err);
+          response.writeHead(500, "Internal Server Error");
+          response.end();
+        }
+      }
+      response.writeHead(200, { "Content-Type": "text/javascript" });
+      response.write(file);
+      response.end();
     } else {
-      file = fs.readFileSync(`../client${name}_page${request.url}`, {
-        encoding: "utf8",
-      });
+      response.writeHead(405, "Method Not Allowed");
+      response.end();
     }
-    response.writeHead(200, { "Content-Type": "text/javascript" });
-    response.write(file);
-    response.end();
   }
 }
 
