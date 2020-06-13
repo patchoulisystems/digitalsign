@@ -77,7 +77,9 @@ $(() => {
   fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
     (data) => {
       data.text().then((html) => {
-        document.getElementById("datepicker-component").innerHTML = html;
+        let ogHTML = document.getElementById("datepicker-component").innerHTML;
+        document.getElementById("datepicker-component").innerHTML =
+          html + ogHTML;
         startDatepicker();
         startGlitter();
       });
