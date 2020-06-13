@@ -5,7 +5,7 @@
   "main": "./server/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-dev": "cd ./server && npx nodemon --watch ./ app.js"
+    "start-dev": "cd ./server && npx nodemon --ext js --watch ./ app.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +13,7 @@
     "formidable": "^1.2.2",
     "fs": "0.0.1-security",
     "http": "0.0.0",
+    "nanoid": "^3.1.10",
     "nodemon": "^2.0.4",
     "querystring": "^0.2.0",
     "sass": "^1.26.8",
