@@ -400,14 +400,30 @@ function resolvePictureList(response, request) {
  */
 function resolveUpload(response, request) {
   if (request.method == "GET") {
-    let file = fs.readFileSync("../client/form_page/form.html");
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.write(file);
-    response.end();
+    try {
+      if (fs.existsSync("../client/form_page/form.html")) {
+        let file = fs.readFileSync("../client/form_page/form.html");
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.write(file);
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else if (request.method == "POST") {
-    db.insertFormData(request, response);
+    try {
+      db.insertFormData(request, response);
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
