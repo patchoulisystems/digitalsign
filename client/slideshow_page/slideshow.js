@@ -65,3 +65,27 @@ const showSlides = () => {
   slides[slideIndex % slides.length].style.display = "block";
   setTimeout(showSlides, settings.timeBetweenPictures);
 };
+
+var justHidden = false;
+var j;
+
+function hide() {
+  $("html").css({
+    cursor: "none",
+  });
+  justHidden = true;
+  setTimeout(function () {
+    justHidden = false;
+  }, 500);
+}
+$(document).mousemove(function () {
+  if (!justHidden) {
+    justHidden = false;
+    console.log("move");
+    clearTimeout(j);
+    $("html").css({
+      cursor: "default",
+    });
+    j = setTimeout(hide, 1000);
+  }
+});
