@@ -1,4 +1,18 @@
 $(() => {
+  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
+    (data) => {
+      data.text().then((html) => {
+        let ogHTML = $("#datepicker-component").html();
+        $("#datepicker-component").html(html + ogHTML);
+        startDatepicker();
+        bindOnClickEvents();
+        startGlitter();
+      });
+    }
+  );
+});
+
+const bindOnClickEvents = () => {
   $(".getData").click((event) => {
     closeFrame();
     onRequest();
@@ -7,11 +21,15 @@ $(() => {
     onSubmit();
     closeFrame();
   });
-});
+  $("#reset-button").click((event) => {
+    onResetPress();
+    closeFrame();
+  });
+};
 
 const closeFrame = () => {
   $(".picture-column").html("");
-}
+};
 
 const openFrame = (data) => {
   let columns = $(".picture-column");
