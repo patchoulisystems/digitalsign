@@ -7,7 +7,7 @@ const dbLocation = "./data/db.json";
 
 let db = fs.readFileSync(dbLocation);
 db = JSON.parse(db);
-
+// TODO: Optimize this
 const buildToday = () => {
   var todayList = [];
   var files = fs.readdirSync(imagesFolder, []);
@@ -17,7 +17,7 @@ const buildToday = () => {
     new Date().getUTCDate()
   );
   // Check for each file, their date (might scrapped later on)
-  files.forEach(image => {
+  files.forEach((image) => {
     var dateType = db.entries[image].dateType.trim();
     if (dateType == "interval") {
       var parsedDates = db.entries[image].dates.split(" ");
@@ -35,7 +35,7 @@ const buildToday = () => {
         todayList.push(image);
       }
     } else if (dateType == "multiple") {
-      db.entries[image].dates.split(",").forEach(date => {
+      db.entries[image].dates.split(",").forEach((date) => {
         var aDay = new Date(
           new Date(date).getUTCFullYear(),
           new Date(date).getUTCMonth(),
@@ -50,7 +50,7 @@ const buildToday = () => {
 
   // Check for each built list, their date (this is 90% staying)
   var builtLists = Array.from(Object.keys(db.metadata["builtLists"]));
-  builtLists.forEach(list => {
+  builtLists.forEach((list) => {
     let listDate = db.metadata["builtLists"][list]["dates"];
     let listDateType = db.metadata["builtLists"][list]["dateType"];
     let listPictures = db.metadata["builtLists"][list]["pictures"];
@@ -67,7 +67,7 @@ const buildToday = () => {
         new Date(parsedDates[2]).getUTCDate()
       );
       if (leftmostDay <= today && today <= rightmostDay) {
-        listPictures.forEach(picture => {
+        listPictures.forEach((picture) => {
           if (!todayList.includes(picture.toString())) {
             todayList.push(picture);
           }
@@ -75,14 +75,14 @@ const buildToday = () => {
       }
     } else {
       let parsedDates = listDate.split(",");
-      parsedDates.forEach(date => {
+      parsedDates.forEach((date) => {
         let thisListDay = new Date(
           new Date(date).getUTCFullYear(),
           new Date(date).getUTCMonth(),
           new Date(date).getUTCDate()
         );
         if (today == thisListDay) {
-          listPictures.forEach(picture => {
+          listPictures.forEach((picture) => {
             if (!todayList.includes(picture)) {
               todayList.push(picture);
             }
@@ -92,6 +92,11 @@ const buildToday = () => {
     }
   });
 
+  // TODO: Exclude the picture we don't want on the day here
+  // We should clean the exclude array for a day
+  // Or we can create "exclude lists" where they're basically the same as
+  // the include lists but doing the opposite
+  todayList = filterExclude(todayList, today);
   db.metadata["todayList"] = todayList;
   db.metadata["dateBuilt"] = today;
   let jsonData = JSON.stringify(db);
@@ -118,125 +123,276 @@ const getTodayList = () => {
   }
 };
 
-const getImageListFromDate = (dateString, dateType) => {
-  let imageList = [];
-
-  // Same deal like with build today
-  let allImagesList = Object.keys(db.entries);
-
-  if (dateType == "interval") {
-    // Parsing dateString to proper dates
-    let parsedDates = dateString.split(",");
-    let lowerDate = new Date(parsedDates[0]);
-    let greaterDate = new Date(parsedDates[2]);
-
-    allImagesList.forEach(image => {
-      if (db.entries[image].dateType.trim() == "interval") {
-        let parsedDates = db.entries[image].dates.split(" ");
-        let imageLowestDate = new Date(
+const filterExclude = (list, today) => {
+  let resultList = list;
+  if (db.metadata["builtExcludeLists"]) {
+    for (const excludeList in db.metadata["builtExcludeLists"]) {
+      const currentExcludeList = db.metadata["builtExcludeLists"][excludeList];
+      if (currentExcludeList.dateType == "interval") {
+        let parsedDates = currentExcludeList.dates.split(" - ");
+        let leftmostDay = new Date(
           new Date(parsedDates[0]).getUTCFullYear(),
           new Date(parsedDates[0]).getUTCMonth(),
           new Date(parsedDates[0]).getUTCDate()
         );
+        let rightmostDay = new Date(
+          new Date(parsedDates[1]).getUTCFullYear(),
+          new Date(parsedDates[1]).getUTCMonth(),
+          new Date(parsedDates[1]).getUTCDate()
+        );
+        if (leftmostDay <= today && today <= rightmostDay) {
+          resultList = resultList.filter(
+            (picture) => !currentExcludeList.pictures.includes(picture)
+          );
+        }
+      } else if (currentExcludeList.dateType == "multiple") {
+        currentExcludeList.dates.split(",").forEach((date) => {
+          let aDay = new Date(
+            new Date(date).getUTCFullYear(),
+            new Date(date).getUTCMonth(),
+            new Date(date).getUTCDate()
+          );
+          if (aDay == today) {
+            resultList = resultList.filter(
+              (picture) => !currentExcludeList.pictures.includes(picture)
+            );
+          }
+        });
+      }
+    }
+  }
+  return resultList;
+};
+
+const getImageListFromDate = (dateType, dateString) => {
+  let imageList = [];
+  console.log("Date string is " + dateString);
+  console.log("Date type is " + dateType);
+
+  // Same deal like with build today
+  let allImagesList = Object.keys(db.entries);
+  // TODO: Test this function
+  // TODO: Check if picture already here
+  if (dateType == "interval") {
+    // Parsing dateString to proper dates
+    let parsedDates = dateString.split(" - ");
+    let lowerDate = new Date(
+      new Date(parsedDates[0]).getUTCFullYear(),
+      new Date(parsedDates[0]).getUTCMonth(),
+      new Date(parsedDates[0]).getUTCDate()
+    );
+    let greaterDate = new Date(
+      new Date(parsedDates[1]).getUTCFullYear(),
+      new Date(parsedDates[1]).getUTCMonth(),
+      new Date(parsedDates[1]).getUTCDate()
+    );
+
+    allImagesList.forEach((image) => {
+      if (db.entries[image].dateType.trim() == "interval") {
+        let imageParsedDates = db.entries[image].dates.split(" - ");
+        let imageLowestDate = new Date(
+          new Date(imageParsedDates[0]).getUTCFullYear(),
+          new Date(imageParsedDates[0]).getUTCMonth(),
+          new Date(imageParsedDates[0]).getUTCDate()
+        );
         let imageGreaterDate = new Date(
-          new Date(parsedDates[2]).getUTCFullYear(),
-          new Date(parsedDates[2]).getUTCMonth(),
-          new Date(parsedDates[2]).getUTCDate()
+          new Date(imageParsedDates[1]).getUTCFullYear(),
+          new Date(imageParsedDates[1]).getUTCMonth(),
+          new Date(imageParsedDates[1]).getUTCDate()
         );
 
-        if (lowerDate <= imageLowestDate && imageGreaterDate <= greaterDate) {
+        // This doesn't work as intended. It's about to get ugly
+        if (
+          (imageLowestDate <= lowerDate && lowerDate <= imageGreaterDate) ||
+          (imageLowestDate <= greaterDate &&
+            greaterDate <= imageGreaterDate &&
+            !imageList.includes(image))
+        ) {
           imageList.push(image);
         }
       } else if (db.entries[image].dateType.trim() == "multiple") {
-        let imageDates = db.entries[image].dates.split(",").filter(element => {
-          return element !== ",";
-        });
-        imageDates.forEach(date => {
+        let imageDates = db.entries[image].dates.split(",");
+        imageDates.forEach((date) => {
           let imageDate = new Date(
             new Date(date).getUTCFullYear(),
             new Date(date).getUTCMonth(),
             new Date(date).getUTCDate()
           );
-          if (lowerDate <= imageDate && imageDate <= greaterDate) {
+          if (
+            lowerDate <= imageDate &&
+            imageDate <= greaterDate &&
+            !imageList.includes(image)
+          ) {
             imageList.push(image);
           }
         });
       }
     });
   } else if (dateType == "multiple") {
-    let incomingDates = dateString.split(",").filter(date => {
-      return date !== ",";
-    });
-    incomingDates.forEach(date => {
+    let incomingDates = dateString.split(",");
+    incomingDates.forEach((date) => {
       let incomingDate = new Date(
         new Date(date).getUTCFullYear(),
         new Date(date).getUTCMonth(),
         new Date(date).getUTCDate()
       );
-      incomingDate = new Date(
-        incomingDate.getTime() + incomingDate.getTimezoneOffset() * 60000
-      );
-      console.log(incomingDate + ` generated from ${date}`);
-      allImagesList.forEach(image => {
+      allImagesList.forEach((image) => {
         if (db.entries[image].dateType == "interval") {
-          let parsedDates = db.entries[image].dates.split(" ");
+          let parsedDates = db.entries[image].dates.split(" - ");
           let imageLowestDate = new Date(
             new Date(parsedDates[0]).getUTCFullYear(),
             new Date(parsedDates[0]).getUTCMonth(),
             new Date(parsedDates[0]).getUTCDate()
           );
           let imageGreaterDate = new Date(
-            new Date(parsedDates[2]).getUTCFullYear(),
-            new Date(parsedDates[2]).getUTCMonth(),
-            new Date(parsedDates[2]).getUTCDate()
+            new Date(parsedDates[1]).getUTCFullYear(),
+            new Date(parsedDates[1]).getUTCMonth(),
+            new Date(parsedDates[1]).getUTCDate()
           );
+
           if (
             imageLowestDate <= incomingDate &&
-            incomingDate <= imageGreaterDate
+            incomingDate <= imageGreaterDate &&
+            !imageList.includes(image)
           ) {
             imageList.push(image);
           }
         } else if (db.entries[image].dateType == "multiple") {
-          db.entries[image].dates
-            .split(",")
-            .filter(element => {
-              return element !== ",";
-            })
-            .forEach(imageDate => {
-              let entryDate = new Date(
-                new Date(imageDate).getUTCFullYear(),
-                new Date(imageDate).getUTCMonth(),
-                new Date(imageDate).getUTCDate()
-              );
-              console.log(
-                `${entryDate.getUTCDate()} + ${entryDate.getUTCMonth()} + ${entryDate.getUTCFullYear()} ${image} D/M/Y`
-              );
-              console.log(
-                `${incomingDate.getUTCDate()} + ${incomingDate.getUTCMonth()} + ${incomingDate.getUTCFullYear()} Incoming D/M/Y`
-              );
-              console.log(
-                `${entryDate} would be ${image}'s generated Date object`
-              );
-              if (
-                entryDate.getUTCDate() == incomingDate.getUTCDate() &&
-                entryDate.getUTCMonth() == incomingDate.getUTCMonth() &&
-                entryDate.getUTCFullYear() == incomingDate.getUTCFullYear()
-              ) {
-                imageList.push(image);
-              }
-            });
+          db.entries[image].dates.split(",").forEach((imageDate) => {
+            let entryDate = new Date(
+              new Date(imageDate).getUTCFullYear(),
+              new Date(imageDate).getUTCMonth(),
+              new Date(imageDate).getUTCDate()
+            );
+            if (incomingDate == entryDate && !imageList.includes(image)) {
+              imageList.push(image);
+            }
+          });
         }
       });
     });
-    // Preparation for the repurposing the edit_day page
   } else {
     imageList = allImagesList;
   }
   return imageList;
 };
 
-const pictureList = data => {
+const removeFromExcludeds = (data) => {
+  for (const excludeList in db.metadata["builtExcludeLists"]) {
+    let currentExcludeList = db.metadata["builtExcludeLists"][excludeList];
+    console.log("Current exclude list: ", currentExcludeList);
+
+    if (currentExcludeList.dateType == "interval") {
+      let parsedDates = currentExcludeList.dates.split(" - ");
+      let leftmostDay = new Date(
+        new Date(parsedDates[0]).getUTCFullYear(),
+        new Date(parsedDates[0]).getUTCMonth(),
+        new Date(parsedDates[0]).getUTCDate()
+      );
+      let rightmostDay = new Date(
+        new Date(parsedDates[1]).getUTCFullYear(),
+        new Date(parsedDates[1]).getUTCMonth(),
+        new Date(parsedDates[1]).getUTCDate()
+      );
+      if (data.dateType == "interval") {
+        let parsedIncomingDates = data.dates.split(" - ");
+        let leftmostIncomingDay = new Date(
+          new Date(parsedIncomingDates[0]).getUTCFullYear(),
+          new Date(parsedIncomingDates[0]).getUTCMonth(),
+          new Date(parsedIncomingDates[0]).getUTCDate()
+        );
+        let rightmostIncomingDay = new Date(
+          new Date(parsedIncomingDates[1]).getUTCFullYear(),
+          new Date(parsedIncomingDates[1]).getUTCMonth(),
+          new Date(parsedIncomingDates[1]).getUTCDate()
+        );
+        if (
+          (leftmostDay <= leftmostIncomingDay &&
+            leftmostIncomingDay <= rightmostDay) ||
+          (leftmostDay <= rightmostIncomingDay &&
+            rightmostIncomingDay <= rightmostDay)
+        ) {
+          console.log("CEL Before removal: ", currentExcludeList);
+          console.log("Data Before removal: ", data.pictures);
+          currentExcludeList.pictures = currentExcludeList.pictures.filter(
+            (excludedPicture) => !data.pictures.includes(excludedPicture)
+          );
+          console.log("Removed from CEL: ", currentExcludeList);
+        }
+      } else if (data.dateType == "multiple") {
+        data.dates.split(",").forEach((date) => {
+          let aDay = new Date(
+            new Date(date).getUTCFullYear(),
+            new Date(date).getUTCMonth(),
+            new Date(date).getUTCDate()
+          );
+          if (leftmostDay <= aDay && aDay <= rightmostDay) {
+            console.log("CEL Before removal: ", currentExcludeList);
+            console.log("Data Before removal: ", data.pictures);
+            currentExcludeList.pictures = currentExcludeList.pictures.filter(
+              (excludedPicture) => !data.pictures.includes(excludedPicture)
+            );
+            console.log("Removed from CEL: ", currentExcludeList);
+          }
+        });
+      }
+    } else if (currentExcludeList.dateType == "multiple") {
+      currentExcludeList.dates.split(",").forEach((date) => {
+        let aDay = new Date(
+          new Date(date).getUTCFullYear(),
+          new Date(date).getUTCMonth(),
+          new Date(date).getUTCDate()
+        );
+        if (data.dateType == "interval") {
+          let parsedIncomingDates = data.dates.split(" - ");
+          let leftmostIncomingDay = new Date(
+            new Date(parsedIncomingDates[0]).getUTCFullYear(),
+            new Date(parsedIncomingDates[0]).getUTCMonth(),
+            new Date(parsedIncomingDates[0]).getUTCDate()
+          );
+          let rightmostIncomingDay = new Date(
+            new Date(parsedIncomingDates[1]).getUTCFullYear(),
+            new Date(parsedIncomingDates[1]).getUTCMonth(),
+            new Date(parsedIncomingDates[1]).getUTCDate()
+          );
+          if (leftmostIncomingDay <= aDay && aDay <= rightmostIncomingDay) {
+            console.log("CEL Before removal: ", currentExcludeList);
+            console.log("Data Before removal: ", data.pictures);
+
+            currentExcludeList.pictures = currentExcludeList.pictures.filter(
+              (excludedPicture) => !data.pictures.includes(excludedPicture)
+            );
+            console.log("Removed from CEL: ", currentExcludeList);
+          }
+        } else if (data.dateType == "multiple") {
+          data.dates.split(",").forEach((incomingDate) => {
+            let incomingDay = new Date(
+              new Date(incomingDate).getUTCFullYear(),
+              new Date(incomingDate).getUTCMonth(),
+              new Date(incomingDate).getUTCDate()
+            );
+
+            if (aDay == incomingDay) {
+              console.log("CEL Before removal: ", currentExcludeList);
+              console.log("Data Before removal: ", data.pictures);
+
+              currentExcludeList.pictures = currentExcludeList.pictures.filter(
+                (excludedPicture) => !data.pictures.includes(excludedPicture)
+              );
+              console.log("Removed from CEL: ", currentExcludeList);
+            }
+          });
+        }
+      });
+    }
+    db.metadata["builtExcludeLists"][excludeList] = currentExcludeList;
+  }
+}
+
+const pictureList = (data) => {
+  removeFromExcludeds(data);
   let listName = `list${db.metadata["builtListsNumber"]}`;
+  console.log("OG BEL: ", db.metadata["builtExcludeLists"]);
   db.metadata["builtLists"][listName] = data;
   db.metadata["builtListsNumber"]++;
   let jsonData = JSON.stringify(db);
@@ -266,7 +422,7 @@ const insertFormData = (request, response) => {
       // So we do the map here, for each image to insert
       try {
         // Multiple File
-        files.picture.forEach(file => {
+        files.picture.forEach((file) => {
           var imageToInsert = savePicture(file);
           db.entries[imageToInsert] = {
             firstname: fields.firstname,
@@ -274,7 +430,7 @@ const insertFormData = (request, response) => {
             studentid: fields.studentid,
             dateType: fields.radio,
             dates: fields.dates,
-            pictureName: imageToInsert
+            pictureName: imageToInsert,
           };
           db.metadata["imageNumber"]++;
         });
@@ -288,7 +444,7 @@ const insertFormData = (request, response) => {
             studentid: fields.studentid,
             dateType: fields.radio,
             dates: fields.dates,
-            pictureName: imageToInsert
+            pictureName: imageToInsert,
           };
           db.metadata["imageNumber"]++;
         }
@@ -309,7 +465,7 @@ const insertFormData = (request, response) => {
         }
       } else if (fields.radio == "multiple") {
         var hasToday = false;
-        fields.dates.split(",").forEach(function(date) {
+        fields.dates.split(",").forEach(function (date) {
           var aDay = new Date(
             new Date(date).getUTCFullYear(),
             new Date(date).getUTCMonth(),
@@ -329,7 +485,7 @@ const insertFormData = (request, response) => {
   });
 };
 
-const savePicture = file => {
+const savePicture = (file) => {
   var imageNumber = db.metadata["imageNumber"] + 1;
   var oldPath = file.path;
   var extension = path.extname(oldPath);
@@ -341,17 +497,25 @@ const savePicture = file => {
   return fileName;
 };
 
-//We'l probably delete this
+const excludeListFromData = (data) => {
+  let excludeListName = `excludeList${db.metadata["builtExcludeListsNumber"]}`;
+  db.metadata["builtExcludeLists"][excludeListName] = data;
+  db.metadata["builtExcludeListsNumber"]++;
+  let jsonData = JSON.stringify(db);
+  fs.writeFileSync(dbLocation, jsonData);
+};
+
+// TODO: Solve this
 const initialize = () => {
   fs.readdir(imagesFolder, (err, files) => {
-    files.forEach(image => {
+    files.forEach((image) => {
       db.entries[image] = {
         firstname: "Vladimir",
         lastname: "Ventura",
         studentid: "00301144",
         dateType: "interval",
         dates: "2020-01-01 - 2020-12-31",
-        pictureName: image
+        pictureName: image,
       };
     });
     let jsonData = JSON.stringify(db);
@@ -363,3 +527,4 @@ module.exports.getTodayList = getTodayList;
 module.exports.insertFormData = insertFormData;
 module.exports.getImageListFromDate = getImageListFromDate;
 module.exports.pictureList = pictureList;
+module.exports.excludeListFromData = excludeListFromData;

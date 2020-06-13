@@ -1,36 +1,60 @@
 <!DOCTYPE html>
 <html class="no-js">
   <head>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/assets?name=favicon.ico"
+    />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>STEM Center Displays</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
-    href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
-    rel="stylesheet"
-  />
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=buttonglitter&resource=buttonglitter.css"
+    />
     <link rel="stylesheet" type="text/css" href="index.css" />
   </head>
   <body>
     <div class="main-container">
-      <img class="necc-logo" src ="/assets?name=necclogo.png"/>
+      <div class="top-bar">
+        <img class="necc-logo" src="/assets?name=necclogo.png" />
+        <h1 class="title">Signs Slideshow</h1>
+      </div>
+      <hr />
       <div class="buttons-container">
-        <div>
-          <a id="button" href="/today" target="_blank"
-            >Display Today's Pictures</a
-          >
-        </div>
-        <div>
-          <a id="button" href="/edit_day" target="_blank">
-            Create Picture List
-          </a>
-        </div>
-        <div>
-          <a id="button" href="/upload" target="_blank"
-          >Submit a Picture </a>
-        </div>
+        <button class="button" sendTo="/today">
+          <span>
+            Slideshow page
+          </span>
+        </button>
+        <button class="button" sendTo="/upload">
+          <span>
+            Upload a picture
+          </span>
+        </button>
+        <button class="button" sendTo="/edit_day">
+          <span>
+            Create a slideshow for a date(s)
+          </span>
+        </button>
+        <button class="button" sendTo="/exclude_list">
+          <span>
+            Remove Pictures from Dates
+          </span>
+        </button>
+        <button class="button" sendTo="/slideshow_settings">
+          <span>
+            Slideshow settings
+          </span>
+        </button>
       </div>
     </div>
+    <script src="/assets?name=jquery-1.12.1.min.js"></script>
+    <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>
+    <script src="/index.js"></script>
   </body>
 </html>

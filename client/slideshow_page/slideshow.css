@@ -1,3 +1,8 @@
+:root {
+  --anim-duration: 1.5s;
+  --animation: blur;
+}
+
 #slideshow-container,
 body,
 html {
@@ -15,20 +20,13 @@ img {
   display: none;
 }
 
-.fade {
-  animation: fade;
-  animation-duration: 1.5s;
-  -webkit-animation: fade;
-  -webkit-animation-duration: 1.5s;
-}
-
-@-webkit-keyframes fade {
-  from {
-    opacity: 0.4;
-  }
-  to {
-    opacity: 1;
-  }
+.animatable {
+  animation: var(--animation);
+  animation-duration: var(--anim-duration);
+  -webkit-animation: var(--animation);
+  -webkit-animation-duration: var(--anim-duration);
+  -moz-animation: var(--animation);
+  -moz-animation-duration: var(--anim-duration);
 }
 
 @keyframes fade {
@@ -37,5 +35,171 @@ img {
   }
   to {
     opacity: 1;
+  }
+}
+@-webkit-keyframes fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  from {
+    opacity: 0.1;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes rotate {
+  from {
+    opacity: 0.1;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes rotate {
+  from {
+    opacity: 0.1;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes expand {
+  from {
+    opacity: 0.1;
+    transform: scale(0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+}
+@-webkit-keyframes expand {
+  from {
+    opacity: 0.1;
+    transform: scale(0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+}
+@-moz-keyframes expand {
+  from {
+    opacity: 0.1;
+    transform: scale(0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes dropdown {
+  0% {
+    opacity: 0.1;
+    transform: translateY(-100%);
+  }
+}
+@-webkit-keyframes dropdown {
+  0% {
+    opacity: 0.1;
+    transform: translateY(-100%);
+  }
+}
+@-moz-keyframes dropdown {
+  0% {
+    opacity: 0.1;
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes slideleft {
+  0% {
+    opacity: 0.1;
+    transform: translateX(-100%);
+  }
+}
+@-webkit-keyframes slideleft {
+  0% {
+    opacity: 0.1;
+    transform: translateX(-100%);
+  }
+}
+@-moz-keyframes slideleft {
+  0% {
+    opacity: 0.1;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes blur {
+  from {
+    filter: blur(10px);
+  }
+  to {
+    filter: blur(0);
+  }
+}
+@-webkit-keyframes blur {
+  from {
+    filter: blur(10px);
+  }
+  to {
+    filter: blur(0);
+  }
+}
+@-moz-keyframes blur {
+  from {
+    filter: blur(10px);
+  }
+  to {
+    filter: blur(0);
+  }
+}
+
+@keyframes fallingtwist {
+  from {
+    transform: skew(-45deg, 45deg);
+  }
+  to {
+    transform: skew(0deg, 0deg);
+  }
+}
+@-webkit-keyframes fallingtwist {
+  from {
+    transform: skew(-45deg, 45deg);
+  }
+  to {
+    transform: skew(0deg, 0deg);
+  }
+}
+@-moz-keyframes fallingtwist {
+  from {
+    transform: skew(-45deg, 45deg);
+  }
+  to {
+    transform: skew(0deg, 0deg);
   }
 }

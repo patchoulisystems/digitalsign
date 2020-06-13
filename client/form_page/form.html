@@ -1,26 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/assets?name=favicon.ico"
+    />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="/widget?resource=jquery.plugin.js"></script>
-    <script src="/widget?resource=jquery.datepick.js"></script>
-    <script src="/widget?resource=datepicker.js"></script>
-    <script src="/form.js"></script>
-    <!-- Font for the form -->
     <link
-      href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
       rel="stylesheet"
+      href="/widget?widgetName=datepicker&resource=datepicker.css"
     />
-    <link rel="stylesheet" href="/widget?resource=datepicker.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=buttonglitter&resource=buttonglitter.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=modal&resource=modal.css"
+    />
     <link rel="stylesheet" type="text/css" href="/form.css" />
     <title>Form</title>
   </head>
 
   <body>
     <div id="main-container">
+      <div class="top-bar">
+        <h1 class="title">
+          Submit a Picture
+        </h1>
+        <p class="description">
+          The moment the man devoured the fruit of knowledge, it sealed its
+          fate, entrusting its future to the cards. The man clings on a dim
+          hope. And so, the arcana is the means by which all is revealed.
+        </p>
+      </div>
+      <hr />
       <form
         class="main-form"
         action="/upload"
@@ -28,46 +47,63 @@
         method="post"
         name="main-form"
       >
-        Submit a Picture
-        <hr />
-        <label for="firstname">First Name</label>
-        <input
-          type="text"
-          id="firstname"
-          name="firstname"
-          class="input"
-          placeholder="Please enter your first name"
-        />
-        <label for="lastname">Last Name</label>
-        <input
-          type="text"
-          id="lastname"
-          name="lastname"
-          class="input"
-          placeholder="Please enter your last name"
-        />
-        <label for="studentid">Student ID</label>
-        <input
-          type="number"
-          id="studentid"
-          name="studentid"
-          class="input"
-          placeholder="Please enter your Student ID"
-        />
-        <label for="picture">Picture to Upload</label>
-        <input
-          type="file"
-          id="picture"
-          name="picture"
-          accept=".jpg, .png"
-          multiple
-          class="input"
-          placeholder="1920x1080 Pictures Only"
-        />
-        <label for="date">Date(s) to Display the Image</label>
-        <div id="datepicker-component"></div>
-        <button type="submit" class="input">Submit</button>
+        <div class="inputs">
+          <label for="firstname">First Name</label>
+          <input
+            type="text"
+            id="firstname"
+            name="firstname"
+            class="input"
+            placeholder="Please enter your first name"
+          />
+          <label for="lastname">Last Name</label>
+          <input
+            type="text"
+            id="lastname"
+            name="lastname"
+            class="input"
+            placeholder="Please enter your last name"
+          />
+          <label for="studentid">Student ID</label>
+          <input
+            type="number"
+            id="studentid"
+            name="studentid"
+            class="input"
+            placeholder="Please enter your Student ID"
+          />
+          <label for="picture">Picture to Upload</label>
+          <input
+            type="file"
+            id="picture"
+            name="picture"
+            accept=".jpg, .png"
+            multiple
+            class="input"
+            placeholder="1920x1080 Pictures Only"
+          />
+        </div>
+        <div class="dates-container">
+          <p>Date(s) to Display the Image(s)</p>
+          <div id="datepicker-component">
+            <div class="submit-button">
+              <button type="submit" class="input button submit">
+                <span>
+                  Submit Picture(s)
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
       </form>
+      <div id="modal"></div>
     </div>
+    <script src="/assets?name=jquery-1.12.1.min.js"></script>
+    <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>
+    <script src="/widget?widgetName=datepicker&resource=jquery.plugin.js"></script>
+    <script src="/widget?widgetName=datepicker&resource=jquery.datepick.js"></script>
+    <script src="/widget?widgetName=datepicker&resource=datepicker.js"></script>
+    <script src="/widget?widgetName=modal&resource=modal.js"></script>
+    <script src="/form.js"></script>
   </body>
 </html>

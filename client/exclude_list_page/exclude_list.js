@@ -2,59 +2,71 @@ $(() => {
   fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
     (data) => {
       data.text().then((html) => {
-        let ogHTML = document.getElementById("datepicker-component").innerHTML;
-        document.getElementById("datepicker-component").innerHTML =
-          html + ogHTML;
+        let ogHTML = $("#datepicker-component").html();
+        $("#datepicker-component").html(html + ogHTML);
         startDatepicker();
         fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
           data.text().then((html) => {
             $("#modal").html(html);
             startModalForList();
-            $(".sendData").click((event) => {
-              onSubmit();
-            });
+            bindOnClickEvents();
             startGlitter();
           });
         });
       });
     }
   );
-  openFrame();
 });
 
-const openFrame = () => {
+const bindOnClickEvents = () => {
+  $(".getData").click((event) => {
+    closeFrame();
+    onRequest();
+  });
+  $(".sendData").click((event) => {
+    onSubmit();
+    closeFrame();
+  });
+  $("#reset-button").click((event) => {
+    onResetPress();
+    closeFrame();
+  });
+};
+
+const closeFrame = () => {
+  $(".picture-column").html("");
+};
+
+const openFrame = (data) => {
   let columns = $(".picture-column");
   columns.innerHTML = "";
   let builtImages = [];
+  data.forEach((image) => {
+    let singlePicture = document.createElement("div");
+    singlePicture.setAttribute("class", "single-picture picture-unselected");
+    singlePicture.setAttribute("id", image);
 
-  $.get("/dated_images").then((response) => {
-    response.data.forEach((image) => {
-      let singlePicture = document.createElement("div");
-      singlePicture.setAttribute("class", "single-picture picture-unselected");
-      singlePicture.setAttribute("id", image);
+    singlePicture.onclick = function () {
+      onSinglePictureClick(image);
+    };
 
-      singlePicture.onclick = function () {
-        onSinglePictureClick(image);
-      };
+    let imageTag = document.createElement("img");
+    imageTag.setAttribute("src", `/image?name=${image}`);
 
-      let imageTag = document.createElement("img");
-      imageTag.setAttribute("src", `/image?name=${image}`);
+    let overlay = document.createElement("div");
+    overlay.setAttribute("class", "overlay unselected");
 
-      let overlay = document.createElement("div");
-      overlay.setAttribute("class", "overlay unselected");
+    singlePicture.appendChild(imageTag);
+    singlePicture.appendChild(overlay);
 
-      singlePicture.appendChild(imageTag);
-      singlePicture.appendChild(overlay);
-
-      builtImages.push(singlePicture);
-    });
-
-    let counter = 0;
-    while (builtImages.length > 0) {
-      columns[counter % 4].appendChild(builtImages.pop());
-      counter++;
-    }
+    builtImages.push(singlePicture);
   });
+
+  let counter = 0;
+  while (builtImages.length > 0) {
+    columns[counter % 4].appendChild(builtImages.pop());
+    counter++;
+  }
   $("#frame").css({
     transition: "height 0ms 0ms, opacity 600ms 0ms",
     opacity: 1,
@@ -82,7 +94,7 @@ const togglePictureClass = (picture, overlay) => {
   }
 };
 
-const onSubmit = (event) => {
+const onSubmit = () => {
   let selectedPicturesNames = [];
   let selectedPicturesElements = Array.from(
     document.getElementsByClassName("picture-selected")
@@ -109,7 +121,7 @@ const onSubmit = (event) => {
     let payload = {
       method: "POST",
       type: "POST",
-      url: "/piclist",
+      url: "/exclude_list",
       data: JSON.stringify({
         dateType: dateType,
         dates: dateToSend,
@@ -132,6 +144,45 @@ const onSubmit = (event) => {
           displayModal("Your image has been successfully submitted!");
           clearDatepicker();
         }
+      });
+  }
+};
+
+const onRequest = () => {
+  let dateToSend = parseDatepicker();
+  let dateType = $("input[name='radio']:checked").val();
+  let errors = false;
+
+  if (!dateToSend) {
+    displayModal(
+      "Please choose at least one day to request pictures from that date"
+    );
+    errors = true;
+  }
+
+  if (!errors) {
+    let payload = {
+      method: "POST",
+      type: "POST",
+      url: "/dated_images",
+      data: JSON.stringify({
+        dateType: dateType,
+        dates: dateToSend,
+      }),
+      contentType: "application/json",
+    };
+
+    $.ajax(payload)
+      .fail((xhr, error) => {
+        if (xhr.status == 400) {
+          displayModal(
+            "The request was unable to be completed. Please refresh the page or try again later."
+          );
+          clearDatepicker();
+        }
+      })
+      .done((response, status, xhr) => {
+        openFrame(response.data);
       });
   }
 };

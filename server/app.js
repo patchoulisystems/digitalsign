@@ -1,5 +1,7 @@
+const https = require("https");
 const http = require("http");
-const router = require("./src/router");
+const fs = require("fs");
+const router = require('./src/router');
 
 // address is the address on ethernet interface, which is what we want to listen to
 // 80 is standard for http, may need to sudo node app.js to listen on port 80
@@ -9,15 +11,37 @@ const router = require("./src/router");
 // The first two values are the node's install path, and the app.js's path; the 3rd + will be the arguments
 // we pass along.
 
-const port = 8080;
-const hostname = "0.0.0.0";
+const port = process.env.PORT || 8080;
+const hostname = process.env.HOSTNAME || 'localhost';
 
-const server = http.createServer((request, response) => {
-  router.css(request, response);
-  router.js(request, response);
-  router.home(request, response);
-});
+const pfxPath = process.env.PFX;
+const secret = process.env.SECRET;
+
+var options;
+var server;
+
+try {
+    options = {
+        pfx: fs.readFileSync(pfxPath),
+        passphrase: secret
+    }
+    server = https.createServer(options, (request, response) => {
+    router.css(request, response);
+    router.js(request, response);
+    router.home(request, response);
+    });
+}
+catch (err) {
+    console.log('There was an error reading the cert. Starting UNENCRYPTED http server instead.');
+    server = http.createServer((request, response) => {
+        router.css(request, response);
+        router.js(request, response);
+        router.home(request, response);
+    });
+}
+
+
 
 server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}`);
+    console.log(`Server running at ${hostname}:${port}`);
 });

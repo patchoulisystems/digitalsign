@@ -1,2 +1,15 @@
+# Not needed on git
 *.swp
 *.bak
+
+#the real start script might have passwords and such
+server/start.sh
+
+# the db.json changes all the time, and the server keeps poking it
+server/data/db.json
+
+# For this we can just npm i when we first clone
+/node_modules 
+
+#Sass compiling file. We don't need it for the CSS to work
+*.map
