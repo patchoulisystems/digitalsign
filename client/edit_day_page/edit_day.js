@@ -1,7 +1,18 @@
 $(() => {
-  $(".sendData").click((event) => {
-    onSubmit();
-  });
+  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
+    (data) => {
+      data.text().then((html) => {
+        let ogHTML = document.getElementById("datepicker-component").innerHTML;
+        document.getElementById("datepicker-component").innerHTML =
+          html + ogHTML;
+        startDatepicker();
+        $(".sendData").click((event) => {
+          onSubmit();
+        });
+        startGlitter();
+      });
+    }
+  );
   openFrame();
 });
 

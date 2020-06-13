@@ -1,3 +1,23 @@
+$(() => {
+  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
+    (data) => {
+      data.text().then((html) => {
+        let ogHTML = document.getElementById("datepicker-component").innerHTML;
+        document.getElementById("datepicker-component").innerHTML =
+          html + ogHTML;
+        startDatepicker();
+        fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
+          data.text().then((html) => {
+            $("#modal").html(html);
+            startModal();
+            startGlitter();
+          });
+        });
+      });
+    }
+  );
+});
+
 $(document).on("submit", "form", (event) => {
   event.preventDefault();
   let form = document.forms.namedItem("main-form");
