@@ -363,25 +363,32 @@ function resolveImage(response, request, urlObject) {
  */
 function resolvePictureList(response, request) {
   if (request.method === "POST") {
-    let requestData = "";
+    try {
+      let requestData = "";
 
-    request.on("data", function (incomingData) {
-      requestData += incomingData;
-    });
+      request.on("data", function (incomingData) {
+        requestData += incomingData;
+      });
 
-    request.on("end", () => {
-      requestData = JSON.parse(requestData);
-      response.setHeader("Content-Type", "text/plain");
-      if (requestData["pictures"].length == 0) {
-        response.writeHead(400, "Bad Request");
-      } else {
-        response.writeHead(200, "OK");
-        db.pictureList(requestData);
-      }
+      request.on("end", () => {
+        requestData = JSON.parse(requestData);
+        response.setHeader("Content-Type", "text/plain");
+        if (requestData["pictures"].length == 0) {
+          response.writeHead(400, "Bad Request");
+        } else {
+          response.writeHead(200, "OK");
+          db.pictureList(requestData);
+        }
+        response.end();
+      });
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
       response.end();
-    });
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
