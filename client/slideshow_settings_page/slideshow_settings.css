@@ -37,8 +37,8 @@ body {
   padding: 1%;
 }
 
-.holder > label, 
-.holder > input, 
+.holder > label,
+.holder > input,
 .holder > select {
   display: block;
   text-align: left;
