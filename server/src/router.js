@@ -82,8 +82,11 @@ function home(request, response) {
     case "/settings":
       resolveSettings(response, request.method, urlObject);
       break;
-    default:
+    case "/serverHttpOptions":
       resolveOptions(response, request);
+      break;
+    default:
+      response.end();
       break;
   }
 }
