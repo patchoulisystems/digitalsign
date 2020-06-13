@@ -71,7 +71,7 @@ function home(request, response) {
       resolveEditDay(response, request);
       break;
     case "/exclude_list":
-      resolveExcludePage(response, request, urlObject);
+      resolveExcludePage(response, request);
       break;
     case "/dated_images":
       resolveDatedImages(response, request);
@@ -587,39 +587,58 @@ function resolveSettingsPage(response, request) {
 }
 
 /**
- * This the endpoint that resolves the slideshow settings page
+ * This the endpoint that resolves the exclude list page
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveExcludePage(response, request, urlObject) {
+function resolveExcludePage(response, request) {
   if (request.method == "GET") {
-    let file = fs.readFileSync("../client/exclude_list_page/exclude_list.html");
-    headers["Content-Type"] = "text/html";
-    response.writeHead(200, headers);
-    response.write(file);
-    response.end();
-  } else if (request.method == "POST") {
-    let requestData = "";
-
-    request.on("data", function (incomingData) {
-      requestData += incomingData;
-    });
-
-    request.on("end", () => {
-      requestData = JSON.parse(requestData);
-      if (
-        !requestData.dates ||
-        !requestData.dateType ||
-        !requestData.pictures
-      ) {
-        response.writeHead(400, "Bad Request");
+    try {
+      if (fs.existsSync("../client/exclude_list_page/exclude_list.html")) {
+        let file = fs.readFileSync(
+          "../client/exclude_list_page/exclude_list.html"
+        );
+        headers["Content-Type"] = "text/html";
+        response.writeHead(200, headers);
+        response.write(file);
+        response.end();
       }
-      responseData = db.excludeListFromData(requestData);
-      response.writeHead(200, "OK");
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
       response.end();
-    });
+    }
+  } else if (request.method == "POST") {
+    try {
+      let requestData = "";
+
+      request.on("data", function (incomingData) {
+        requestData += incomingData;
+      });
+
+      request.on("end", () => {
+        requestData = JSON.parse(requestData);
+        if (
+          !requestData.dates ||
+          !requestData.dateType ||
+          !requestData.pictures
+        ) {
+          response.writeHead(400, "Bad Request");
+        } else {
+          responseData = db.excludeListFromData(requestData);
+          response.writeHead(200, "OK");
+        }
+        response.end();
+      });
+    } catch (err) {
+      // TODO: Logging here. Most likely the request broke before it finished.
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
