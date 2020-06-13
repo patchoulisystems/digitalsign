@@ -6,10 +6,16 @@ $(() => {
         document.getElementById("datepicker-component").innerHTML =
           html + ogHTML;
         startDatepicker();
-        $(".sendData").click((event) => {
-          onSubmit();
+        fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
+          data.text().then((html) => {
+            $("#modal").html(html);
+            startModalForList();
+            $(".sendData").click((event) => {
+              onSubmit();
+            });
+            startGlitter();
+          });
         });
-        startGlitter();
       });
     }
   );
@@ -86,13 +92,12 @@ const onSubmit = (event) => {
   let errors = false;
 
   if (selectedPicturesElements.length == 0) {
-    alert("Please select at least one picture!");
+    displayModal("Please select at least one picture!");
     errors = true;
   }
 
-  // Just to avoid one alert after another
   if (dateToSend.length == 0 && errors == false) {
-    alert("Please finish the date selection!");
+    displayModal("Please finish the date selection!");
     errors = true;
   }
 
@@ -116,7 +121,7 @@ const onSubmit = (event) => {
     $.ajax(payload)
       .fail((xhr, error) => {
         if (xhr.status == 400) {
-          alert(
+          displayModal(
             "The request was unable to be completed. Please refresh the page or try again later."
           );
           clearDatepicker();
@@ -124,7 +129,7 @@ const onSubmit = (event) => {
       })
       .done((response, status, xhr) => {
         if (xhr.status == 200) {
-          alert("Your image has been successfully submitted!");
+          displayModal("Your image has been successfully submitted!");
           clearDatepicker();
         }
       });
