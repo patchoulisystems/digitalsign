@@ -19,10 +19,10 @@
       href="/widget?widgetName=buttonglitter&resource=buttonglitter.css"
     />
     <link
-    rel="stylesheet"
-    type="text/css"
-    href="/widget?widgetName=modal&resource=modal.css"
-  />
+      rel="stylesheet"
+      type="text/css"
+      href="/widget?widgetName=modal&resource=modal.css"
+    />
     <link rel="stylesheet" type="text/css" href="/form.css" />
     <title>Form</title>
   </head>
@@ -47,62 +47,53 @@
         method="post"
         name="main-form"
       >
-        <div class="firstlast row">
-          <div class="firstname">
-            <label for="firstname">First Name</label>
-            <input
-              type="text"
-              id="firstname"
-              name="firstname"
-              class="input"
-              placeholder="Please enter your first name"
-            />
-          </div>
-          <div class="lastname">
-            <label for="lastname">Last Name</label>
-            <input
-              type="text"
-              id="lastname"
-              name="lastname"
-              class="input"
-              placeholder="Please enter your last name"
-            />
-          </div>
-        </div>
-        <div class="studentidpics row">
-          <div class="studentid">
-            <label for="studentid">Student ID</label>
-            <input
-              type="number"
-              id="studentid"
-              name="studentid"
-              class="input"
-              placeholder="Please enter your Student ID"
-            />
-          </div>
-          <div class="pics">
-            <label for="picture">Picture to Upload</label>
-            <input
-              type="file"
-              id="picture"
-              name="picture"
-              accept=".jpg, .png"
-              multiple
-              class="input"
-              placeholder="1920x1080 Pictures Only"
-            />
-          </div>
+        <div class="inputs">
+          <label for="firstname">First Name</label>
+          <input
+            type="text"
+            id="firstname"
+            name="firstname"
+            class="input"
+            placeholder="Please enter your first name"
+          />
+          <label for="lastname">Last Name</label>
+          <input
+            type="text"
+            id="lastname"
+            name="lastname"
+            class="input"
+            placeholder="Please enter your last name"
+          />
+          <label for="studentid">Student ID</label>
+          <input
+            type="number"
+            id="studentid"
+            name="studentid"
+            class="input"
+            placeholder="Please enter your Student ID"
+          />
+          <label for="picture">Picture to Upload</label>
+          <input
+            type="file"
+            id="picture"
+            name="picture"
+            accept=".jpg, .png"
+            multiple
+            class="input"
+            placeholder="1920x1080 Pictures Only"
+          />
         </div>
         <div class="dates-container">
           <p>Date(s) to Display the Image(s)</p>
-          <div id="datepicker-component"></div>
-        </div>
-        <div class="submit-button">
-          <button type="submit" class="input button submit">
-            <span>
-              Submit Picture(s)
-            </span>
-          </button>
+          <div id="datepicker-component">
+            <div class="submit-button">
+              <button type="submit" class="input button submit">
+                <span>
+                  Submit Picture(s)
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
       </form>
       <div id="modal"></div>
