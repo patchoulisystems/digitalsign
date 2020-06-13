@@ -5,17 +5,46 @@
 }
 
 body {
-  background-color: #5891c4;
   /* TODO: Temporal Color */
+  background-color: #5891c4;
+  font-family: "Open Sans", sans-serif;
+  text-align: center;
 }
 
-.main-form {
-  font-family: "Open Sans", sans-serif;
-  margin: 10%;
+.title,
+.description {
+  display: inline-block;
+}
+
+.title {
+  font-size: 2vw;
+  color: white;
+  padding-right: 9vw;
+}
+
+.description {
+  width: 20vw;
+  height: 1vw;
+  padding-left: 9vw;
+  font-size: 0.85vw;
+}
+
+.holder {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+  padding: 1%;
+}
+
+.holder > label, 
+.holder > input, 
+.holder > select {
+  display: block;
+  text-align: left;
 }
 
 .input {
-  display: block;
   padding: 1%;
   margin-bottom: 10px;
   border: 2px #f0b310 solid;
@@ -34,4 +63,43 @@ body {
 hr {
   width: 80%;
   border: 1px #f0b310 solid;
+}
+
+@media screen and (max-width: 1501px) {
+  span {
+    font-size: 3vw;
+  }
+  .title {
+    font-size: 4vw;
+  }
+  .description {
+    font-size: 2vw;
+  }
+}
+@media screen and (max-width: 1000px) {
+  span {
+    font-size: 5vw;
+  }
+  .title {
+    font-size: 6vw;
+  }
+  .description {
+    font-size: 3vw;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .title {
+    display: flex;
+    justify-content: center;
+    padding-right: 0;
+    padding-bottom: 1vw;
+  }
+
+  .description {
+    padding-left: 0;
+    justify-content: center;
+    padding-top: 1vw;
+    width: auto;
+  }
 }
