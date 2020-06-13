@@ -74,7 +74,7 @@ function home(request, response) {
       resolveExcludePage(response, request, urlObject);
       break;
     case "/dated_images":
-      resolveDatedImages(response, request, urlObject);
+      resolveDatedImages(response, request);
       break;
     case "/slideshow_settings":
       resolveSettingsPage(response, request, urlObject);
@@ -465,36 +465,49 @@ function resolveEditDay(response, request) {
  * This the endpoint that builds a list of images based on a date
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
- * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveDatedImages(response, request, urlObject) {
+function resolveDatedImages(response, request) {
   if (request.method == "POST") {
-    let requestData = "";
+    try {
+      let requestData = "";
 
-    request.on("data", function (incomingData) {
-      requestData += incomingData;
-    });
+      request.on("data", function (incomingData) {
+        requestData += incomingData;
+      });
 
-    request.on("end", () => {
-      requestData = JSON.parse(requestData);
-      headers["Content-Type"] = "application/json";
-      let responseData = {};
-      responseData = db.getImageListFromDate(
-        requestData["dateType"],
-        requestData["dates"]
-      );
-      response.writeHead(200, headers);
-      response.write(JSON.stringify({ data: responseData }));
+      request.on("end", () => {
+        requestData = JSON.parse(requestData);
+        headers["Content-Type"] = "application/json";
+        let responseData = {};
+        responseData = db.getImageListFromDate(
+          requestData["dateType"],
+          requestData["dates"]
+        );
+        response.writeHead(200, headers);
+        response.write(JSON.stringify({ data: responseData }));
+        response.end();
+      });
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
       response.end();
-    });
+    }
   } else if (request.method === "GET") {
-    let datedImages = db.getImageListFromDate();
-    headers["Content-Type"] = "application/json";
-    response.writeHead(200, headers);
-    response.write(JSON.stringify({ data: datedImages }));
-    response.end();
+    try {
+      let datedImages = db.getImageListFromDate();
+      headers["Content-Type"] = "application/json";
+      response.writeHead(200, headers);
+      response.write(JSON.stringify({ data: datedImages }));
+      response.end();
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
