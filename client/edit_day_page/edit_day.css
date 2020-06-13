@@ -50,7 +50,7 @@ hr {
   float: left;
 }
 
-.sendData { 
+.sendData {
   float: right;
 }
 
@@ -101,6 +101,45 @@ img {
   .picture-column {
     flex: 100%;
     max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 1501px) {
+  span {
+    font-size: 3vw;
+  }
+  .title {
+    font-size: 4vw;
+  }
+  .description {
+    font-size: 2vw;
+  }
+}
+@media screen and (max-width: 1000px) {
+  span {
+    font-size: 5vw;
+  }
+  .title {
+    font-size: 6vw;
+  }
+  .description {
+    font-size: 3vw;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .title {
+    display: flex;
+    justify-content: center;
+    padding-right: 0;
+    padding-bottom: 1vw;
+  }
+
+  .description {
+    padding-left: 0;
+    justify-content: center;
+    padding-top: 1vw;
+    width: auto;
   }
 }
 
