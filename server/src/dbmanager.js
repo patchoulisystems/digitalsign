@@ -1,6 +1,7 @@
 const fs = require("fs");
 const formidable = require("formidable");
 const path = require("path");
+const { nanoid } = require("nanoid");
 
 const imagesFolder = "./data/images/";
 const dbLocation = "./data/db.json";
@@ -172,7 +173,6 @@ const getImageListFromDate = (dateType, dateString) => {
   // Same deal like with build today
   let allImagesList = Object.keys(db.entries);
   // TODO: Test this function
-  // TODO: Check if picture already here
   if (dateType == "interval") {
     // Parsing dateString to proper dates
     let parsedDates = dateString.split(" - ");
@@ -387,7 +387,7 @@ const removeFromExcludeds = (data) => {
     }
     db.metadata["builtExcludeLists"][excludeList] = currentExcludeList;
   }
-}
+};
 
 const pictureList = (data) => {
   removeFromExcludeds(data);
@@ -486,10 +486,10 @@ const insertFormData = (request, response) => {
 };
 
 const savePicture = (file) => {
-  var imageNumber = db.metadata["imageNumber"] + 1;
   var oldPath = file.path;
+  const id = nanoid();
   var extension = path.extname(oldPath);
-  var fileName = `image${imageNumber}${extension}`;
+  var fileName = `${id}${extension}`;
   var newPath = `${imagesFolder}/${fileName}`;
 
   fs.renameSync(file.path, newPath);

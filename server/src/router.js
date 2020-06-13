@@ -237,14 +237,22 @@ function resolveTodayImages(response, method) {
 function resolveImage(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
-    // TODO: Safety on file not found
-    var stream = fs.createReadStream(
-      `${imagesFolder}${parsedQuerystring.name}`
-    );
-    stream.on("open", () => {
-      response.setHeader("Content-Type", "image/jpg");
-      stream.pipe(response);
-    });
+    try {
+      if (fs.existsSync(`${imagesFolder}${parsedQuerystring.name}`)) {
+        var stream = fs.createReadStream(
+          `${imagesFolder}${parsedQuerystring.name}`
+        );
+        stream.on("open", () => {
+          response.setHeader("Content-Type", "image/jpg");
+          stream.pipe(response);
+        });
+      }
+    } catch (err) {
+      response.writeHead(400, "Bad Request");
+      response.end();
+      // TODO: Whenever we do logging, here's a good place to start
+      console.log(err);
+    }
   } else {
     response.writeHead(404, "Not Found");
     response.end();
