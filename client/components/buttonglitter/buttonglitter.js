@@ -1,7 +1,3 @@
-$(() => {
-  startGlitter();
-});
-
 const startGlitter = () => {
   $(".button").mousemove((e) => {
     bindMouseEvent(e);

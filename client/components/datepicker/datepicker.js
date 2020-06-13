@@ -72,17 +72,3 @@ const parseDatepicker = () => {
   }
   return resultDateString;
 };
-
-$(() => {
-  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
-    (data) => {
-      data.text().then((html) => {
-        let ogHTML = document.getElementById("datepicker-component").innerHTML;
-        document.getElementById("datepicker-component").innerHTML =
-          html + ogHTML;
-        startDatepicker();
-        startGlitter();
-      });
-    }
-  );
-});
