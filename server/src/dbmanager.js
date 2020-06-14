@@ -1,22 +1,37 @@
 const fs = require("fs");
 const formidable = require("formidable");
 const path = require("path");
+const { nanoid } = require("nanoid");
 
 const imagesFolder = "./data/images/";
 const dbLocation = "./data/db.json";
+let db;
+try {
+  if (fs.existsSync(dbLocation)) {
+    db = fs.readFileSync(dbLocation);
+    db = JSON.parse(db);
+  }
+} catch (err) {
+  // TODO: Logging here
+  console.log(err);
+}
 
-let db = fs.readFileSync(dbLocation);
-db = JSON.parse(db);
 // TODO: Optimize this
 const buildToday = () => {
   var todayList = [];
-  var files = fs.readdirSync(imagesFolder, []);
+  var files;
+  try {
+    files = fs.readdirSync(imagesFolder, []);
+  } catch (err) {
+    // TODO: Loggin here
+    console.log(err);
+    return [];
+  }
   var today = new Date(
     new Date().getUTCFullYear(),
     new Date().getUTCMonth(),
     new Date().getUTCDate()
   );
-  // Check for each file, their date (might scrapped later on)
   files.forEach((image) => {
     var dateType = db.entries[image].dateType.trim();
     if (dateType == "interval") {
@@ -48,7 +63,6 @@ const buildToday = () => {
     }
   });
 
-  // Check for each built list, their date (this is 90% staying)
   var builtLists = Array.from(Object.keys(db.metadata["builtLists"]));
   builtLists.forEach((list) => {
     let listDate = db.metadata["builtLists"][list]["dates"];
@@ -92,15 +106,18 @@ const buildToday = () => {
     }
   });
 
-  // TODO: Exclude the picture we don't want on the day here
-  // We should clean the exclude array for a day
-  // Or we can create "exclude lists" where they're basically the same as
-  // the include lists but doing the opposite
   todayList = filterExclude(todayList, today);
   db.metadata["todayList"] = todayList;
   db.metadata["dateBuilt"] = today;
   let jsonData = JSON.stringify(db);
-  fs.writeFileSync(dbLocation, jsonData);
+  try {
+    if (fs.existsSync(dbLocation)) {
+      fs.writeFileSync(dbLocation, jsonData);
+    }
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+  }
   return todayList;
 };
 
@@ -171,8 +188,6 @@ const getImageListFromDate = (dateType, dateString) => {
 
   // Same deal like with build today
   let allImagesList = Object.keys(db.entries);
-  // TODO: Test this function
-  // TODO: Check if picture already here
   if (dateType == "interval") {
     // Parsing dateString to proper dates
     let parsedDates = dateString.split(" - ");
@@ -201,7 +216,6 @@ const getImageListFromDate = (dateType, dateString) => {
           new Date(imageParsedDates[1]).getUTCDate()
         );
 
-        // This doesn't work as intended. It's about to get ugly
         if (
           (imageLowestDate <= lowerDate && lowerDate <= imageGreaterDate) ||
           (imageLowestDate <= greaterDate &&
@@ -280,7 +294,6 @@ const getImageListFromDate = (dateType, dateString) => {
 const removeFromExcludeds = (data) => {
   for (const excludeList in db.metadata["builtExcludeLists"]) {
     let currentExcludeList = db.metadata["builtExcludeLists"][excludeList];
-    console.log("Current exclude list: ", currentExcludeList);
 
     if (currentExcludeList.dateType == "interval") {
       let parsedDates = currentExcludeList.dates.split(" - ");
@@ -312,12 +325,9 @@ const removeFromExcludeds = (data) => {
           (leftmostDay <= rightmostIncomingDay &&
             rightmostIncomingDay <= rightmostDay)
         ) {
-          console.log("CEL Before removal: ", currentExcludeList);
-          console.log("Data Before removal: ", data.pictures);
           currentExcludeList.pictures = currentExcludeList.pictures.filter(
             (excludedPicture) => !data.pictures.includes(excludedPicture)
           );
-          console.log("Removed from CEL: ", currentExcludeList);
         }
       } else if (data.dateType == "multiple") {
         data.dates.split(",").forEach((date) => {
@@ -327,12 +337,9 @@ const removeFromExcludeds = (data) => {
             new Date(date).getUTCDate()
           );
           if (leftmostDay <= aDay && aDay <= rightmostDay) {
-            console.log("CEL Before removal: ", currentExcludeList);
-            console.log("Data Before removal: ", data.pictures);
             currentExcludeList.pictures = currentExcludeList.pictures.filter(
               (excludedPicture) => !data.pictures.includes(excludedPicture)
             );
-            console.log("Removed from CEL: ", currentExcludeList);
           }
         });
       }
@@ -356,13 +363,9 @@ const removeFromExcludeds = (data) => {
             new Date(parsedIncomingDates[1]).getUTCDate()
           );
           if (leftmostIncomingDay <= aDay && aDay <= rightmostIncomingDay) {
-            console.log("CEL Before removal: ", currentExcludeList);
-            console.log("Data Before removal: ", data.pictures);
-
             currentExcludeList.pictures = currentExcludeList.pictures.filter(
               (excludedPicture) => !data.pictures.includes(excludedPicture)
             );
-            console.log("Removed from CEL: ", currentExcludeList);
           }
         } else if (data.dateType == "multiple") {
           data.dates.split(",").forEach((incomingDate) => {
@@ -373,13 +376,9 @@ const removeFromExcludeds = (data) => {
             );
 
             if (aDay == incomingDay) {
-              console.log("CEL Before removal: ", currentExcludeList);
-              console.log("Data Before removal: ", data.pictures);
-
               currentExcludeList.pictures = currentExcludeList.pictures.filter(
                 (excludedPicture) => !data.pictures.includes(excludedPicture)
               );
-              console.log("Removed from CEL: ", currentExcludeList);
             }
           });
         }
@@ -387,16 +386,22 @@ const removeFromExcludeds = (data) => {
     }
     db.metadata["builtExcludeLists"][excludeList] = currentExcludeList;
   }
-}
+};
 
 const pictureList = (data) => {
   removeFromExcludeds(data);
   let listName = `list${db.metadata["builtListsNumber"]}`;
-  console.log("OG BEL: ", db.metadata["builtExcludeLists"]);
   db.metadata["builtLists"][listName] = data;
   db.metadata["builtListsNumber"]++;
   let jsonData = JSON.stringify(db);
-  fs.writeFileSync(dbLocation, jsonData);
+  try {
+    if (fs.existsSync(dbLocation)) {
+      fs.writeFileSync(dbLocation, jsonData);
+    }
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+  }
 };
 
 const insertFormData = (request, response) => {
@@ -424,15 +429,20 @@ const insertFormData = (request, response) => {
         // Multiple File
         files.picture.forEach((file) => {
           var imageToInsert = savePicture(file);
-          db.entries[imageToInsert] = {
-            firstname: fields.firstname,
-            lastname: fields.lastname,
-            studentid: fields.studentid,
-            dateType: fields.radio,
-            dates: fields.dates,
-            pictureName: imageToInsert,
-          };
-          db.metadata["imageNumber"]++;
+          if (imageToInsert) {
+            db.entries[imageToInsert] = {
+              firstname: fields.firstname,
+              lastname: fields.lastname,
+              studentid: fields.studentid,
+              dateType: fields.radio,
+              dates: fields.dates,
+              pictureName: imageToInsert,
+            };
+            db.metadata["imageNumber"]++;
+          } else {
+            response.writeHead(500, "Internal Server Error");
+            response.end();
+          }
         });
       } catch (error) {
         if (error instanceof TypeError) {
@@ -450,7 +460,14 @@ const insertFormData = (request, response) => {
         }
       }
       let jsonData = JSON.stringify(db);
-      fs.writeFileSync(dbLocation, jsonData);
+      try {
+        if (fs.existsSync(dbLocation)) {
+          fs.writeFileSync(dbLocation, jsonData);
+        }
+      } catch (err) {
+        // TODO: Logging here
+        console.log(err);
+      }
 
       if (fields.radio == "interval") {
         var parsedDates = fields.dates.split(" ");
@@ -486,13 +503,21 @@ const insertFormData = (request, response) => {
 };
 
 const savePicture = (file) => {
-  var imageNumber = db.metadata["imageNumber"] + 1;
   var oldPath = file.path;
+  const id = nanoid();
   var extension = path.extname(oldPath);
-  var fileName = `image${imageNumber}${extension}`;
+  var fileName = `${id}${extension}`;
   var newPath = `${imagesFolder}/${fileName}`;
 
-  fs.renameSync(file.path, newPath);
+  try {
+    if (fs.existsSync(oldPath)) {
+      fs.renameSync(oldPath, newPath);
+    }
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    return "";
+  }
 
   return fileName;
 };
@@ -502,7 +527,14 @@ const excludeListFromData = (data) => {
   db.metadata["builtExcludeLists"][excludeListName] = data;
   db.metadata["builtExcludeListsNumber"]++;
   let jsonData = JSON.stringify(db);
-  fs.writeFileSync(dbLocation, jsonData);
+  try {
+    if (fs.existsSync(dbLocation)) {
+      fs.writeFileSync(dbLocation, jsonData);
+    }
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+  }
 };
 
 // TODO: Solve this
@@ -519,7 +551,14 @@ const initialize = () => {
       };
     });
     let jsonData = JSON.stringify(db);
-    fs.writeFileSync(dbLocation, jsonData);
+    try {
+      if (fs.existsSync(dbLocation)) {
+        fs.writeFileSync(dbLocation, jsonData);
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+    }
   });
 };
 

@@ -71,13 +71,13 @@ function home(request, response) {
       resolveEditDay(response, request);
       break;
     case "/exclude_list":
-      resolveExcludePage(response, request, urlObject);
+      resolveExcludePage(response, request);
       break;
     case "/dated_images":
-      resolveDatedImages(response, request, urlObject);
+      resolveDatedImages(response, request);
       break;
     case "/slideshow_settings":
-      resolveSettingsPage(response, request, urlObject);
+      resolveSettingsPage(response, request);
       break;
     case "/settings":
       resolveSettings(response, request.method, urlObject);
@@ -97,50 +97,103 @@ function home(request, response) {
 function resolveAssets(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
-    // TODO: Safety on no file found
     if (parsedQuerystring.name.indexOf(".png") !== -1) {
-      var stream = fs.createReadStream(
-        `${assetsFolder}${parsedQuerystring.name}`
-      );
-      stream.on("open", () => {
-        response.setHeader("Content-Type", "image/png");
-        stream.pipe(response);
-      });
+      try {
+        if (fs.existsSync(`${assetsFolder}${parsedQuerystring.name}`)) {
+          var stream = fs.createReadStream(
+            `${assetsFolder}${parsedQuerystring.name}`
+          );
+          stream.on("open", () => {
+            response.setHeader("Content-Type", "image/png");
+            stream.pipe(response);
+          });
+        } else {
+          response.writeHead(404, "Not Found");
+          response.end();
+        }
+      } catch (err) {
+        // TODO: Logging here
+        console.log(err);
+        response.writeHead(500, "Internal Server Error");
+        response.end();
+      }
     } else if (parsedQuerystring.name.indexOf("font") !== -1) {
       var fileName = parsedQuerystring.name.split("font")[1];
-      if (fileName.indexOf(".ttf") !== -1) {
-        var stream = fs.createReadStream(`${assetsFolder}/fonts/${fileName}`);
-        stream.on("open", () => {
-          response.setHeader("Content-Type", "application/x-font-ttf");
-          stream.pipe(response);
-        });
-      } else if (fileName.indexOf(".woff") !== -1) {
-        var stream = fs.createReadStream(`${assetsFolder}fonts/${fileName}`);
-        stream.on("open", () => {
-          response.setHeader("Content-Type", "application/font-woff");
-          stream.pipe(response);
-        });
+      var filePath = `${assetsFolder}/fonts/${fileName}`;
+
+      try {
+        if (fs.existsSync(filePath)) {
+          if (fileName.indexOf(".ttf") !== -1) {
+            var stream = fs.createReadStream(filePath);
+            stream.on("open", () => {
+              response.setHeader("Content-Type", "application/x-font-ttf");
+              stream.pipe(response);
+            });
+          } else if (fileName.indexOf(".woff") !== -1) {
+            var stream = fs.createReadStream(filePath);
+            stream.on("open", () => {
+              response.setHeader("Content-Type", "application/font-woff");
+              stream.pipe(response);
+            });
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } else {
+          response.writeHead(404, "Not Found");
+          response.end();
+        }
+      } catch (err) {
+        // TODO: Logging here
+        console.log(err);
+        response.writeHead(500, "Internal Server Error");
+        response.end();
       }
     } else if (parsedQuerystring.name.indexOf(".js") !== -1) {
       var fileName = parsedQuerystring.name;
-      var stream = fs.createReadStream(
-        `${assetsFolder}scripts/${parsedQuerystring.name}`
-      );
-      stream.on("open", () => {
-        response.setHeader("Content-Type", "text/javascript");
-        stream.pipe(response);
-      });
+      try {
+        if (fs.existsSync(`${assetsFolder}scripts/${parsedQuerystring.name}`)) {
+          var stream = fs.createReadStream(
+            `${assetsFolder}scripts/${parsedQuerystring.name}`
+          );
+          stream.on("open", () => {
+            response.setHeader("Content-Type", "text/javascript");
+            stream.pipe(response);
+          });
+        } else {
+          response.writeHead(404, "Not Found");
+          response.end();
+        }
+      } catch (err) {
+        // TODO: Logging here
+        response.writeHead(500, "Internal Server Error");
+        response.end();
+      }
     } else if (parsedQuerystring.name.indexOf(".ico") !== -1) {
-      var stream = fs.createReadStream(
-        `${assetsFolder}${parsedQuerystring.name}`
-      );
-      stream.on("open", () => {
-        response.setHeader("Content-Type", "image/x-icon");
-        stream.pipe(response);
-      });
+      try {
+        if (fs.existsSync(`${assetsFolder}${parsedQuerystring.name}`)) {
+          var stream = fs.createReadStream(
+            `${assetsFolder}${parsedQuerystring.name}`
+          );
+          stream.on("open", () => {
+            response.setHeader("Content-Type", "image/x-icon");
+            stream.pipe(response);
+          });
+        } else {
+          response.writeHead(404, "Not Found");
+          response.end();
+        }
+      } catch (err) {
+        // TODO: Logging here
+        response.writeHead(500, "Internal Server Error");
+        response.end();
+      }
+    } else {
+      response.writeHead(404, "Not Found");
+      response.end();
     }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -154,24 +207,34 @@ function resolveAssets(response, request, urlObject) {
 function resolveWidget(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
+    var filePath = `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`;
     var contentType;
-    // TODO: Safety on no file found
-    if (parsedQuerystring.resource.includes("js")) {
-      contentType = "text/javascript";
-    } else if (parsedQuerystring.resource.includes("css")) {
-      contentType = "text/css";
-    } else if (parsedQuerystring.resource.includes("html")) {
-      contentType = "text/html";
+    try {
+      if (fs.existsSync(filePath)) {
+        if (parsedQuerystring.resource.includes("js")) {
+          contentType = "text/javascript";
+        } else if (parsedQuerystring.resource.includes("css")) {
+          contentType = "text/css";
+        } else if (parsedQuerystring.resource.includes("html")) {
+          contentType = "text/html";
+        }
+        var stream = fs.createReadStream(filePath);
+        stream.on("open", () => {
+          response.setHeader("Content-Type", contentType);
+          stream.pipe(response);
+        });
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
     }
-    var stream = fs.createReadStream(
-      `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`
-    );
-    stream.on("open", () => {
-      response.setHeader("Content-Type", contentType);
-      stream.pipe(response);
-    });
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -183,12 +246,24 @@ function resolveWidget(response, request, urlObject) {
  */
 function resolveIndex(response, method) {
   if (method == "GET") {
-    let file = fs.readFileSync("../client/index.html");
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.write(file);
-    response.end();
+    try {
+      if (fs.existsSync("../client/index.html")) {
+        let file = fs.readFileSync("../client/index.html");
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.write(file);
+        response.end();
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -200,12 +275,24 @@ function resolveIndex(response, method) {
  */
 function resolveToday(request, response) {
   if (request.method == "GET") {
-    let file = fs.readFileSync("../client/slideshow_page/slideshow.html");
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.write(file);
-    response.end();
+    try {
+      if (fs.existsSync("../client/slideshow_page/slideshow.html")) {
+        let file = fs.readFileSync("../client/slideshow_page/slideshow.html");
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.write(file);
+        response.end();
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -217,13 +304,20 @@ function resolveToday(request, response) {
  */
 function resolveTodayImages(response, method) {
   if (method == "GET") {
-    let images = db.getTodayList();
-    headers["Content-Type"] = "application/json";
-    response.writeHead(200, headers);
-    response.write(JSON.stringify({ data: images }));
-    response.end();
+    try {
+      let images = db.getTodayList();
+      headers["Content-Type"] = "application/json";
+      response.writeHead(200, headers);
+      response.write(JSON.stringify({ data: images }));
+      response.end();
+    } catch (err) {
+      // TODO: Logging here. Also log in the db.getTodayList
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -237,16 +331,27 @@ function resolveTodayImages(response, method) {
 function resolveImage(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
-    // TODO: Safety on file not found
-    var stream = fs.createReadStream(
-      `${imagesFolder}${parsedQuerystring.name}`
-    );
-    stream.on("open", () => {
-      response.setHeader("Content-Type", "image/jpg");
-      stream.pipe(response);
-    });
+    try {
+      if (fs.existsSync(`${imagesFolder}${parsedQuerystring.name}`)) {
+        var stream = fs.createReadStream(
+          `${imagesFolder}${parsedQuerystring.name}`
+        );
+        stream.on("open", () => {
+          response.setHeader("Content-Type", "image/jpg");
+          stream.pipe(response);
+        });
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Whenever we do logging, here's a good place to start
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -258,25 +363,32 @@ function resolveImage(response, request, urlObject) {
  */
 function resolvePictureList(response, request) {
   if (request.method === "POST") {
-    let requestData = "";
+    try {
+      let requestData = "";
 
-    request.on("data", function (incomingData) {
-      requestData += incomingData;
-    });
+      request.on("data", function (incomingData) {
+        requestData += incomingData;
+      });
 
-    request.on("end", () => {
-      requestData = JSON.parse(requestData);
-      response.setHeader("Content-Type", "text/plain");
-      if (requestData["pictures"].length == 0) {
-        response.writeHead(400, "Bad Request");
-      } else {
-        response.writeHead(200, "OK");
-        db.pictureList(requestData);
-      }
+      request.on("end", () => {
+        requestData = JSON.parse(requestData);
+        response.setHeader("Content-Type", "text/plain");
+        if (requestData["pictures"].length == 0) {
+          response.writeHead(400, "Bad Request");
+        } else {
+          response.writeHead(200, "OK");
+          db.pictureList(requestData);
+        }
+        response.end();
+      });
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
       response.end();
-    });
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -288,14 +400,33 @@ function resolvePictureList(response, request) {
  */
 function resolveUpload(response, request) {
   if (request.method == "GET") {
-    let file = fs.readFileSync("../client/form_page/form.html");
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.write(file);
-    response.end();
+    try {
+      if (fs.existsSync("../client/form_page/form.html")) {
+        let file = fs.readFileSync("../client/form_page/form.html");
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.write(file);
+        response.end();
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else if (request.method == "POST") {
-    db.insertFormData(request, response);
+    try {
+      db.insertFormData(request, response);
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -307,13 +438,25 @@ function resolveUpload(response, request) {
  */
 function resolveEditDay(response, request) {
   if (request.method == "GET") {
-    let file = fs.readFileSync("../client/edit_day_page/edit_day.html");
-    headers["Content-Type"] = "text/html";
-    response.writeHead(200, headers);
-    response.write(file);
-    response.end();
+    try {
+      if (fs.existsSync("../client/edit_day_page/edit_day.html")) {
+        let file = fs.readFileSync("../client/edit_day_page/edit_day.html");
+        headers["Content-Type"] = "text/html";
+        response.writeHead(200, headers);
+        response.write(file);
+        response.end();
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -322,36 +465,49 @@ function resolveEditDay(response, request) {
  * This the endpoint that builds a list of images based on a date
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
- * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveDatedImages(response, request, urlObject) {
+function resolveDatedImages(response, request) {
   if (request.method == "POST") {
-    let requestData = "";
+    try {
+      let requestData = "";
 
-    request.on("data", function (incomingData) {
-      requestData += incomingData;
-    });
+      request.on("data", function (incomingData) {
+        requestData += incomingData;
+      });
 
-    request.on("end", () => {
-      requestData = JSON.parse(requestData);
-      headers["Content-Type"] = "application/json";
-      let responseData = {};
-      responseData = db.getImageListFromDate(
-        requestData["dateType"],
-        requestData["dates"]
-      );
-      response.writeHead(200, headers);
-      response.write(JSON.stringify({ data: responseData }));
+      request.on("end", () => {
+        requestData = JSON.parse(requestData);
+        headers["Content-Type"] = "application/json";
+        let responseData = {};
+        responseData = db.getImageListFromDate(
+          requestData["dateType"],
+          requestData["dates"]
+        );
+        response.writeHead(200, headers);
+        response.write(JSON.stringify({ data: responseData }));
+        response.end();
+      });
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
       response.end();
-    });
+    }
   } else if (request.method === "GET") {
-    let datedImages = db.getImageListFromDate();
-    headers["Content-Type"] = "application/json";
-    response.writeHead(200, headers);
-    response.write(JSON.stringify({ data: datedImages }));
-    response.end();
+    try {
+      let datedImages = db.getImageListFromDate();
+      headers["Content-Type"] = "application/json";
+      response.writeHead(200, headers);
+      response.write(JSON.stringify({ data: datedImages }));
+      response.end();
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -360,69 +516,129 @@ function resolveDatedImages(response, request, urlObject) {
  * This the endpoint that resolves the slideshow settings page
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
- * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveSettingsPage(response, request, urlObject) {
-  if (request.method == "GET") {
-    let file = fs.readFileSync(
-      "../client/slideshow_settings_page/slideshow_settings.html"
-    );
-    headers["Content-Type"] = "text/html";
-    response.writeHead(200, headers);
-    response.write(file);
-    response.end();
-  } else if (request.method == "POST") {
-    let form = new formidable.IncomingForm({ multiples: true });
-    form.keepExtensions = true;
 
-    form.parse(request, (error, fields, files) => {
+function resolveSettingsPage(response, request) {
+  if (request.method == "GET") {
+    try {
       if (
-        !fields.animationSpeed ||
-        !fields.animationName ||
-        !fields.timeBetweenPictures
+        fs.existsSync(
+          "../client/slideshow_settings_page/slideshow_settings.html"
+        )
       ) {
-        response.writeHead(400, "Bad Request");
+        let file = fs.readFileSync(
+          "../client/slideshow_settings_page/slideshow_settings.html"
+        );
+        headers["Content-Type"] = "text/html";
+        response.writeHead(200, headers);
+        response.write(file);
         response.end();
       } else {
-        fs.writeFileSync("./data/settings.json", JSON.stringify(fields));
-        response.writeHead(200, "OK");
+        response.writeHead(404, "Not Found");
         response.end();
       }
-    });
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
+  } else if (request.method == "POST") {
+    try {
+      let form = new formidable.IncomingForm({ multiples: true });
+      form.keepExtensions = true;
+
+      form.parse(request, (error, fields, files) => {
+        if (
+          !fields.animationSpeed ||
+          !fields.animationName ||
+          !fields.timeBetweenPictures
+        ) {
+          response.writeHead(400, "Bad Request");
+          response.end();
+        } else {
+          try {
+            if (fs.existsSync("./data/settings.json")) {
+              fs.writeFileSync("./data/settings.json", JSON.stringify(fields));
+              response.writeHead(200, "OK");
+              response.end();
+            } else {
+              response.writeHead(400, "Bad Request");
+              response.end();
+            }
+          } catch (err) {
+            // TODO: Logging here
+            console.log(err);
+            response.writeHead(500, "Internal Server Error");
+            response.end();
+          }
+        }
+      });
+    } catch (err) {
+      // TODO: Logging here. This time most likely we didn't recieve the form at all; Formidable couldn't parse.
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
-function resolveExcludePage(response, request, urlObject) {
+
+/**
+ * This the endpoint that resolves the exclude list page
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {String} method - The method of the request sent by the Client
+ */
+function resolveExcludePage(response, request) {
   if (request.method == "GET") {
-    let file = fs.readFileSync("../client/exclude_list_page/exclude_list.html");
-    headers["Content-Type"] = "text/html";
-    response.writeHead(200, headers);
-    response.write(file);
-    response.end();
-  } else if (request.method == "POST") {
-    let requestData = "";
-
-    request.on("data", function (incomingData) {
-      requestData += incomingData;
-    });
-
-    request.on("end", () => {
-      requestData = JSON.parse(requestData);
-      if (
-        !requestData.dates ||
-        !requestData.dateType ||
-        !requestData.pictures
-      ) {
-        response.writeHead(400, "Bad Request");
+    try {
+      if (fs.existsSync("../client/exclude_list_page/exclude_list.html")) {
+        let file = fs.readFileSync(
+          "../client/exclude_list_page/exclude_list.html"
+        );
+        headers["Content-Type"] = "text/html";
+        response.writeHead(200, headers);
+        response.write(file);
+        response.end();
       }
-      responseData = db.excludeListFromData(requestData);
-      response.writeHead(200, "OK");
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
       response.end();
-    });
+    }
+  } else if (request.method == "POST") {
+    try {
+      let requestData = "";
+
+      request.on("data", function (incomingData) {
+        requestData += incomingData;
+      });
+
+      request.on("end", () => {
+        requestData = JSON.parse(requestData);
+        if (
+          !requestData.dates ||
+          !requestData.dateType ||
+          !requestData.pictures
+        ) {
+          response.writeHead(400, "Bad Request");
+        } else {
+          responseData = db.excludeListFromData(requestData);
+          response.writeHead(200, "OK");
+        }
+        response.end();
+      });
+    } catch (err) {
+      // TODO: Logging here. Most likely the request broke before it finished.
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
-    response.writeHead(404, "Not Found");
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -434,13 +650,26 @@ function resolveExcludePage(response, request, urlObject) {
  */
 function resolveSettings(response, method) {
   if (method == "GET") {
-    let settings = fs.readFileSync("./data/settings.json");
-    settings = JSON.parse(settings);
-    response.write(JSON.stringify({ data: settings }));
+    try {
+      if (fs.existsSync("./data/settings.json")) {
+        let settings = fs.readFileSync("./data/settings.json");
+        settings = JSON.parse(settings);
+        response.write(JSON.stringify({ data: settings }));
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
+  } else {
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
 
+// TODO: Make a proper Options file
 /**
  * This the endpoint that resolves whenever the options of the web app are requested.
  * Definitively needs more work because this actually does nothing.
@@ -451,8 +680,8 @@ function resolveOptions(response, request) {
   if (request.method === "OPTIONS") {
     response.writeHead(200, headers);
     response.end();
-    return;
   } else {
+    response.writeHead(405, "Method Not Allowed");
     response.end();
   }
 }
@@ -464,17 +693,49 @@ function resolveOptions(response, request) {
  */
 function css(request, response) {
   if (request.url.indexOf(".css") !== -1 && !request.url.includes("?")) {
-    var name = request.url.split(".")[0];
-    var file;
-    if (name === "/index") {
-      file = fs.readFileSync(`../client${request.url}`, { encoding: "utf8" });
+    if (request.method == "GET") {
+      var name = request.url.split(".")[0];
+      var file;
+      if (name === "/index") {
+        try {
+          if (fs.existsSync(`../client${request.url}`)) {
+            file = fs.readFileSync(`../client${request.url}`, {
+              encoding: "utf8",
+            });
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } catch (err) {
+          // TODO: Logging here
+          console.log(err);
+          response.writeHead(500, "Internal Server Error");
+          response.end();
+        }
+      } else {
+        try {
+          if (fs.existsSync(`../client${name}_page${request.url}`)) {
+            file = fs.readFileSync(`../client${name}_page${request.url}`, {
+              encoding: "utf8",
+            });
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } catch (err) {
+          // TODO: Logging here
+          console.log(err);
+          response.writeHead(500, "Internal Server Error");
+          response.end();
+        }
+      }
+      response.writeHead(200, { "Content-Type": "text/css" });
+      response.write(file);
+      response.end();
     } else {
-      file = fs.readFileSync(`../client${name}_page${request.url}`, {
-        encoding: "utf8",
-      });
+      response.writeHead(405, "Method Not Allowed");
+      response.end();
     }
-    response.writeHead(200, { "Content-Type": "text/css" });
-    response.write(file);
   }
 }
 
@@ -485,17 +746,48 @@ function css(request, response) {
  */
 function js(request, response) {
   if (request.url.indexOf(".js") !== -1 && !request.url.includes("?")) {
-    var name = request.url.split(".")[0];
-    var file;
-    if (name === "/index") {
-      file = fs.readFileSync(`../client${request.url}`, { encoding: "utf8" });
+    if (request.method == "GET") {
+      var name = request.url.split(".")[0];
+      var file;
+      if (name === "/index") {
+        try {
+          if (fs.existsSync(`../client${request.url}`)) {
+            file = fs.readFileSync(`../client${request.url}`, {
+              encoding: "utf8",
+            });
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } catch (err) {
+          // TODO: Logging here
+          response.writeHead(500, "Internal Server Error");
+          response.end();
+        }
+      } else {
+        try {
+          if (fs.existsSync(`../client${name}_page${request.url}`)) {
+            file = fs.readFileSync(`../client${name}_page${request.url}`, {
+              encoding: "utf8",
+            });
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } catch (err) {
+          // TODO: Logging here
+          console.log(err);
+          response.writeHead(500, "Internal Server Error");
+          response.end();
+        }
+      }
+      response.writeHead(200, { "Content-Type": "text/javascript" });
+      response.write(file);
+      response.end();
     } else {
-      file = fs.readFileSync(`../client${name}_page${request.url}`, {
-        encoding: "utf8",
-      });
+      response.writeHead(405, "Method Not Allowed");
+      response.end();
     }
-    response.writeHead(200, { "Content-Type": "text/javascript" });
-    response.write(file);
   }
 }
 
