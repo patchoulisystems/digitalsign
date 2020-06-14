@@ -2854,12 +2854,15 @@ $(selector).datepick('setDate', [date1, date2, date3]) */
               minDate,
               maxDate
             );
+          /* TODO: We can intercept the epoch time of the dates here
+			The attach onHover for each button would be somewhere else */
           days += this._prepare(renderer.day, inst).replace(
             /\{day\}/g,
             (selectable ? '<a href="javascript:void(0)"' : "<span") +
               ' class="dp' +
               ts +
-              " a " +
+              " day " +
+              "" +
               (dateInfo.dateClass || "") +
               (selected &&
               (selectOtherMonths || drawDate.getMonth() + 1 === month)

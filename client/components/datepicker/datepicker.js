@@ -5,7 +5,8 @@ var options = {
   dateFormat: "yyyy-mm-dd",
 };
 
-const startDatepicker = () => {
+const startDatepicker = (fn) => {
+  options = { ...options, ...fn };
   $("#datepicker").datepick(options);
   attachOnChange();
   onResetPress();
