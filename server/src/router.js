@@ -82,9 +82,31 @@ function home(request, response) {
     case "/settings":
       resolveSettings(response, request.method, urlObject);
       break;
+    case "/hasPicture":
+      resolveHasPicture(response, request.method, urlObject);
+      break;
     default:
       resolveOptions(response, request);
       break;
+  }
+}
+
+/**
+ * This the endpoint that checks if a day has pictures assigned to it
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {XMLHttpRequest} request - The request sent by the Client
+ * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
+ */
+function resolveHasPicture(response, method, urlObject) {
+  if (method == "GET") {
+    let parsedQuerystring = querystring.parse(urlObject.query);
+    let epochTime = parsedQuerystring.time;
+    let hasPicture = db.hasPicture(epochTime, response);
+    response.write(hasPicture);
+    response.end();
+  } else {
+    response.writeHead(405, "Method Not Allowed");
+    response.end();
   }
 }
 
