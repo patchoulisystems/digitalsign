@@ -121,7 +121,7 @@ const buildToday = () => {
   return todayList;
 };
 
-const hasPicture = (epochTime, response) => {
+const hasPicture = (epochTime) => {
   var result = "none";
   let done = false;
 

@@ -101,7 +101,7 @@ function resolveHasPicture(response, method, urlObject) {
   if (method == "GET") {
     let parsedQuerystring = querystring.parse(urlObject.query);
     let epochTime = parsedQuerystring.time;
-    let hasPicture = db.hasPicture(epochTime, response);
+    let hasPicture = db.hasPicture(epochTime);
     response.write(hasPicture);
     response.end();
   } else {
