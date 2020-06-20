@@ -121,6 +121,94 @@ const buildToday = () => {
   return todayList;
 };
 
+const hasPicture = (epochTime) => {
+  var result = "none";
+  let done = false;
+
+  if (epochTime) {
+    var incomingDate = new Date(
+      new Date(parseInt(epochTime)).getUTCFullYear(),
+      new Date(parseInt(epochTime)).getUTCMonth(),
+      new Date(parseInt(epochTime)).getUTCDate()
+    );
+    // First check if there's a picture with that date
+    if (!done)
+      for (const imageKey in db.entries) {
+        const currentImage = db.entries[imageKey];
+        if (currentImage.dateType == "interval" && !done) {
+          let parsedDates = currentImage.dates.split(" - ");
+          let leftmostDay = new Date(
+            new Date(parsedDates[0]).getUTCFullYear(),
+            new Date(parsedDates[0]).getUTCMonth(),
+            new Date(parsedDates[0]).getUTCDate()
+          );
+          let rightmostDay = new Date(
+            new Date(parsedDates[1]).getUTCFullYear(),
+            new Date(parsedDates[1]).getUTCMonth(),
+            new Date(parsedDates[1]).getUTCDate()
+          );
+          if (leftmostDay <= incomingDate && incomingDate <= rightmostDay) {
+            result = "one";
+            done = true;
+          }
+        } else if (currentImage.dateType == "multiple" && !done) {
+          let imageDatesString = currentImage.dates.split(",");
+          if (!done)
+            imageDatesString.forEach((date) => {
+              let aDay = new Date(
+                new Date(date).getUTCFullYear(),
+                new Date(date).getUTCMonth(),
+                new Date(date).getUTCDate()
+              );
+              if (aDay == incomingDate) {
+                result = "one";
+                done = true;
+              }
+            });
+        }
+      }
+    // Then a list with that date (from the include list)
+    if (!done)
+      for (const listKey in db.metadata.builtLists) {
+        const currentList = db.metadata.builtLists[listKey];
+        if (currentList.dateType == "interval" && !done) {
+          let parsedDates = currentList.dates.split(" - ");
+          let leftmostDay = new Date(
+            new Date(parsedDates[0]).getUTCFullYear(),
+            new Date(parsedDates[0]).getUTCMonth(),
+            new Date(parsedDates[0]).getUTCDate()
+          );
+          let rightmostDay = new Date(
+            new Date(parsedDates[1]).getUTCFullYear(),
+            new Date(parsedDates[1]).getUTCMonth(),
+            new Date(parsedDates[1]).getUTCDate()
+          );
+
+          if (leftmostDay <= incomingDate && incomingDate <= rightmostDay) {
+            result = "one";
+            done = true;
+          }
+        } else if (currentList.dateType == "multiple" && !done) {
+          let listDatesString = currentList.dates.split(",");
+          if (!done)
+            listDatesString.forEach((date) => {
+              let aDay = new Date(
+                new Date(date).getUTCFullYear(),
+                new Date(date).getUTCMonth(),
+                new Date(date).getUTCDate()
+              );
+              if (aDay == incomingDate) {
+                result = "one";
+                done = true;
+              }
+            });
+        }
+      }
+  }
+
+  return result;
+};
+
 const getTodayList = () => {
   var today = new Date(
     new Date().getUTCFullYear(),
@@ -567,3 +655,4 @@ module.exports.insertFormData = insertFormData;
 module.exports.getImageListFromDate = getImageListFromDate;
 module.exports.pictureList = pictureList;
 module.exports.excludeListFromData = excludeListFromData;
+module.exports.hasPicture = hasPicture;
