@@ -356,23 +356,49 @@ function resolveImage(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
     try {
-      if (fs.existsSync(`${imagesFolder}${parsedQuerystring.name}`)) {
-        var stream = fs.createReadStream(
-          `${imagesFolder}${parsedQuerystring.name}`
-        );
+      if (parsedQuerystring.name == "empty.jpg") {
+        var stream = fs.createReadStream("./data/assets/empty.jpg");
+        stream.on("open", () => {
+          response.setHeader("Content-Type", "image/jpg");
+          stream.pipe(response);
+        });
+      } else if (parsedQuerystring.name == "500.jpg") {
+        var stream = fs.createReadStream("./data/assets/500.jpg");
+        stream.on("open", () => {
+          response.setHeader("Content-Type", "image/jpg");
+          stream.pipe(response);
+        });
+      } else if (parsedQuerystring.name == "404.jpg") {
+        var stream = fs.createReadStream("./data/assets/404.jpg");
         stream.on("open", () => {
           response.setHeader("Content-Type", "image/jpg");
           stream.pipe(response);
         });
       } else {
-        response.writeHead(404, "Not Found");
-        response.end();
+        if (fs.existsSync(`${imagesFolder}${parsedQuerystring.name}`)) {
+          var stream = fs.createReadStream(
+            `${imagesFolder}${parsedQuerystring.name}`
+          );
+          stream.on("open", () => {
+            response.setHeader("Content-Type", "image/jpg");
+            stream.pipe(response);
+          });
+        } else {
+          var stream = fs.createReadStream("./data/assets/404.jpg");
+          stream.on("open", () => {
+            response.setHeader("Content-Type", "image/jpg");
+            stream.pipe(response);
+          });
+        }
       }
     } catch (err) {
       // TODO: Whenever we do logging, here's a good place to start
       console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
+      var stream = fs.createReadStream("./data/assets/500.jpg");
+      stream.on("open", () => {
+        response.setHeader("Content-Type", "image/jpg");
+        stream.pipe(response);
+      });
     }
   } else {
     response.writeHead(405, "Method Not Allowed");

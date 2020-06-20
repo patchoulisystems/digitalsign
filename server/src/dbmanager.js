@@ -25,7 +25,7 @@ const buildToday = () => {
   } catch (err) {
     // TODO: Loggin here
     console.log(err);
-    return [];
+    return ["500.jpg"];
   }
   var today = new Date(
     new Date().getUTCFullYear(),
@@ -117,8 +117,9 @@ const buildToday = () => {
   } catch (err) {
     // TODO: Logging here
     console.log(err);
+    return ["500.jpg"];
   }
-  return todayList;
+  return todayList.length == 0 ? ["empty.jpg"] : todayList;
 };
 
 const hasPicture = (epochTime) => {
