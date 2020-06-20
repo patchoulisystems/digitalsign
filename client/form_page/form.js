@@ -8,6 +8,7 @@ $(() => {
         startDatepicker({
           onChangeMonthYear: onChangeMonthYear,
         });
+        onChangeMonthYear();
         fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
           data.text().then((html) => {
             $("#modal").html(html);
@@ -25,6 +26,13 @@ const onChangeMonthYear = () => {
     $("a.day").each(function (itm) {
       let parsedEpoch = $(this).attr("class").split(" ")[0].split("dp")[1];
       console.log(parsedEpoch);
+      fetch(`/hasPicture?time=${parsedEpoch}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.data == "none") {
+            $(this).css("background-color", "#cf4036");
+          }
+        });
     });
   }, 0);
 };
