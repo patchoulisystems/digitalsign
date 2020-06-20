@@ -102,7 +102,9 @@ function resolveHasPicture(response, method, urlObject) {
     let parsedQuerystring = querystring.parse(urlObject.query);
     let epochTime = parsedQuerystring.time;
     let hasPicture = db.hasPicture(epochTime);
-    response.write(hasPicture);
+    headers["Content-Type"] = "application/json";
+    response.writeHead(200, headers);
+    response.write(JSON.stringify({ data: hasPicture }));
     response.end();
   } else {
     response.writeHead(405, "Method Not Allowed");

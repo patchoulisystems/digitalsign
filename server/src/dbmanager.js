@@ -131,7 +131,6 @@ const hasPicture = (epochTime) => {
       new Date(parseInt(epochTime)).getUTCMonth(),
       new Date(parseInt(epochTime)).getUTCDate()
     );
-    console.log(incomingDate);
     // First check if there's a picture with that date
     if (!done)
       for (const imageKey in db.entries) {
@@ -148,8 +147,7 @@ const hasPicture = (epochTime) => {
             new Date(parsedDates[1]).getUTCMonth(),
             new Date(parsedDates[1]).getUTCDate()
           );
-
-          if (leftmostDay <= incomingDate && incomingDate >= rightmostDay) {
+          if (leftmostDay <= incomingDate && incomingDate <= rightmostDay) {
             result = "one";
             done = true;
           }
@@ -186,7 +184,7 @@ const hasPicture = (epochTime) => {
             new Date(parsedDates[1]).getUTCDate()
           );
 
-          if (leftmostDay <= incomingDate && incomingDate >= rightmostDay) {
+          if (leftmostDay <= incomingDate && incomingDate <= rightmostDay) {
             result = "one";
             done = true;
           }
