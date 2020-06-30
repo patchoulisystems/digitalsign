@@ -92,6 +92,63 @@ function home(request, response) {
 }
 
 /**
+ * This the endpoint that saves custom lists and displays the Create List page
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {XMLHttpRequest} request - The request sent by the Client
+ * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
+ */
+function resolveCreateList(response, request, urlObject) {
+  if (request.method == "GET") {
+    try {
+      if (fs.existsSync("../client/create_list_page/create_list.html")) {
+        let file = fs.readFileSync(
+          "../client/create_list_page/create_list.html"
+        );
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.write(file);
+        response.end();
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
+  } else if (request.method == "POST") {
+    try {
+      let requestData = "";
+
+      request.on("data", function (incomingData) {
+        requestData += incomingData;
+      });
+
+      request.on("end", () => {
+        requestData = JSON.parse(requestData);
+        response.setHeader("Content-Type", "text/plain");
+        if (requestData["pictures"].length == 0) {
+          response.writeHead(400, "Bad Request");
+        } else {
+          response.writeHead(200, "OK");
+          db.createList(requestData);
+        }
+        response.end();
+      });
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
+  } else {
+    response.writeHead(405, "Method Not Allowed");
+    response.end();
+  }
+}
+
+/**
  * This the endpoint that checks if a day has pictures assigned to it
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
