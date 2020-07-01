@@ -85,9 +85,34 @@ function home(request, response) {
     case "/hasPicture":
       resolveHasPicture(response, request.method, urlObject);
       break;
+    case "/create_list":
+      resolveCreateList(response, request, urlObject);
+      break;
+    case "/sandbox":
+      resolveSandbox(response, request.method);
+      break;
+    case "/playlistExists":
+      resolvePlaylistExists(response, request, urlObject);
+      break;
     default:
       resolveOptions(response, request);
       break;
+  }
+}
+
+function resolvePlaylistExists(response, request, urlObject) {
+  let parsedQuerystring = querystring.parse(urlObject.query);
+  let playlistExists = db.listWithName(parsedQuerystring.name);
+  response.write(JSON.stringify({ playlistExists }));
+  response.end();
+}
+
+function resolveSandbox(response, method) {
+  if (method == "GET") {
+    let file = fs.readFileSync("../client/sandbox_page/sandbox.html");
+    response.writeHead(200, { "Content-Type": "text/html" });
+    response.write(file);
+    response.end();
   }
 }
 
