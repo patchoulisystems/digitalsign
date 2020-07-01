@@ -69,7 +69,7 @@ hr {
 .picture-row {
   opacity: 0;
   height: 0;
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   background-color: #214566;
   padding: 0 4px;
