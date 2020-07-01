@@ -1,8 +1,8 @@
 #modal {
   font-family: "Open Sans", sans-serif;
-  display: none;
+  visibility: hidden;
   position: fixed;
-  z-index: 1;
+  z-index: 100;
   padding-top: 30%;
   left: 0;
   top: 0;
@@ -25,4 +25,9 @@
   float: right;
   font-size: 28px;
   font-weight: bold;
+  margin-left: 5%;
+}
+
+.button-group {
+  justify-content: space-between;
 }
