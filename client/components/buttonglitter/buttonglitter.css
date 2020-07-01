@@ -5,7 +5,6 @@
 .button {
   text-decoration: none;
   overflow: hidden;
-  appearance: none;
   position: relative;
 }
 .button:focus {

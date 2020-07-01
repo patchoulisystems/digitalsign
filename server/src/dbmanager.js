@@ -122,6 +122,25 @@ const buildToday = () => {
   return todayList.length == 0 ? ["empty.jpg"] : todayList;
 };
 
+const listWithName = (name) => {
+  let playlistNamesList = Object.keys(db.metadata["createdLists"]);
+  return playlistNamesList.includes(name);
+};
+
+const createList = (data) => {
+  let listName = data.listName;
+  db.metadata.createdLists[listName] = data;
+  let jsonData = JSON.stringify(db);
+  try {
+    if (fs.existsSync(dbLocation)) {
+      fs.writeFileSync(dbLocation, jsonData);
+    }
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+  }
+};
+
 const hasPicture = (epochTime) => {
   var result = "none";
   let done = false;
@@ -657,3 +676,5 @@ module.exports.getImageListFromDate = getImageListFromDate;
 module.exports.pictureList = pictureList;
 module.exports.excludeListFromData = excludeListFromData;
 module.exports.hasPicture = hasPicture;
+module.exports.createList = createList;
+module.exports.listWithName = listWithName;

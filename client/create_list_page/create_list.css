@@ -30,6 +30,29 @@ hr {
   padding-right: 9vw;
 }
 
+.inputs {
+  padding-left: 30%;
+  float: left;
+  justify-content: left;
+}
+
+.inputs > label,
+.inputs > input {
+  padding: 3%;
+  display: block;
+  text-align: left;
+}
+
+.radio-inputs {
+  justify-content: space-between;
+  display: flex;
+  width: 80%;
+}
+
+.radio-inputs > div {
+  display: inline-block;
+}
+
 .description {
   width: 20vw;
   height: 1vw;
@@ -54,10 +77,14 @@ hr {
   float: right;
 }
 
+.input,
 .button {
   margin-bottom: 10px;
   border: 2px #f0b310 solid;
   border-radius: 5px;
+}
+
+.button {
   background: #f0b310;
 }
 
