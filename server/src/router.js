@@ -88,6 +88,9 @@ function home(request, response) {
     case "/create_list":
       resolveCreateList(response, request, urlObject);
       break;
+    case "/set_playlist":
+      resolveSetPlaylist(response, request, urlObject);
+      break;
     case "/sandbox":
       resolveSandbox(response, request.method);
       break;
@@ -97,6 +100,33 @@ function home(request, response) {
     default:
       resolveOptions(response, request);
       break;
+  }
+}
+
+function resolveSetPlaylist(response, request, urlObject) {
+  if (request.method == "GET") {
+    try {
+      if (fs.existsSync("../client/set_playlist_page/set_playlist.html")) {
+        let file = fs.readFileSync(
+          "../client/set_playlist_page/set_playlist.html"
+        );
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.write(file);
+        response.end();
+      } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+      }
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
+  } else if (request.method == "POST") {
+  } else {
+    response.writeHead(405, "Method Not Allowed");
+    response.end();
   }
 }
 
