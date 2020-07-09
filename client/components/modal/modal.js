@@ -25,17 +25,15 @@ const startModalForList = () => {
   });
 };
 
-const displayModal = (text, fn, buttonAText, buttonBText) => {
+const displayModal = (text, fn, buttonAText, buttonBText, fn2) => {
   $("button#modal-cancel").remove();
   $('button[id="modal-action"] > span').html(buttonAText || "Ok");
   if (fn) {
-    $("#modal > div > div.button-group")
-      .prepend(
-        "<button id='modal-cancel' class='button close input'>" +
-          (buttonBText || "Cancel") +
-          "</button>"
-      )
-      .click(() => closeModal());
+    $("#modal > div > div.button-group").prepend(
+      "<button id='modal-cancel' class='button close input'>" +
+        (buttonBText || "Cancel") +
+        "</button>"
+    );
     $("button#modal-action")
       .off("click")
       .on("click", () => {
@@ -43,9 +41,18 @@ const displayModal = (text, fn, buttonAText, buttonBText) => {
         closeModal();
       });
   } else {
-    $("button#modal-action")
+    $("button#modal-action").off("click").on("click", closeModal);
+  }
+
+  if (fn2) {
+    $("#modal-cancel")
       .off("click")
-      .on("click", () => closeModal);
+      .on("click", () => {
+        fn2();
+        closeModal();
+      });
+  } else {
+    $("#modal-cancel").off("click").on("click", closeModal);
   }
   modalContent.text(text);
   modal.css("visibility", "visible");
