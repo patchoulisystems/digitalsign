@@ -14,7 +14,7 @@ const createPlaylistElement = (playlist, btnOnClick) => {
   createdList.className += "created-list " + playlist.listName;
 
   // Stylistic: if the list doesn't want to append we change color based on it
-  if (playlist.concat) createdList.className += " concat";
+  if (playlist.concat == "true") createdList.className += " concat";
 
   // This is the upper banner
   var outsideContainer = document.createElement("div");
