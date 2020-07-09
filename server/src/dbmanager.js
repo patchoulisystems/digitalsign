@@ -122,9 +122,36 @@ const buildToday = () => {
   return todayList.length == 0 ? ["empty.jpg"] : todayList;
 };
 
+const playlists = () => {
+  return db.metadata["createdLists"];
+};
+
 const listWithName = (name) => {
   let playlistNamesList = Object.keys(db.metadata["createdLists"]);
   return playlistNamesList.includes(name);
+};
+
+const setPlaylist = (data) => {
+  console.log(data);
+  let playlist = data;
+  if (data.dateType.length <= 0 || data.dates.length <= 0) {
+    let today = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate()
+    );
+
+    playlist = {
+      ...playlist,
+      dateType: "multiple",
+      dates: `${
+        today.getMonth() + 1
+      }-${today.getDate()}-${today.getFullYear()}`,
+    };
+  }
+  console.log("Playlist to insert:", playlist);
+  createList(playlist);
+  // TODO: Rebuilt the today list here as well
 };
 
 const createList = (data) => {
@@ -678,3 +705,5 @@ module.exports.excludeListFromData = excludeListFromData;
 module.exports.hasPicture = hasPicture;
 module.exports.createList = createList;
 module.exports.listWithName = listWithName;
+module.exports.playlists = playlists;
+module.exports.setPlaylist = setPlaylist;
