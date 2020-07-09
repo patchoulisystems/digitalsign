@@ -21,6 +21,10 @@
   width: 80%;
 }
 
+#modal-text {
+  color: black;
+}
+
 .close {
   float: right;
   font-size: 28px;
