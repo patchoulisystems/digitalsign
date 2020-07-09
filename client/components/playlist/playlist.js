@@ -8,9 +8,10 @@
  * @param {Function} btnOnClick The onClick function of the playlist's button
  */
 const createPlaylistElement = (playlist, btnOnClick) => {
+  console.log(playlist);
   // This is the base container for the playlist element
   var createdList = document.createElement("div");
-  createdList.className += "created-list " + playlist.name;
+  createdList.className += "created-list " + playlist.listName;
 
   // Stylistic: if the list doesn't want to append we change color based on it
   if (playlist.concat) createdList.className += " concat";
@@ -22,11 +23,15 @@ const createPlaylistElement = (playlist, btnOnClick) => {
   // This is the text inside the upper banner
   var listname = document.createElement("p");
   listname.className += "listname";
-  listname.innerText = playlist.name;
+  listname.innerText = playlist.listName;
 
   // This is the button on the playlist
   var btn = document.createElement("button");
-  btn.innerText = "Set playlist";
+  btn.className += "button input";
+  // This is the button's text
+  var btnText = document.createElement("span");
+  btnText.innerText = "Set playlist";
+  btn.appendChild(btnText);
   btn.onclick = btnOnClick;
 
   // We're closing the top banner here
