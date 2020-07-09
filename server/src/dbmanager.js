@@ -16,10 +16,13 @@ try {
   console.log(err);
 }
 
-// TODO: Optimize this
-const buildToday = () => {
-  var todayList = [];
-  var files;
+const getTodayImages = () => {
+  var today = new Date(
+    new Date().getUTCFullYear(),
+    new Date().getUTCMonth(),
+    new Date().getUTCDate()
+  );
+  var filesList = [];
   try {
     files = fs.readdirSync(imagesFolder, []);
   } catch (err) {
@@ -27,27 +30,24 @@ const buildToday = () => {
     console.log(err);
     return ["500.jpg"];
   }
-  var today = new Date(
-    new Date().getUTCFullYear(),
-    new Date().getUTCMonth(),
-    new Date().getUTCDate()
-  );
+
+  // Appending images scheduled for today to the created list
   files.forEach((image) => {
     var dateType = db.entries[image].dateType.trim();
     if (dateType == "interval") {
-      var parsedDates = db.entries[image].dates.split(" ");
+      var parsedDates = db.entries[image].dates.split(" - ");
       let leftmostDay = new Date(
         new Date(parsedDates[0]).getUTCFullYear(),
         new Date(parsedDates[0]).getUTCMonth(),
         new Date(parsedDates[0]).getUTCDate()
       );
       let rightmostDay = new Date(
-        new Date(parsedDates[2]).getUTCFullYear(),
-        new Date(parsedDates[2]).getUTCMonth(),
-        new Date(parsedDates[2]).getUTCDate()
+        new Date(parsedDates[1]).getUTCFullYear(),
+        new Date(parsedDates[1]).getUTCMonth(),
+        new Date(parsedDates[1]).getUTCDate()
       );
       if (leftmostDay <= today || today <= rightmostDay) {
-        todayList.push(image);
+        filesList.push(image);
       }
     } else if (dateType == "multiple") {
       db.entries[image].dates.split(",").forEach((date) => {
@@ -57,33 +57,42 @@ const buildToday = () => {
           new Date(date).getUTCDate()
         );
         if (aDay == today) {
-          todayList.push(image);
+          filesList.push(image);
         }
       });
     }
   });
+  return filesList;
+};
 
+const getTodayIncludeList = () => {
+  var includeList = [];
+  var today = new Date(
+    new Date().getUTCFullYear(),
+    new Date().getUTCMonth(),
+    new Date().getUTCDate()
+  );
   var builtLists = Array.from(Object.keys(db.metadata["builtLists"]));
   builtLists.forEach((list) => {
     let listDate = db.metadata["builtLists"][list]["dates"];
     let listDateType = db.metadata["builtLists"][list]["dateType"];
     let listPictures = db.metadata["builtLists"][list]["pictures"];
     if (listDateType == "interval") {
-      let parsedDates = listDate.split(" ");
+      let parsedDates = listDate.split(" - ");
       let leftmostDay = new Date(
         new Date(parsedDates[0]).getUTCFullYear(),
         new Date(parsedDates[0]).getUTCMonth(),
         new Date(parsedDates[0]).getUTCDate()
       );
       let rightmostDay = new Date(
-        new Date(parsedDates[2]).getUTCFullYear(),
-        new Date(parsedDates[2]).getUTCMonth(),
-        new Date(parsedDates[2]).getUTCDate()
+        new Date(parsedDates[1]).getUTCFullYear(),
+        new Date(parsedDates[1]).getUTCMonth(),
+        new Date(parsedDates[1]).getUTCDate()
       );
       if (leftmostDay <= today && today <= rightmostDay) {
         listPictures.forEach((picture) => {
-          if (!todayList.includes(picture.toString())) {
-            todayList.push(picture);
+          if (!includeList.includes(picture.toString())) {
+            includeList.push(picture);
           }
         });
       }
@@ -97,16 +106,109 @@ const buildToday = () => {
         );
         if (today == thisListDay) {
           listPictures.forEach((picture) => {
-            if (!todayList.includes(picture)) {
-              todayList.push(picture);
+            if (!includeList.includes(picture)) {
+              includeList.push(picture);
             }
           });
         }
       });
     }
   });
+  return includeList;
+};
 
-  todayList = filterExclude(todayList, today);
+const insertCreatedToList = (currentList, todayList) => {
+  var today = new Date(
+    new Date().getUTCFullYear(),
+    new Date().getUTCMonth(),
+    new Date().getUTCDate()
+  );
+  if (currentList.dateType == "interval") {
+    let parsedDates = currentList.dates.split(" - ");
+    let leftmostDay = new Date(
+      new Date(parsedDates[0]).getUTCFullYear(),
+      new Date(parsedDates[0]).getUTCMonth(),
+      new Date(parsedDates[0]).getUTCDate()
+    );
+    let rightmostDay = new Date(
+      new Date(parsedDates[1]).getUTCFullYear(),
+      new Date(parsedDates[1]).getUTCMonth(),
+      new Date(parsedDates[1]).getUTCDate()
+    );
+    if (leftmostDay <= today && today <= rightmostDay) {
+      currentList.pictures.forEach((picture) => {
+        if (!todayList.includes(picture.toString())) {
+          todayList.push(picture);
+        }
+      });
+    }
+  } else {
+    currentList.dates.split(",").forEach((date) => {
+      var aDay = new Date(
+        new Date(date).getUTCFullYear(),
+        new Date(date).getUTCMonth(),
+        new Date(date).getUTCDate()
+      );
+      if (aDay == today) {
+        todayList = todayList.concat(
+          currentList.pictures.filter((picture) => !todayList.includes(picture))
+        );
+      }
+    });
+  }
+};
+
+// TODO: Optimize this
+const buildToday = (playlist) => {
+  var todayList = [];
+  var createdLists = db.metadata.createdLists;
+  var today = new Date(
+    new Date().getUTCFullYear(),
+    new Date().getUTCMonth(),
+    new Date().getUTCDate()
+  );
+
+  // We'll use this in the set list attribute, whenever the list has
+  // no date
+  if (playlist) {
+    console.log("Playlist recieved in the buildToday", playlist);
+    todayList = playlist.pictures;
+    // JSON parse doesn't parse the word false as the boolean value false
+    if (playlist.concat == "true") {
+      console.log("Is it true?");
+      // We do our magic here
+      todayList = todayList.concat(
+        getTodayImages().filter((el) => !todayList.includes(el))
+      );
+
+      // Appending included lists scheduled for today
+      todayList = todayList.concat(
+        getTodayIncludeList().filter((el) => !todayList.includes(el))
+      );
+      // Excluding scheduled pictures to be excluded. Should we add that option as well?
+      todayList = filterExclude(todayList, today);
+    }
+  } else {
+    for (const list in createdLists) {
+      let currentList = createdLists[list];
+      insertCreatedToList(currentList, todayList);
+
+      if (currentList.concat == "true") {
+        // We do our magic here
+        todayList = todayList.concat(
+          getTodayImages().filter((el) => !todayList.includes(el))
+        );
+
+        // Appending included lists scheduled for today
+        todayList = todayList.concat(
+          getTodayIncludeList().filter((el) => !todayList.includes(el))
+        );
+        // Excluding scheduled pictures to be excluded. Should we add that option as well?
+        todayList = filterExclude(todayList, today);
+      }
+    }
+  }
+
   db.metadata["todayList"] = todayList;
   db.metadata["dateBuilt"] = today;
   let jsonData = JSON.stringify(db);
@@ -132,9 +234,10 @@ const listWithName = (name) => {
 };
 
 const setPlaylist = (data) => {
-  console.log(data);
   let playlist = data;
-  if (data.dateType.length <= 0 || data.dates.length <= 0) {
+  let noDates = false;
+  if (playlist.dateType.length <= 0 || playlist.dates.length <= 0) {
+    noDates = true;
     let today = new Date(
       new Date().getFullYear(),
       new Date().getMonth(),
@@ -149,15 +252,46 @@ const setPlaylist = (data) => {
       }-${today.getDate()}-${today.getFullYear()}`,
     };
   }
-  console.log("Playlist to insert:", playlist);
+  noDates ? buildToday(playlist) : buildToday();
   createList(playlist);
-  // TODO: Rebuilt the today list here as well
 };
 
 const createList = (data) => {
   let listName = data.listName;
   db.metadata.createdLists[listName] = data;
   let jsonData = JSON.stringify(db);
+  let today = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate()
+  );
+  if (data.dateType == "interval") {
+    var parsedDates = data.dates.split(" - ");
+    let leftmostDay = new Date(
+      new Date(parsedDates[0]).getUTCFullYear(),
+      new Date(parsedDates[0]).getUTCMonth(),
+      new Date(parsedDates[0]).getUTCDate()
+    );
+    let rightmostDay = new Date(
+      new Date(parsedDates[1]).getUTCFullYear(),
+      new Date(parsedDates[1]).getUTCMonth(),
+      new Date(parsedDates[1]).getUTCDate()
+    );
+    if (leftmostDay <= today || today <= rightmostDay) {
+      buildToday(data);
+    }
+  } else if (data.dateType == "multiple") {
+    data.dates.split(",").forEach((date) => {
+      var aDay = new Date(
+        new Date(date).getUTCFullYear(),
+        new Date(date).getUTCMonth(),
+        new Date(date).getUTCDate()
+      );
+      if (aDay == today) {
+        buildToday(data);
+      }
+    });
+  }
   try {
     if (fs.existsSync(dbLocation)) {
       fs.writeFileSync(dbLocation, jsonData);
