@@ -85,6 +85,9 @@ function home(request, response) {
     case "/hasPicture":
       resolveHasPicture(response, request.method, urlObject);
       break;
+    case "/get_playlists":
+      resolveGetPlaylists(response, request.method);
+      break;
     case "/create_list":
       resolveCreateList(response, request, urlObject);
       break;
@@ -100,6 +103,18 @@ function home(request, response) {
     default:
       resolveOptions(response, request);
       break;
+  }
+}
+
+function resolveGetPlaylists(response, method) {
+  if (method == "GET") {
+    let playlists = db.playlists();
+    console.log(playlists);
+    response.write(JSON.stringify({ playlists }));
+    response.end();
+  } else {
+    response.writeHead(405, "Method not Allowed");
+    response.end();
   }
 }
 
@@ -124,6 +139,31 @@ function resolveSetPlaylist(response, request, urlObject) {
       response.end();
     }
   } else if (request.method == "POST") {
+    try {
+      let requestData = "";
+
+      request.on("data", function (incomingData) {
+        requestData += incomingData;
+      });
+
+      request.on("end", () => {
+        requestData = JSON.parse(requestData);
+        console.log(requestData);
+        response.setHeader("Content-Type", "text/plain");
+        if (requestData["pictures"].length == 0) {
+          response.writeHead(400, "Bad Request");
+        } else {
+          response.writeHead(200, "OK");
+          db.setPlaylist(requestData);
+        }
+        response.end();
+      });
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
