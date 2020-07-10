@@ -693,30 +693,18 @@ const insertFormData = (request, response) => {
       response.writeHead(400, "Bad Request");
       response.end();
     } else {
-      // So we do the map here, for each image to insert
+      // I'd rather have this than the previous method
+      // We repeat less code with it
       try {
-        // Multiple File
-        files.picture.forEach((file) => {
-          var imageToInsert = savePicture(file);
-          if (imageToInsert) {
-            db.entries[imageToInsert] = {
-              firstname: fields.firstname,
-              lastname: fields.lastname,
-              studentid: fields.studentid,
-              dateType: fields.radio,
-              dates: fields.dates,
-              pictureName: imageToInsert,
-            };
-            db.metadata["imageNumber"]++;
-          } else {
-            response.writeHead(500, "Internal Server Error");
-            response.end();
-          }
-        });
-      } catch (error) {
-        if (error instanceof TypeError) {
-          // Single File
-          var imageToInsert = savePicture(files.picture);
+        files.picture = [...files.picture];
+      } catch (ex) {
+        files.picture = [files.picture];
+      }
+      // So we do the map here, for each image to insert
+      // Multiple File
+      files.picture.forEach((file) => {
+        var imageToInsert = savePicture(file);
+        if (imageToInsert) {
           db.entries[imageToInsert] = {
             firstname: fields.firstname,
             lastname: fields.lastname,
@@ -726,8 +714,11 @@ const insertFormData = (request, response) => {
             pictureName: imageToInsert,
           };
           db.metadata["imageNumber"]++;
+        } else {
+          response.writeHead(500, "Internal Server Error");
+          response.end();
         }
-      }
+      });
       let jsonData = JSON.stringify(db);
       try {
         if (fs.existsSync(dbLocation)) {
