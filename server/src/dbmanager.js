@@ -6,6 +6,7 @@ const { nanoid } = require("nanoid");
 const imagesFolder = "./data/images/";
 const dbLocation = "./data/db.json";
 let db;
+
 try {
   if (fs.existsSync(dbLocation)) {
     db = fs.readFileSync(dbLocation);
@@ -16,12 +17,24 @@ try {
   console.log(err);
 }
 
-const getTodayImages = () => {
-  var today = new Date(
-    new Date().getUTCFullYear(),
-    new Date().getUTCMonth(),
-    new Date().getUTCDate()
+const getTodayDate = () => {
+  return new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate()
   );
+};
+
+const getDate = (str) => {
+  return new Date(
+    new Date(str).getFullYear(),
+    new Date(str).getMonth(),
+    new Date(str).getDate()
+  );
+};
+
+const getTodayImages = () => {
+  var today = getTodayDate();
   var filesList = [];
   try {
     files = fs.readdirSync(imagesFolder, []);
@@ -36,16 +49,8 @@ const getTodayImages = () => {
     var dateType = db.entries[image].dateType.trim();
     if (dateType == "interval") {
       var parsedDates = db.entries[image].dates.split(" - ");
-      let leftmostDay = new Date(
-        new Date(parsedDates[0]).getUTCFullYear(),
-        new Date(parsedDates[0]).getUTCMonth(),
-        new Date(parsedDates[0]).getUTCDate()
-      );
-      let rightmostDay = new Date(
-        new Date(parsedDates[1]).getUTCFullYear(),
-        new Date(parsedDates[1]).getUTCMonth(),
-        new Date(parsedDates[1]).getUTCDate()
-      );
+      let leftmostDay = getDate(parsedDates[0]);
+      let rightmostDay = getDate(parsedDates[1]);
       if (leftmostDay <= today || today <= rightmostDay) {
         filesList.push(image);
       }
