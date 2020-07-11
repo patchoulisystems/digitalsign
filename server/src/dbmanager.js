@@ -2,6 +2,7 @@ const fs = require("fs");
 const formidable = require("formidable");
 const path = require("path");
 const { nanoid } = require("nanoid");
+const moment = require("moment");
 
 const imagesFolder = "./data/images/";
 const dbLocation = "./data/db.json";
@@ -17,24 +18,17 @@ try {
   console.log(err);
 }
 
-const getTodayDate = () => {
-  return new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate()
-  );
-};
-
 const getDate = (str) => {
-  return new Date(
-    new Date(str).getFullYear(),
-    new Date(str).getMonth(),
-    new Date(str).getDate()
-  );
+  return moment(str || new Date(), "YYYY-MM-DD").set({
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+  });
 };
 
 const getTodayImages = () => {
-  var today = getTodayDate();
+  var today = getDate();
   var filesList = [];
   try {
     files = fs.readdirSync(imagesFolder, []);
@@ -68,7 +62,7 @@ const getTodayImages = () => {
 
 const getTodayIncludeList = () => {
   var includeList = [];
-  var today = getTodayDate();
+  var today = getDate();
   var builtLists = Array.from(Object.keys(db.metadata["builtLists"]));
   builtLists.forEach((list) => {
     let listDate = db.metadata["builtLists"][list]["dates"];
@@ -88,7 +82,7 @@ const getTodayIncludeList = () => {
     } else {
       let parsedDates = listDate.split(",");
       parsedDates.forEach((date) => {
-        let thisListDay = getTodayDate();
+        let thisListDay = getDate();
         if (today == thisListDay) {
           listPictures.forEach((picture) => {
             if (!includeList.includes(picture)) {
@@ -103,7 +97,7 @@ const getTodayIncludeList = () => {
 };
 
 const insertCreatedToList = (currentList, todayList) => {
-  var today = getTodayDate();
+  var today = getDate();
   if (currentList.dateType == "interval") {
     let parsedDates = currentList.dates.split(" - ");
     let leftmostDay = getDate(parsedDates[0]);
@@ -131,7 +125,7 @@ const insertCreatedToList = (currentList, todayList) => {
 const buildToday = (playlist) => {
   var todayList = [];
   var createdLists = db.metadata.createdLists;
-  var today = getTodayDate();
+  var today = getDate();
 
   // We'll use this in the set list attribute, whenever the list has
   // no date
@@ -203,7 +197,7 @@ const setPlaylist = (data) => {
   let noDates = false;
   if (playlist.dateType.length <= 0 || playlist.dates.length <= 0) {
     noDates = true;
-    let today = getTodayDate();
+    let today = getDate();
 
     playlist = {
       ...playlist,
@@ -221,7 +215,7 @@ const createList = (data) => {
   let listName = data.listName;
   db.metadata.createdLists[listName] = data;
   let jsonData = JSON.stringify(db);
-  let today = getTodayDate();
+  let today = getDate();
   if (data.dateType == "interval") {
     var parsedDates = data.dates.split(" - ");
     let leftmostDay = getDate(parsedDates[0]);
@@ -308,7 +302,7 @@ const hasPicture = (epochTime) => {
 };
 
 const getTodayList = () => {
-  var today = getTodayDate();
+  var today = getDate();
   var built = getDate(db.metadata["dateBuilt"]);
 
   if (built < today) {
@@ -500,7 +494,7 @@ const pictureList = (data) => {
 
 const insertFormData = (request, response) => {
   let form = new formidable.IncomingForm({ multiples: true });
-  let today = getTodayDate();
+  let today = getDate();
   form.keepExtensions = true;
 
   form.parse(request, (error, fields, files) => {
