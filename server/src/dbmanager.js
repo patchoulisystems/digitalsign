@@ -56,11 +56,7 @@ const getTodayImages = () => {
       }
     } else if (dateType == "multiple") {
       db.entries[image].dates.split(",").forEach((date) => {
-        var aDay = new Date(
-          new Date(date).getUTCFullYear(),
-          new Date(date).getUTCMonth(),
-          new Date(date).getUTCDate()
-        );
+        var aDay = getDate(date);
         if (aDay == today) {
           filesList.push(image);
         }
@@ -72,11 +68,7 @@ const getTodayImages = () => {
 
 const getTodayIncludeList = () => {
   var includeList = [];
-  var today = new Date(
-    new Date().getUTCFullYear(),
-    new Date().getUTCMonth(),
-    new Date().getUTCDate()
-  );
+  var today = getTodayDate();
   var builtLists = Array.from(Object.keys(db.metadata["builtLists"]));
   builtLists.forEach((list) => {
     let listDate = db.metadata["builtLists"][list]["dates"];
@@ -84,16 +76,8 @@ const getTodayIncludeList = () => {
     let listPictures = db.metadata["builtLists"][list]["pictures"];
     if (listDateType == "interval") {
       let parsedDates = listDate.split(" - ");
-      let leftmostDay = new Date(
-        new Date(parsedDates[0]).getUTCFullYear(),
-        new Date(parsedDates[0]).getUTCMonth(),
-        new Date(parsedDates[0]).getUTCDate()
-      );
-      let rightmostDay = new Date(
-        new Date(parsedDates[1]).getUTCFullYear(),
-        new Date(parsedDates[1]).getUTCMonth(),
-        new Date(parsedDates[1]).getUTCDate()
-      );
+      let leftmostDay = getDate(parsedDates[0]);
+      let rightmostDay = getDate(parsedDates[1]);
       if (leftmostDay <= today && today <= rightmostDay) {
         listPictures.forEach((picture) => {
           if (!includeList.includes(picture.toString())) {
@@ -104,11 +88,7 @@ const getTodayIncludeList = () => {
     } else {
       let parsedDates = listDate.split(",");
       parsedDates.forEach((date) => {
-        let thisListDay = new Date(
-          new Date(date).getUTCFullYear(),
-          new Date(date).getUTCMonth(),
-          new Date(date).getUTCDate()
-        );
+        let thisListDay = getTodayDate();
         if (today == thisListDay) {
           listPictures.forEach((picture) => {
             if (!includeList.includes(picture)) {
@@ -123,23 +103,11 @@ const getTodayIncludeList = () => {
 };
 
 const insertCreatedToList = (currentList, todayList) => {
-  var today = new Date(
-    new Date().getUTCFullYear(),
-    new Date().getUTCMonth(),
-    new Date().getUTCDate()
-  );
+  var today = getTodayDate();
   if (currentList.dateType == "interval") {
     let parsedDates = currentList.dates.split(" - ");
-    let leftmostDay = new Date(
-      new Date(parsedDates[0]).getUTCFullYear(),
-      new Date(parsedDates[0]).getUTCMonth(),
-      new Date(parsedDates[0]).getUTCDate()
-    );
-    let rightmostDay = new Date(
-      new Date(parsedDates[1]).getUTCFullYear(),
-      new Date(parsedDates[1]).getUTCMonth(),
-      new Date(parsedDates[1]).getUTCDate()
-    );
+    let leftmostDay = getDate(parsedDates[0]);
+    let rightmostDay = getDate(parsedDates[1]);
     if (leftmostDay <= today && today <= rightmostDay) {
       currentList.pictures.forEach((picture) => {
         if (!todayList.includes(picture.toString())) {
@@ -149,11 +117,7 @@ const insertCreatedToList = (currentList, todayList) => {
     }
   } else {
     currentList.dates.split(",").forEach((date) => {
-      var aDay = new Date(
-        new Date(date).getUTCFullYear(),
-        new Date(date).getUTCMonth(),
-        new Date(date).getUTCDate()
-      );
+      var aDay = getDate(date);
       if (aDay == today) {
         todayList = todayList.concat(
           currentList.pictures.filter((picture) => !todayList.includes(picture))
@@ -167,11 +131,7 @@ const insertCreatedToList = (currentList, todayList) => {
 const buildToday = (playlist) => {
   var todayList = [];
   var createdLists = db.metadata.createdLists;
-  var today = new Date(
-    new Date().getUTCFullYear(),
-    new Date().getUTCMonth(),
-    new Date().getUTCDate()
-  );
+  var today = getTodayDate();
 
   // We'll use this in the set list attribute, whenever the list has
   // no date
@@ -243,11 +203,7 @@ const setPlaylist = (data) => {
   let noDates = false;
   if (playlist.dateType.length <= 0 || playlist.dates.length <= 0) {
     noDates = true;
-    let today = new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate()
-    );
+    let today = getTodayDate();
 
     playlist = {
       ...playlist,
@@ -265,33 +221,17 @@ const createList = (data) => {
   let listName = data.listName;
   db.metadata.createdLists[listName] = data;
   let jsonData = JSON.stringify(db);
-  let today = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate()
-  );
+  let today = getTodayDate();
   if (data.dateType == "interval") {
     var parsedDates = data.dates.split(" - ");
-    let leftmostDay = new Date(
-      new Date(parsedDates[0]).getUTCFullYear(),
-      new Date(parsedDates[0]).getUTCMonth(),
-      new Date(parsedDates[0]).getUTCDate()
-    );
-    let rightmostDay = new Date(
-      new Date(parsedDates[1]).getUTCFullYear(),
-      new Date(parsedDates[1]).getUTCMonth(),
-      new Date(parsedDates[1]).getUTCDate()
-    );
+    let leftmostDay = getDate(parsedDates[0]);
+    let rightmostDay = getDate(parsedDates[1]);
     if (leftmostDay <= today || today <= rightmostDay) {
       buildToday(data);
     }
   } else if (data.dateType == "multiple") {
     data.dates.split(",").forEach((date) => {
-      var aDay = new Date(
-        new Date(date).getUTCFullYear(),
-        new Date(date).getUTCMonth(),
-        new Date(date).getUTCDate()
-      );
+      var aDay = getDate(date);
       if (aDay == today) {
         buildToday(data);
       }
@@ -312,27 +252,15 @@ const hasPicture = (epochTime) => {
   let done = false;
 
   if (epochTime) {
-    var incomingDate = new Date(
-      new Date(parseInt(epochTime)).getUTCFullYear(),
-      new Date(parseInt(epochTime)).getUTCMonth(),
-      new Date(parseInt(epochTime)).getUTCDate()
-    );
+    var incomingDate = getDate(parseInt(epochTime));
     // First check if there's a picture with that date
     if (!done)
       for (const imageKey in db.entries) {
         const currentImage = db.entries[imageKey];
         if (currentImage.dateType == "interval" && !done) {
           let parsedDates = currentImage.dates.split(" - ");
-          let leftmostDay = new Date(
-            new Date(parsedDates[0]).getUTCFullYear(),
-            new Date(parsedDates[0]).getUTCMonth(),
-            new Date(parsedDates[0]).getUTCDate()
-          );
-          let rightmostDay = new Date(
-            new Date(parsedDates[1]).getUTCFullYear(),
-            new Date(parsedDates[1]).getUTCMonth(),
-            new Date(parsedDates[1]).getUTCDate()
-          );
+          let leftmostDay = getDate(parsedDates[0]);
+          let rightmostDay = getDate(parsedDates[1]);
           if (leftmostDay <= incomingDate && incomingDate <= rightmostDay) {
             result = "one";
             done = true;
@@ -341,11 +269,7 @@ const hasPicture = (epochTime) => {
           let imageDatesString = currentImage.dates.split(",");
           if (!done)
             imageDatesString.forEach((date) => {
-              let aDay = new Date(
-                new Date(date).getUTCFullYear(),
-                new Date(date).getUTCMonth(),
-                new Date(date).getUTCDate()
-              );
+              let aDay = getDate(date);
               if (aDay == incomingDate) {
                 result = "one";
                 done = true;
@@ -359,16 +283,8 @@ const hasPicture = (epochTime) => {
         const currentList = db.metadata.builtLists[listKey];
         if (currentList.dateType == "interval" && !done) {
           let parsedDates = currentList.dates.split(" - ");
-          let leftmostDay = new Date(
-            new Date(parsedDates[0]).getUTCFullYear(),
-            new Date(parsedDates[0]).getUTCMonth(),
-            new Date(parsedDates[0]).getUTCDate()
-          );
-          let rightmostDay = new Date(
-            new Date(parsedDates[1]).getUTCFullYear(),
-            new Date(parsedDates[1]).getUTCMonth(),
-            new Date(parsedDates[1]).getUTCDate()
-          );
+          let leftmostDay = getDate(parsedDates[0]);
+          let rightmostDay = getDate(parsedDates[1]);
 
           if (leftmostDay <= incomingDate && incomingDate <= rightmostDay) {
             result = "one";
@@ -378,11 +294,7 @@ const hasPicture = (epochTime) => {
           let listDatesString = currentList.dates.split(",");
           if (!done)
             listDatesString.forEach((date) => {
-              let aDay = new Date(
-                new Date(date).getUTCFullYear(),
-                new Date(date).getUTCMonth(),
-                new Date(date).getUTCDate()
-              );
+              let aDay = getDate(date);
               if (aDay == incomingDate) {
                 result = "one";
                 done = true;
@@ -396,16 +308,8 @@ const hasPicture = (epochTime) => {
 };
 
 const getTodayList = () => {
-  var today = new Date(
-    new Date().getUTCFullYear(),
-    new Date().getUTCMonth(),
-    new Date().getUTCDate()
-  );
-  var built = new Date(
-    new Date(db.metadata["dateBuilt"]).getUTCFullYear(),
-    new Date(db.metadata["dateBuilt"]).getUTCMonth(),
-    new Date(db.metadata["dateBuilt"]).getUTCDate()
-  );
+  var today = getTodayDate();
+  var built = getDate(db.metadata["dateBuilt"]);
 
   if (built < today) {
     return buildToday();
@@ -421,16 +325,8 @@ const filterExclude = (list, today) => {
       const currentExcludeList = db.metadata["builtExcludeLists"][excludeList];
       if (currentExcludeList.dateType == "interval") {
         let parsedDates = currentExcludeList.dates.split(" - ");
-        let leftmostDay = new Date(
-          new Date(parsedDates[0]).getUTCFullYear(),
-          new Date(parsedDates[0]).getUTCMonth(),
-          new Date(parsedDates[0]).getUTCDate()
-        );
-        let rightmostDay = new Date(
-          new Date(parsedDates[1]).getUTCFullYear(),
-          new Date(parsedDates[1]).getUTCMonth(),
-          new Date(parsedDates[1]).getUTCDate()
-        );
+        let leftmostDay = getDate(parsedDates[0]);
+        let rightmostDay = getDate(parsedDates[1]);
         if (leftmostDay <= today && today <= rightmostDay) {
           resultList = resultList.filter(
             (picture) => !currentExcludeList.pictures.includes(picture)
@@ -438,11 +334,7 @@ const filterExclude = (list, today) => {
         }
       } else if (currentExcludeList.dateType == "multiple") {
         currentExcludeList.dates.split(",").forEach((date) => {
-          let aDay = new Date(
-            new Date(date).getUTCFullYear(),
-            new Date(date).getUTCMonth(),
-            new Date(date).getUTCDate()
-          );
+          let aDay = getDate(date);
           if (aDay == today) {
             resultList = resultList.filter(
               (picture) => !currentExcludeList.pictures.includes(picture)
@@ -465,30 +357,14 @@ const getImageListFromDate = (dateType, dateString) => {
   if (dateType == "interval") {
     // Parsing dateString to proper dates
     let parsedDates = dateString.split(" - ");
-    let lowerDate = new Date(
-      new Date(parsedDates[0]).getUTCFullYear(),
-      new Date(parsedDates[0]).getUTCMonth(),
-      new Date(parsedDates[0]).getUTCDate()
-    );
-    let greaterDate = new Date(
-      new Date(parsedDates[1]).getUTCFullYear(),
-      new Date(parsedDates[1]).getUTCMonth(),
-      new Date(parsedDates[1]).getUTCDate()
-    );
+    let lowerDate = getDate(parsedDates[0]);
+    let greaterDate = getDate(parsedDates[1]);
 
     allImagesList.forEach((image) => {
       if (db.entries[image].dateType.trim() == "interval") {
         let imageParsedDates = db.entries[image].dates.split(" - ");
-        let imageLowestDate = new Date(
-          new Date(imageParsedDates[0]).getUTCFullYear(),
-          new Date(imageParsedDates[0]).getUTCMonth(),
-          new Date(imageParsedDates[0]).getUTCDate()
-        );
-        let imageGreaterDate = new Date(
-          new Date(imageParsedDates[1]).getUTCFullYear(),
-          new Date(imageParsedDates[1]).getUTCMonth(),
-          new Date(imageParsedDates[1]).getUTCDate()
-        );
+        let imageLowestDate = getDate(imageParsedDates[0]);
+        let imageGreaterDate = getDate(imageParsedDates[1]);
 
         if (
           (imageLowestDate <= lowerDate && lowerDate <= imageGreaterDate) ||
@@ -501,11 +377,7 @@ const getImageListFromDate = (dateType, dateString) => {
       } else if (db.entries[image].dateType.trim() == "multiple") {
         let imageDates = db.entries[image].dates.split(",");
         imageDates.forEach((date) => {
-          let imageDate = new Date(
-            new Date(date).getUTCFullYear(),
-            new Date(date).getUTCMonth(),
-            new Date(date).getUTCDate()
-          );
+          let imageDate = getDate(date);
           if (
             lowerDate <= imageDate &&
             imageDate <= greaterDate &&
@@ -519,24 +391,12 @@ const getImageListFromDate = (dateType, dateString) => {
   } else if (dateType == "multiple") {
     let incomingDates = dateString.split(",");
     incomingDates.forEach((date) => {
-      let incomingDate = new Date(
-        new Date(date).getUTCFullYear(),
-        new Date(date).getUTCMonth(),
-        new Date(date).getUTCDate()
-      );
+      let incomingDate = getDate(date);
       allImagesList.forEach((image) => {
         if (db.entries[image].dateType == "interval") {
           let parsedDates = db.entries[image].dates.split(" - ");
-          let imageLowestDate = new Date(
-            new Date(parsedDates[0]).getUTCFullYear(),
-            new Date(parsedDates[0]).getUTCMonth(),
-            new Date(parsedDates[0]).getUTCDate()
-          );
-          let imageGreaterDate = new Date(
-            new Date(parsedDates[1]).getUTCFullYear(),
-            new Date(parsedDates[1]).getUTCMonth(),
-            new Date(parsedDates[1]).getUTCDate()
-          );
+          let imageLowestDate = getDate(parsedDates[0]);
+          let imageGreaterDate = getDate(parsedDates[1]);
 
           if (
             imageLowestDate <= incomingDate &&
@@ -547,11 +407,7 @@ const getImageListFromDate = (dateType, dateString) => {
           }
         } else if (db.entries[image].dateType == "multiple") {
           db.entries[image].dates.split(",").forEach((imageDate) => {
-            let entryDate = new Date(
-              new Date(imageDate).getUTCFullYear(),
-              new Date(imageDate).getUTCMonth(),
-              new Date(imageDate).getUTCDate()
-            );
+            let entryDate = getDate(imageDate);
             if (incomingDate == entryDate && !imageList.includes(image)) {
               imageList.push(image);
             }
@@ -571,28 +427,12 @@ const removeFromExcludeds = (data) => {
 
     if (currentExcludeList.dateType == "interval") {
       let parsedDates = currentExcludeList.dates.split(" - ");
-      let leftmostDay = new Date(
-        new Date(parsedDates[0]).getUTCFullYear(),
-        new Date(parsedDates[0]).getUTCMonth(),
-        new Date(parsedDates[0]).getUTCDate()
-      );
-      let rightmostDay = new Date(
-        new Date(parsedDates[1]).getUTCFullYear(),
-        new Date(parsedDates[1]).getUTCMonth(),
-        new Date(parsedDates[1]).getUTCDate()
-      );
+      let leftmostDay = getDate(parsedDates[0]);
+      let rightmostDay = getDate(parsedDates[1]);
       if (data.dateType == "interval") {
         let parsedIncomingDates = data.dates.split(" - ");
-        let leftmostIncomingDay = new Date(
-          new Date(parsedIncomingDates[0]).getUTCFullYear(),
-          new Date(parsedIncomingDates[0]).getUTCMonth(),
-          new Date(parsedIncomingDates[0]).getUTCDate()
-        );
-        let rightmostIncomingDay = new Date(
-          new Date(parsedIncomingDates[1]).getUTCFullYear(),
-          new Date(parsedIncomingDates[1]).getUTCMonth(),
-          new Date(parsedIncomingDates[1]).getUTCDate()
-        );
+        let leftmostIncomingDay = getDate(parsedIncomingDates[0]);
+        let rightmostIncomingDay = getDate(parsedIncomingDates[1]);
         if (
           (leftmostDay <= leftmostIncomingDay &&
             leftmostIncomingDay <= rightmostDay) ||
@@ -605,11 +445,7 @@ const removeFromExcludeds = (data) => {
         }
       } else if (data.dateType == "multiple") {
         data.dates.split(",").forEach((date) => {
-          let aDay = new Date(
-            new Date(date).getUTCFullYear(),
-            new Date(date).getUTCMonth(),
-            new Date(date).getUTCDate()
-          );
+          let aDay = getDate(date);
           if (leftmostDay <= aDay && aDay <= rightmostDay) {
             currentExcludeList.pictures = currentExcludeList.pictures.filter(
               (excludedPicture) => !data.pictures.includes(excludedPicture)
@@ -619,23 +455,11 @@ const removeFromExcludeds = (data) => {
       }
     } else if (currentExcludeList.dateType == "multiple") {
       currentExcludeList.dates.split(",").forEach((date) => {
-        let aDay = new Date(
-          new Date(date).getUTCFullYear(),
-          new Date(date).getUTCMonth(),
-          new Date(date).getUTCDate()
-        );
+        let aDay = getDate(date);
         if (data.dateType == "interval") {
           let parsedIncomingDates = data.dates.split(" - ");
-          let leftmostIncomingDay = new Date(
-            new Date(parsedIncomingDates[0]).getUTCFullYear(),
-            new Date(parsedIncomingDates[0]).getUTCMonth(),
-            new Date(parsedIncomingDates[0]).getUTCDate()
-          );
-          let rightmostIncomingDay = new Date(
-            new Date(parsedIncomingDates[1]).getUTCFullYear(),
-            new Date(parsedIncomingDates[1]).getUTCMonth(),
-            new Date(parsedIncomingDates[1]).getUTCDate()
-          );
+          let leftmostIncomingDay = getDate(parsedIncomingDates[0]);
+          let rightmostIncomingDay = getDate(parsedIncomingDates[1]);
           if (leftmostIncomingDay <= aDay && aDay <= rightmostIncomingDay) {
             currentExcludeList.pictures = currentExcludeList.pictures.filter(
               (excludedPicture) => !data.pictures.includes(excludedPicture)
@@ -643,11 +467,7 @@ const removeFromExcludeds = (data) => {
           }
         } else if (data.dateType == "multiple") {
           data.dates.split(",").forEach((incomingDate) => {
-            let incomingDay = new Date(
-              new Date(incomingDate).getUTCFullYear(),
-              new Date(incomingDate).getUTCMonth(),
-              new Date(incomingDate).getUTCDate()
-            );
+            let incomingDay = getDate(incomingDate);
 
             if (aDay == incomingDay) {
               currentExcludeList.pictures = currentExcludeList.pictures.filter(
@@ -680,11 +500,7 @@ const pictureList = (data) => {
 
 const insertFormData = (request, response) => {
   let form = new formidable.IncomingForm({ multiples: true });
-  let today = new Date(
-    new Date().getUTCFullYear(),
-    new Date().getUTCMonth(),
-    new Date().getUTCDate()
-  );
+  let today = getTodayDate();
   form.keepExtensions = true;
 
   form.parse(request, (error, fields, files) => {
@@ -744,24 +560,16 @@ const insertFormData = (request, response) => {
       }
 
       if (fields.radio == "interval") {
-        var parsedDates = fields.dates.split(" ");
-        var leftmostDay = new Date(
-          new Date(parsedDates[0]).getUTCFullYear(),
-          new Date(parsedDates[0]).getUTCMonth(),
-          new Date(parsedDates[0]).getUTCDate()
-        );
-        var rightmostDay = new Date(parsedDates[2]);
+        var parsedDates = fields.dates.split(" - ");
+        var leftmostDay = getDate(parsedDates[0]);
+        var rightmostDay = getDate(parsedDates[1]);
         if (leftmostDay <= today || today <= rightmostDay) {
           buildToday();
         }
       } else if (fields.radio == "multiple") {
         var hasToday = false;
-        fields.dates.split(",").forEach(function (date) {
-          var aDay = new Date(
-            new Date(date).getUTCFullYear(),
-            new Date(date).getUTCMonth(),
-            new Date(date).getUTCDate()
-          );
+        fields.dates.split(",").forEach((date) => {
+          var aDay = getDate(date);
           if (aDay == today) {
             hasToday = true;
           }
