@@ -18,8 +18,8 @@ try {
   console.log(err);
 }
 
-const getDate = (str) => {
-  return moment(str || new Date(), "YYYY-MM-DD").set({
+const getDate = (str, noFormat) => {
+  return moment(str || new Date(), !noFormat ? "YYYY-MM-DD" : null).set({
     hour: 0,
     minute: 0,
     second: 0,
@@ -148,8 +148,10 @@ const buildToday = (playlist) => {
       todayList = filterExclude(todayList, today);
     }
   } else {
+    // TODO: CHECK EACH LIST'S DATES DUDE YOU GENIUS!!!!
     for (const list in createdLists) {
       let currentList = createdLists[list];
+      console.log("Current List", currentList);
       insertCreatedToList(currentList, todayList);
 
       if (currentList.concat == "true") {
@@ -246,7 +248,7 @@ const hasPicture = (epochTime) => {
   let done = false;
 
   if (epochTime) {
-    var incomingDate = getDate(parseInt(epochTime));
+    var incomingDate = getDate(parseInt(epochTime), true);
     // First check if there's a picture with that date
     if (!done)
       for (const imageKey in db.entries) {
@@ -305,9 +307,14 @@ const getTodayList = () => {
   var today = getDate();
   var built = getDate(db.metadata["dateBuilt"]);
 
+  console.log(today);
+  console.log(built);
+
   if (built < today) {
+    console.log("Building");
     return buildToday();
   } else {
+    console.log("Built");
     return db.metadata["todayList"];
   }
 };
