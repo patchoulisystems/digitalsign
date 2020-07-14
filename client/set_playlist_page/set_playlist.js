@@ -38,7 +38,7 @@ const getPlaylists = () => {
 };
 
 const listOnClick = (playlist) => {
-  if (playlist.concat) {
+  if (playlist.concat == "false") {
     displayModal(
       "This list currently accepts other images to be concatenated to it. Would you like to keep it this way? (Click No to make it so we don't concatenate anymore)",
       () => {
@@ -49,7 +49,7 @@ const listOnClick = (playlist) => {
       "Yes",
       "No",
       () => {
-        submitList({ ...playlist, concat: !playlist.concat });
+        submitList({ ...playlist, concat: "false" });
       }
     );
   } else {
@@ -61,7 +61,7 @@ const listOnClick = (playlist) => {
       "Yes",
       "No",
       () => {
-        submitList({ ...playlist, concat: !playlist.concat });
+        submitList({ ...playlist, concat: "true" });
       }
     );
   }
