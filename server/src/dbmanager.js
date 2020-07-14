@@ -121,6 +121,26 @@ const insertCreatedToList = (currentList, todayList) => {
   }
 };
 
+const getScheduled = (item) => {
+  var today = getDate();
+  if (item.dateType == "interval") {
+    var parsedDates = item.dates.split(" - ");
+    var leftmostDay = getDate(parsedDates[0]);
+    var rightmostDay = getDate(parsedDates[1]);
+    if (leftmostDay <= today && today <= rightmostDay) {
+      return item.pictures;
+    }
+  } else {
+    item.dates.split(",").forEach((date) => {
+      var aDay = getDate(date);
+      if (aDay == today) {
+        return item.pictures;
+      }
+    });
+  }
+  return [];
+};
+
 // TODO: Optimize this
 const buildToday = (playlist) => {
   var todayList = [];
@@ -148,25 +168,26 @@ const buildToday = (playlist) => {
       todayList = filterExclude(todayList, today);
     }
   } else {
-    // TODO: CHECK EACH LIST'S DATES DUDE YOU GENIUS!!!!
     for (const list in createdLists) {
       let currentList = createdLists[list];
-      console.log("Current List", currentList);
-      insertCreatedToList(currentList, todayList);
+      let images = getScheduled(currentList);
+      if (images.length) {
+        insertCreatedToList(currentList, todayList);
+        if (currentList.concat == "true") {
+          // We do our magic here
+          todayList = todayList.concat(
+            getTodayImages().filter((el) => !todayList.includes(el))
+          );
 
-      if (currentList.concat == "true") {
-        // We do our magic here
-        todayList = todayList.concat(
-          getTodayImages().filter((el) => !todayList.includes(el))
-        );
-
-        // Appending included lists scheduled for today
-        todayList = todayList.concat(
-          getTodayIncludeList().filter((el) => !todayList.includes(el))
-        );
-        // Excluding scheduled pictures to be excluded. Should we add that option as well?
-        todayList = filterExclude(todayList, today);
+          // Appending included lists scheduled for today
+          todayList = todayList.concat(
+            getTodayIncludeList().filter((el) => !todayList.includes(el))
+          );
+          // Excluding scheduled pictures to be excluded. Should we add that option as well?
+          todayList = filterExclude(todayList, today);
+        }
       }
+      console.log("Current List", currentList);
     }
   }
 
