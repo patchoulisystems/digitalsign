@@ -225,9 +225,7 @@ const setPlaylist = (data) => {
     playlist = {
       ...playlist,
       dateType: "multiple",
-      dates: `${
-        today.getMonth() + 1
-      }-${today.getDate()}-${today.getFullYear()}`,
+      dates: `${today.month() + 1}-${today.date()}-${today.year()}`,
     };
   }
   noDates ? buildToday(playlist) : buildToday();
