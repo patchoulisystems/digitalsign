@@ -1,6 +1,13 @@
 const endpoint = "/today_images";
 const settingsEndpoint = "/settings";
 
+var now = new Date();
+const then = new Date(
+  now.getFullYear(),
+  now.getMonth(),
+  now.getDate() + 1
+).setHours(2);
+
 var slideIndex = 0;
 var images = [];
 var settings = {};
@@ -66,6 +73,21 @@ const showSlides = () => {
   setTimeout(showSlides, settings.timeBetweenPictures);
 };
 
+// When the time of a date object is manipulated, the date object
+// becomes an epoch time. That's why we're doing this comparison
+// like that
+const refresher = () => {
+  if (now.getTime() >= then) {
+    // Refresh
+    location.reload();
+  } else {
+    // Reset now
+    now = new Date();
+  }
+  // Every hour
+  setTimeout(refresher, 360000);
+};
+
 var justHidden = false;
 var j;
 
@@ -89,3 +111,5 @@ $(document).mousemove(function () {
     j = setTimeout(hide, 1000);
   }
 });
+
+refresher();
