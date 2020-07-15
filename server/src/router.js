@@ -171,10 +171,20 @@ function resolveSetPlaylist(response, request, urlObject) {
 }
 
 function resolvePlaylistExists(response, request, urlObject) {
-  let parsedQuerystring = querystring.parse(urlObject.query);
-  let playlistExists = db.listWithName(parsedQuerystring.name);
-  response.write(JSON.stringify({ playlistExists }));
-  response.end();
+  if (request.method == "GET") {
+    let parsedQuerystring = querystring.parse(urlObject.query);
+    if (parsedQuerystring.name) {
+      let playlistExists = db.listWithName(parsedQuerystring.name);
+      response.write(JSON.stringify({ playlistExists }));
+      response.end();
+    } else {
+      response.writeHead(400, "Bad Request");
+      response.end();
+    }
+  } else {
+    response.writeHead(405, "Method not Allowed");
+    response.end();
+  }
 }
 
 function resolveSandbox(response, method) {
