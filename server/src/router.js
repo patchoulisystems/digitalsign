@@ -398,30 +398,35 @@ function resolveAssets(response, request, urlObject) {
 function resolveWidget(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
-    var filePath = `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`;
-    var contentType;
-    try {
-      if (fs.existsSync(filePath)) {
-        if (parsedQuerystring.resource.includes("js")) {
-          contentType = "text/javascript";
-        } else if (parsedQuerystring.resource.includes("css")) {
-          contentType = "text/css";
-        } else if (parsedQuerystring.resource.includes("html")) {
-          contentType = "text/html";
+    if (parsedQuerystring.widgetName && parsedQuerystring.resource) {
+      var filePath = `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`;
+      var contentType;
+      try {
+        if (fs.existsSync(filePath)) {
+          if (parsedQuerystring.resource.includes("js")) {
+            contentType = "text/javascript";
+          } else if (parsedQuerystring.resource.includes("css")) {
+            contentType = "text/css";
+          } else if (parsedQuerystring.resource.includes("html")) {
+            contentType = "text/html";
+          }
+          var stream = fs.createReadStream(filePath);
+          stream.on("open", () => {
+            response.setHeader("Content-Type", contentType);
+            stream.pipe(response);
+          });
+        } else {
+          response.writeHead(404, "Not Found");
+          response.end();
         }
-        var stream = fs.createReadStream(filePath);
-        stream.on("open", () => {
-          response.setHeader("Content-Type", contentType);
-          stream.pipe(response);
-        });
-      } else {
-        response.writeHead(404, "Not Found");
+      } catch (err) {
+        // TODO: Logging here
+        console.log(err);
+        response.writeHead(500, "Internal Server Error");
         response.end();
       }
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
+    } else {
+      response.writeHead(400, "Bad Request");
       response.end();
     }
   } else {
