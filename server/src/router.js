@@ -171,10 +171,20 @@ function resolveSetPlaylist(response, request, urlObject) {
 }
 
 function resolvePlaylistExists(response, request, urlObject) {
-  let parsedQuerystring = querystring.parse(urlObject.query);
-  let playlistExists = db.listWithName(parsedQuerystring.name);
-  response.write(JSON.stringify({ playlistExists }));
-  response.end();
+  if (request.method == "GET") {
+    let parsedQuerystring = querystring.parse(urlObject.query);
+    if (parsedQuerystring.name) {
+      let playlistExists = db.listWithName(parsedQuerystring.name);
+      response.write(JSON.stringify({ playlistExists }));
+      response.end();
+    } else {
+      response.writeHead(400, "Bad Request");
+      response.end();
+    }
+  } else {
+    response.writeHead(405, "Method not Allowed");
+    response.end();
+  }
 }
 
 function resolveSandbox(response, method) {
@@ -252,12 +262,17 @@ function resolveCreateList(response, request, urlObject) {
 function resolveHasPicture(response, method, urlObject) {
   if (method == "GET") {
     let parsedQuerystring = querystring.parse(urlObject.query);
-    let epochTime = parsedQuerystring.time;
-    let hasPicture = db.hasPicture(epochTime);
-    headers["Content-Type"] = "application/json";
-    response.writeHead(200, headers);
-    response.write(JSON.stringify({ data: hasPicture }));
-    response.end();
+    if (parsedQuerystring.time) {
+      let epochTime = parsedQuerystring.time;
+      let hasPicture = db.hasPicture(epochTime);
+      headers["Content-Type"] = "application/json";
+      response.writeHead(200, headers);
+      response.write(JSON.stringify({ data: hasPicture }));
+      response.end();
+    } else {
+      response.writeHead(400, "Bad Request");
+      response.end();
+    }
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -273,99 +288,106 @@ function resolveHasPicture(response, method, urlObject) {
 function resolveAssets(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
-    if (parsedQuerystring.name.indexOf(".png") !== -1) {
-      try {
-        if (fs.existsSync(`${assetsFolder}${parsedQuerystring.name}`)) {
-          var stream = fs.createReadStream(
-            `${assetsFolder}${parsedQuerystring.name}`
-          );
-          stream.on("open", () => {
-            response.setHeader("Content-Type", "image/png");
-            stream.pipe(response);
-          });
-        } else {
-          response.writeHead(404, "Not Found");
-          response.end();
-        }
-      } catch (err) {
-        // TODO: Logging here
-        console.log(err);
-        response.writeHead(500, "Internal Server Error");
-        response.end();
-      }
-    } else if (parsedQuerystring.name.indexOf("font") !== -1) {
-      var fileName = parsedQuerystring.name.split("font")[1];
-      var filePath = `${assetsFolder}/fonts/${fileName}`;
-
-      try {
-        if (fs.existsSync(filePath)) {
-          if (fileName.indexOf(".ttf") !== -1) {
-            var stream = fs.createReadStream(filePath);
+    if (parsedQuerystring.name) {
+      if (parsedQuerystring.name.indexOf(".png") !== -1) {
+        try {
+          if (fs.existsSync(`${assetsFolder}${parsedQuerystring.name}`)) {
+            var stream = fs.createReadStream(
+              `${assetsFolder}${parsedQuerystring.name}`
+            );
             stream.on("open", () => {
-              response.setHeader("Content-Type", "application/x-font-ttf");
-              stream.pipe(response);
-            });
-          } else if (fileName.indexOf(".woff") !== -1) {
-            var stream = fs.createReadStream(filePath);
-            stream.on("open", () => {
-              response.setHeader("Content-Type", "application/font-woff");
+              response.setHeader("Content-Type", "image/png");
               stream.pipe(response);
             });
           } else {
             response.writeHead(404, "Not Found");
             response.end();
           }
-        } else {
-          response.writeHead(404, "Not Found");
+        } catch (err) {
+          // TODO: Logging here
+          console.log(err);
+          response.writeHead(500, "Internal Server Error");
           response.end();
         }
-      } catch (err) {
-        // TODO: Logging here
-        console.log(err);
-        response.writeHead(500, "Internal Server Error");
-        response.end();
-      }
-    } else if (parsedQuerystring.name.indexOf(".js") !== -1) {
-      var fileName = parsedQuerystring.name;
-      try {
-        if (fs.existsSync(`${assetsFolder}scripts/${parsedQuerystring.name}`)) {
-          var stream = fs.createReadStream(
-            `${assetsFolder}scripts/${parsedQuerystring.name}`
-          );
-          stream.on("open", () => {
-            response.setHeader("Content-Type", "text/javascript");
-            stream.pipe(response);
-          });
-        } else {
-          response.writeHead(404, "Not Found");
+      } else if (parsedQuerystring.name.indexOf("font") !== -1) {
+        var fileName = parsedQuerystring.name.split("font")[1];
+        var filePath = `${assetsFolder}/fonts/${fileName}`;
+
+        try {
+          if (fs.existsSync(filePath)) {
+            if (fileName.indexOf(".ttf") !== -1) {
+              var stream = fs.createReadStream(filePath);
+              stream.on("open", () => {
+                response.setHeader("Content-Type", "application/x-font-ttf");
+                stream.pipe(response);
+              });
+            } else if (fileName.indexOf(".woff") !== -1) {
+              var stream = fs.createReadStream(filePath);
+              stream.on("open", () => {
+                response.setHeader("Content-Type", "application/font-woff");
+                stream.pipe(response);
+              });
+            } else {
+              response.writeHead(404, "Not Found");
+              response.end();
+            }
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } catch (err) {
+          // TODO: Logging here
+          console.log(err);
+          response.writeHead(500, "Internal Server Error");
           response.end();
         }
-      } catch (err) {
-        // TODO: Logging here
-        response.writeHead(500, "Internal Server Error");
-        response.end();
-      }
-    } else if (parsedQuerystring.name.indexOf(".ico") !== -1) {
-      try {
-        if (fs.existsSync(`${assetsFolder}${parsedQuerystring.name}`)) {
-          var stream = fs.createReadStream(
-            `${assetsFolder}${parsedQuerystring.name}`
-          );
-          stream.on("open", () => {
-            response.setHeader("Content-Type", "image/x-icon");
-            stream.pipe(response);
-          });
-        } else {
-          response.writeHead(404, "Not Found");
+      } else if (parsedQuerystring.name.indexOf(".js") !== -1) {
+        var fileName = parsedQuerystring.name;
+        try {
+          if (
+            fs.existsSync(`${assetsFolder}scripts/${parsedQuerystring.name}`)
+          ) {
+            var stream = fs.createReadStream(
+              `${assetsFolder}scripts/${parsedQuerystring.name}`
+            );
+            stream.on("open", () => {
+              response.setHeader("Content-Type", "text/javascript");
+              stream.pipe(response);
+            });
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } catch (err) {
+          // TODO: Logging here
+          response.writeHead(500, "Internal Server Error");
           response.end();
         }
-      } catch (err) {
-        // TODO: Logging here
-        response.writeHead(500, "Internal Server Error");
+      } else if (parsedQuerystring.name.indexOf(".ico") !== -1) {
+        try {
+          if (fs.existsSync(`${assetsFolder}${parsedQuerystring.name}`)) {
+            var stream = fs.createReadStream(
+              `${assetsFolder}${parsedQuerystring.name}`
+            );
+            stream.on("open", () => {
+              response.setHeader("Content-Type", "image/x-icon");
+              stream.pipe(response);
+            });
+          } else {
+            response.writeHead(404, "Not Found");
+            response.end();
+          }
+        } catch (err) {
+          // TODO: Logging here
+          response.writeHead(500, "Internal Server Error");
+          response.end();
+        }
+      } else {
+        response.writeHead(404, "Not Found");
         response.end();
       }
     } else {
-      response.writeHead(404, "Not Found");
+      response.writeHead(400, "Bad Request");
       response.end();
     }
   } else {
@@ -383,30 +405,35 @@ function resolveAssets(response, request, urlObject) {
 function resolveWidget(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
-    var filePath = `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`;
-    var contentType;
-    try {
-      if (fs.existsSync(filePath)) {
-        if (parsedQuerystring.resource.includes("js")) {
-          contentType = "text/javascript";
-        } else if (parsedQuerystring.resource.includes("css")) {
-          contentType = "text/css";
-        } else if (parsedQuerystring.resource.includes("html")) {
-          contentType = "text/html";
+    if (parsedQuerystring.widgetName && parsedQuerystring.resource) {
+      var filePath = `${widgetsFolder}/${parsedQuerystring.widgetName}/${parsedQuerystring.resource}`;
+      var contentType;
+      try {
+        if (fs.existsSync(filePath)) {
+          if (parsedQuerystring.resource.includes("js")) {
+            contentType = "text/javascript";
+          } else if (parsedQuerystring.resource.includes("css")) {
+            contentType = "text/css";
+          } else if (parsedQuerystring.resource.includes("html")) {
+            contentType = "text/html";
+          }
+          var stream = fs.createReadStream(filePath);
+          stream.on("open", () => {
+            response.setHeader("Content-Type", contentType);
+            stream.pipe(response);
+          });
+        } else {
+          response.writeHead(404, "Not Found");
+          response.end();
         }
-        var stream = fs.createReadStream(filePath);
-        stream.on("open", () => {
-          response.setHeader("Content-Type", contentType);
-          stream.pipe(response);
-        });
-      } else {
-        response.writeHead(404, "Not Found");
+      } catch (err) {
+        // TODO: Logging here
+        console.log(err);
+        response.writeHead(500, "Internal Server Error");
         response.end();
       }
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
+    } else {
+      response.writeHead(400, "Bad Request");
       response.end();
     }
   } else {
@@ -508,6 +535,8 @@ function resolveImage(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
     try {
+      console.log(parsedQuerystring);
+      console.log(parsedQuerystring.name);
       if (parsedQuerystring.name == "empty.jpg") {
         var stream = fs.createReadStream("./data/assets/empty.jpg");
         stream.on("open", () => {
@@ -526,7 +555,7 @@ function resolveImage(response, request, urlObject) {
           response.setHeader("Content-Type", "image/jpg");
           stream.pipe(response);
         });
-      } else {
+      } else if (parsedQuerystring.name) {
         if (fs.existsSync(`${imagesFolder}${parsedQuerystring.name}`)) {
           var stream = fs.createReadStream(
             `${imagesFolder}${parsedQuerystring.name}`
@@ -542,6 +571,9 @@ function resolveImage(response, request, urlObject) {
             stream.pipe(response);
           });
         }
+      } else {
+        response.writeHead(400, "Bad Request");
+        response.end();
       }
     } catch (err) {
       // TODO: Whenever we do logging, here's a good place to start
