@@ -508,6 +508,8 @@ function resolveImage(response, request, urlObject) {
   if (request.method == "GET") {
     var parsedQuerystring = querystring.parse(urlObject.query);
     try {
+      console.log(parsedQuerystring);
+      console.log(parsedQuerystring.name);
       if (parsedQuerystring.name == "empty.jpg") {
         var stream = fs.createReadStream("./data/assets/empty.jpg");
         stream.on("open", () => {
@@ -526,7 +528,7 @@ function resolveImage(response, request, urlObject) {
           response.setHeader("Content-Type", "image/jpg");
           stream.pipe(response);
         });
-      } else {
+      } else if (parsedQuerystring.name) {
         if (fs.existsSync(`${imagesFolder}${parsedQuerystring.name}`)) {
           var stream = fs.createReadStream(
             `${imagesFolder}${parsedQuerystring.name}`
@@ -542,6 +544,9 @@ function resolveImage(response, request, urlObject) {
             stream.pipe(response);
           });
         }
+      } else {
+        response.writeHead(400, "Bad Request");
+        response.end();
       }
     } catch (err) {
       // TODO: Whenever we do logging, here's a good place to start
