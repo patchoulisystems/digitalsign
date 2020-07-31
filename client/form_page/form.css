@@ -54,6 +54,11 @@ body {
   text-align: left;
 }
 
+.input:focus {
+  border: 2px #d1a732 solid;
+  border-radius: 5px;
+}
+
 .studentidpics {
   display: inline-block;
 }
