@@ -3,20 +3,29 @@ const db = require("./dbmanager");
 const DIRS = {
   asset: "./data/assets/",
   images: "./data/images/",
-  widget: "../client/components/"
+  widget: "../client/components/",
+  index: "../client",
 }
 
-const findFile = (response, dir, file, ct, inside) => {
-  let pathString = DIRS[dir] + (inside ? inside + "/" : "") + file;
+const findFile = (response, dir, file, ct, inside, instant=false) => {
+  let pathString = (DIRS[dir] || "../client") + (inside ? inside + "/" : "") + file;
+  console.log(pathString);
 
   if (fs.existsSync(pathString)) {
-    let stream = fs.createReadStream(pathString);
-    stream.on("open", () => {
-      response.setHeader("Content-Type", ct);
-      stream.pipe(response);
-    });
+    if (instant) {
+      let file = fs.readFileSync(pathString);
+      response.writeHead(200, {"Content-Type": ct});
+      response.write(file);
+      response.end();
+    } else {
+      let stream = fs.createReadStream(pathString);
+      stream.on("open", () => {
+        response.setHeader("Content-Type", ct);
+        stream.pipe(response);
+      });
+    }
   } else {
-    switch (dir){
+    switch (dir) {
       case "images":
         findFile(response, "asset", "404.jpg", ct, "");
         break;

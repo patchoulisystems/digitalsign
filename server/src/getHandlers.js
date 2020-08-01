@@ -1,6 +1,7 @@
 const db = require("./dbmanager");
 const ru = require("./routerUtils");
 const querystring = require("querystring");
+const fs = require("fs");
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -385,6 +386,22 @@ const settings = (response) => {
     response.end();
   }
 };
+
+const resources = (request, response) => {
+  let dir = request.url.split(".")[0].split("/")[1];
+  let filename = request.url;
+  let ct = "text/";
+  if (request.url.indexOf(".js") !== -1) ct += "javascript";
+  else ct+= "css";
+  let inside = (dir == "index"? "" : `/${dir}_page`);
+  console.log(dir+inside+filename+ct);
+  try {
+    ru.findFile(response, dir, filename, ct, inside, true);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   getPlaylist,
   setPlaylist,
@@ -403,5 +420,5 @@ module.exports = {
   settingsPage,
   excludePage,
   settings,
-
+  resources,
 };

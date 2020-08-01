@@ -491,44 +491,7 @@ function resolveOptions(response, request) {
 function css(request, response) {
   if (request.url.indexOf(".css") !== -1 && !request.url.includes("?")) {
     if (request.method == "GET") {
-      var name = request.url.split(".")[0];
-      var file;
-      if (name === "/index") {
-        try {
-          if (fs.existsSync(`../client${request.url}`)) {
-            file = fs.readFileSync(`../client${request.url}`, {
-              encoding: "utf8",
-            });
-          } else {
-            response.writeHead(404, "Not Found");
-            response.end();
-          }
-        } catch (err) {
-          // TODO: Logging here
-          console.log(err);
-          response.writeHead(500, "Internal Server Error");
-          response.end();
-        }
-      } else {
-        try {
-          if (fs.existsSync(`../client${name}_page${request.url}`)) {
-            file = fs.readFileSync(`../client${name}_page${request.url}`, {
-              encoding: "utf8",
-            });
-          } else {
-            response.writeHead(404, "Not Found");
-            response.end();
-          }
-        } catch (err) {
-          // TODO: Logging here
-          console.log(err);
-          response.writeHead(500, "Internal Server Error");
-          response.end();
-        }
-      }
-      response.writeHead(200, { "Content-Type": "text/css" });
-      response.write(file);
-      response.end();
+      getH.resources(request, response);
     } else {
       response.writeHead(405, "Method Not Allowed");
       response.end();
@@ -544,43 +507,7 @@ function css(request, response) {
 function js(request, response) {
   if (request.url.indexOf(".js") !== -1 && !request.url.includes("?")) {
     if (request.method == "GET") {
-      var name = request.url.split(".")[0];
-      var file;
-      if (name === "/index") {
-        try {
-          if (fs.existsSync(`../client${request.url}`)) {
-            file = fs.readFileSync(`../client${request.url}`, {
-              encoding: "utf8",
-            });
-          } else {
-            response.writeHead(404, "Not Found");
-            response.end();
-          }
-        } catch (err) {
-          // TODO: Logging here
-          response.writeHead(500, "Internal Server Error");
-          response.end();
-        }
-      } else {
-        try {
-          if (fs.existsSync(`../client${name}_page${request.url}`)) {
-            file = fs.readFileSync(`../client${name}_page${request.url}`, {
-              encoding: "utf8",
-            });
-          } else {
-            response.writeHead(404, "Not Found");
-            response.end();
-          }
-        } catch (err) {
-          // TODO: Logging here
-          console.log(err);
-          response.writeHead(500, "Internal Server Error");
-          response.end();
-        }
-      }
-      response.writeHead(200, { "Content-Type": "text/javascript" });
-      response.write(file);
-      response.end();
+      getH.resources(request, response);
     } else {
       response.writeHead(405, "Method Not Allowed");
       response.end();
