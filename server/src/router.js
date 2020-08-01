@@ -97,14 +97,14 @@ function home(request, response) {
   }
 }
 
-function resolveGetPlaylists(request, response) {
+const resolveGetPlaylists = (request, response) => {
   if (request.method == "GET") {
     getH.getPlaylist(response);
   } else {
     response.writeHead(405, "Method not Allowed");
     response.end();
   }
-}
+};
 
 function resolveSetPlaylist(request, response) {
   if (request.method == "GET") {
