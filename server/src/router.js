@@ -129,7 +129,7 @@ function resolveSetPlaylist(response, request) {
     }
   } else if (request.method == "POST") {
     try {
-      routerUtils.postFromPage(request, response, db.setPlaylist);
+      routerUtils.postFromPage(request, response, db.setPlaylist, "pictures");
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -188,7 +188,7 @@ function resolveCreateList(response, request) {
     }
   } else if (request.method == "POST") {
     try {
-      routerUtils.postFromPage(request, response, db.createList);
+      routerUtils.postFromPage(request, response, db.createList, "pictures");
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -538,23 +538,7 @@ function resolveImage(response, request, urlObject) {
 function resolvePictureList(response, request) {
   if (request.method === "POST") {
     try {
-      let requestData = "";
-
-      request.on("data", function (incomingData) {
-        requestData += incomingData;
-      });
-
-      request.on("end", () => {
-        requestData = JSON.parse(requestData);
-        response.setHeader("Content-Type", "text/plain");
-        if (requestData["pictures"].length == 0) {
-          response.writeHead(400, "Bad Request");
-        } else {
-          response.writeHead(200, "OK");
-          db.pictureList(requestData);
-        }
-        response.end();
-      });
+      routerUtils.postFromPage(request, response, db.pictureList, "pictures");
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -575,15 +559,7 @@ function resolvePictureList(response, request) {
 function resolveUpload(response, request) {
   if (request.method == "GET") {
     try {
-      if (fs.existsSync("../client/form_page/form.html")) {
-        let file = fs.readFileSync("../client/form_page/form.html");
-        response.writeHead(200, { "Content-Type": "text/html" });
-        response.write(file);
-        response.end();
-      } else {
-        response.writeHead(404, "Not Found");
-        response.end();
-      }
+      routerUtils.getPage("form", response);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -613,16 +589,7 @@ function resolveUpload(response, request) {
 function resolveEditDay(response, request) {
   if (request.method == "GET") {
     try {
-      if (fs.existsSync("../client/edit_day_page/edit_day.html")) {
-        let file = fs.readFileSync("../client/edit_day_page/edit_day.html");
-        headers["Content-Type"] = "text/html";
-        response.writeHead(200, headers);
-        response.write(file);
-        response.end();
-      } else {
-        response.writeHead(404, "Not Found");
-        response.end();
-      }
+      routerUtils.getPage("edit_day", response);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -695,22 +662,7 @@ function resolveDatedImages(response, request) {
 function resolveSettingsPage(response, request) {
   if (request.method == "GET") {
     try {
-      if (
-        fs.existsSync(
-          "../client/slideshow_settings_page/slideshow_settings.html"
-        )
-      ) {
-        let file = fs.readFileSync(
-          "../client/slideshow_settings_page/slideshow_settings.html"
-        );
-        headers["Content-Type"] = "text/html";
-        response.writeHead(200, headers);
-        response.write(file);
-        response.end();
-      } else {
-        response.writeHead(404, "Not Found");
-        response.end();
-      }
+      routerUtils.getPage("slideshow_settings", response);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -768,15 +720,7 @@ function resolveSettingsPage(response, request) {
 function resolveExcludePage(response, request) {
   if (request.method == "GET") {
     try {
-      if (fs.existsSync("../client/exclude_list_page/exclude_list.html")) {
-        let file = fs.readFileSync(
-          "../client/exclude_list_page/exclude_list.html"
-        );
-        headers["Content-Type"] = "text/html";
-        response.writeHead(200, headers);
-        response.write(file);
-        response.end();
-      }
+      routerUtils.getPage("exclude_list", response);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -785,26 +729,7 @@ function resolveExcludePage(response, request) {
     }
   } else if (request.method == "POST") {
     try {
-      let requestData = "";
-
-      request.on("data", function (incomingData) {
-        requestData += incomingData;
-      });
-
-      request.on("end", () => {
-        requestData = JSON.parse(requestData);
-        if (
-          !requestData.dates ||
-          !requestData.dateType ||
-          !requestData.pictures
-        ) {
-          response.writeHead(400, "Bad Request");
-        } else {
-          responseData = db.excludeListFromData(requestData);
-          response.writeHead(200, "OK");
-        }
-        response.end();
-      });
+      routerUtils.postFromPage(request, response, db.excludeListFromData);
     } catch (err) {
       // TODO: Logging here. Most likely the request broke before it finished.
       console.log(err);

@@ -14,7 +14,7 @@ const getPage = (page, response) => {
   }
 };
 
-const postFromPage = (request, response, postFn, toFind = "pictures") => {
+const postFromPage = (request, response, postFn, toFind, headers) => {
   let requestData = "";
   request.on("data", (incomingData) => {
     requestData += incomingData;
@@ -22,15 +22,27 @@ const postFromPage = (request, response, postFn, toFind = "pictures") => {
 
   request.on("end", () => {
     requestData = JSON.parse(requestData);
-    response.setHeader("Content-Type", "text/plain");
 
-    if (requestData[toFind].length == 0) {
-      response.writeHead(400, "Bad Request");
+    if (toFind) {
+      response.setHeader("Content-Type", "text/plain");
+      if (requestData[toFind].length == 0) {
+        response.writeHead(400, "Bad Request");
+      } else {
+        postFn(requestData);
+        response.writeHead(200, "OK");
+      }
     } else {
-      response.writeHead(200, "OK");
-      postFn(requestData);
+      if (
+        !requestData.dates ||
+        !requestData.dateType ||
+        !requestData.pictures
+      ) {
+        response.writeHead(400, "Bad Request");
+      } else {
+        postFn(requestData);
+        response.writeHead(200, "OK");
+      }
     }
-
     response.end();
   });
 };
