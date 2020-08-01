@@ -42,7 +42,7 @@ const setPlaylist = (response) => {
  * Uses the url object to check for a playlist with a given name
  *
  * @param {Response} response - The response used to send back if a playlist exists
- * @param {URLObject} urlObject - The url object that contains the name of the playlist to check
+ * @param {UrlWithStringQuery} urlObject - The url object that contains the name of the playlist to check
  */
 
 const playlistExists = (response, urlObject) => {
@@ -80,7 +80,7 @@ const createList = (response) => {
  * Uses the url object to get the requested epoch time, and the response to return the result
  *
  * @param {Response} response - The response used to send back if a day has a picture
- * @param {URLObject} urlObject - The url object that contains the epoch of the day to check
+ * @param {UrlWithStringQuery} urlObject - The url object that contains the epoch of the day to check
  */
 
 const hasPicture = (response, urlObject) => {
@@ -97,10 +97,62 @@ const hasPicture = (response, urlObject) => {
   }
 };
 
+/** GET Handler for the /assets
+ *
+ * First we parse the querystring from the urlObject, then we check if the querystring has
+ * a name and then we check the extension of the name, mostly important for the content type header.
+ * After that we're basically on a decision tree that changes the input of the find asset.
+ *
+ * @param {Response} response - The response
+ * @param {UrlWithStringQuery} urlObject - The urlObject used to parse the querystring from
+ */
+
+const assets = (response, urlObject) => {
+  /** The parsed query string */
+  let qstring = querystring.parse(urlObject.query);
+  if (qstring.name) {
+    let ct = "";
+    let filename = qstring.name;
+    let inside = "";
+    if (filename.indexOf(".png") !== -1) {
+      ct = "image/png";
+    } else if (filename.indexOf("font") !== -1) {
+      filename = qstring.name.split("font")[1];
+      inside = "fonts";
+      ct =
+        filename.indexOf(".ttf") !== -1
+          ? "application/x-font-ttf"
+          : "application/font-woff";
+    } else if (filename.indexOf(".js") !== -1) {
+      inside = "scripts";
+      ct = "text/javascript";
+    } else if (filename.indexOf(".ico") !== -1) {
+      ct = "image/x-icon";
+    } else {
+      response.writeHead(404, "Not Found");
+      return response.end();
+    }
+    try {
+      ru.findAsset(response, filename, ct, inside);
+    } catch (err) {
+      // TODO: Logging here
+      console.log(err);
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
+  } else {
+    response.writeHead(400, "Bad Request");
+    response.end();
+  }
+};
+
+const widget = (response, urlObject) => {};
+
 module.exports = {
   getPlaylist,
   setPlaylist,
   playlistExists,
   createList,
   hasPicture,
+  assets,
 };
