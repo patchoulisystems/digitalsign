@@ -110,7 +110,7 @@ const resolveSetPlaylist = (request, response) => {
   if (request.method == "GET") {
     getH.setPlaylist(response);
   } else if (request.method == "POST") {
-    postH.setPlaylist(request, response);
+    postH.postList(request, response, db.setPlaylist);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -144,14 +144,7 @@ const resolveCreateList = (request, response) => {
   if (request.method == "GET") {
     getH.createList(response);
   } else if (request.method == "POST") {
-    try {
-      routerUtils.postFromPage(request, response, db.createList, "pictures");
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    postH.postList(request, response, db.createList);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -267,14 +260,7 @@ const resolveImage = (request, response, urlObject) => {
  */
 const resolvePictureList = (request, response) => {
   if (request.method === "POST") {
-    try {
-      routerUtils.postFromPage(request, response, db.pictureList, "pictures");
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    postH.postList(request, response, db.pictureList);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -290,14 +276,7 @@ const resolveUpload = (request, response) => {
   if (request.method == "GET") {
     getH.upload(response);
   } else if (request.method == "POST") {
-    try {
-      db.insertFormData(request, response);
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    postH.upload(request, response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -327,30 +306,7 @@ const resolveDatedImages = (request, response) => {
   if (request.method === "GET") {
     getH.datedImages(response);
   } else if (request.method == "POST") {
-    try {
-      let requestData = "";
-
-      request.on("data", function (incomingData) {
-        requestData += incomingData;
-      });
-
-      request.on("end", () => {
-        requestData = JSON.parse(requestData);
-        headers["Content-Type"] = "application/json";
-        let responseData = {};
-        responseData = db.getImageListFromDate(
-          requestData["dateType"],
-          requestData["dates"]
-        );
-        response.writeHead(200, headers);
-        routerUtils.sendJson(response, { data: responseData });
-      });
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    postH.datedImages(request, response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -367,42 +323,7 @@ const resolveSettingsPage = (request, response) => {
   if (request.method == "GET") {
     getH.settingsPage(response);
   } else if (request.method == "POST") {
-    try {
-      let form = new formidable.IncomingForm({ multiples: true });
-      form.keepExtensions = true;
-
-      form.parse(request, (error, fields, files) => {
-        if (
-          !fields.animationSpeed ||
-          !fields.animationName ||
-          !fields.timeBetweenPictures
-        ) {
-          response.writeHead(400, "Bad Request");
-          response.end();
-        } else {
-          try {
-            if (fs.existsSync("./data/settings.json")) {
-              fs.writeFileSync("./data/settings.json", JSON.stringify(fields));
-              response.writeHead(200, "OK");
-              response.end();
-            } else {
-              response.writeHead(400, "Bad Request");
-              response.end();
-            }
-          } catch (err) {
-            // TODO: Logging here
-            console.log(err);
-            response.writeHead(500, "Internal Server Error");
-            response.end();
-          }
-        }
-      });
-    } catch (err) {
-      // TODO: Logging here. This time most likely we didn't recieve the form at all; Formidable couldn't parse.
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    postH.settingsPage(request, response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -418,14 +339,7 @@ const resolveExcludePage = (request, response) => {
   if (request.method == "GET") {
     getH.excludePage(response);
   } else if (request.method == "POST") {
-    try {
-      routerUtils.postFromPage(request, response, db.excludeListFromData);
-    } catch (err) {
-      // TODO: Logging here. Most likely the request broke before it finished.
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    postH.postList(request, response, db.excludeListFromData);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
