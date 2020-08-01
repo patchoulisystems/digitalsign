@@ -184,17 +184,7 @@ function resolveCreateList(response, request) {
  */
 function resolveHasPicture(response, method, urlObject) {
   if (method == "GET") {
-    let parsedQuerystring = querystring.parse(urlObject.query);
-    if (parsedQuerystring.time) {
-      let epochTime = parsedQuerystring.time;
-      let hasPicture = db.hasPicture(epochTime);
-      headers["Content-Type"] = "application/json";
-      response.writeHead(200, headers);
-      routerUtils.sendJson(response, { data: hasPicture });
-    } else {
-      response.writeHead(400, "Bad Request");
-      response.end();
-    }
+    getH.hasPicture(response, urlObject);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();

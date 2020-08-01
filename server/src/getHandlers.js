@@ -40,9 +40,24 @@ const createList = (response) => {
   }
 };
 
+const hasPicture = (response, urlObject) => {
+  let parsedQuerystring = querystring.parse(urlObject.query);
+  if (parsedQuerystring.time) {
+    let epochTime = parsedQuerystring.time;
+    let hasPicture = db.hasPicture(epochTime);
+    headers["Content-Type"] = "application/json";
+    response.writeHead(200, headers);
+    routerUtils.sendJson(response, { data: hasPicture });
+  } else {
+    response.writeHead(400, "Bad Request");
+    response.end();
+  }
+};
+
 module.exports = {
   getPlaylist,
   setPlaylist,
   playlistExists,
   createList,
+  hasPicture,
 };
