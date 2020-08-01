@@ -175,22 +175,11 @@ function resolveSandbox(response, method) {
  * This the endpoint that saves custom lists and displays the Create List page
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
- * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveCreateList(response, request, urlObject) {
+function resolveCreateList(response, request) {
   if (request.method == "GET") {
     try {
-      if (fs.existsSync("../client/create_list_page/create_list.html")) {
-        let file = fs.readFileSync(
-          "../client/create_list_page/create_list.html"
-        );
-        response.writeHead(200, { "Content-Type": "text/html" });
-        response.write(file);
-        response.end();
-      } else {
-        response.writeHead(404, "Not Found");
-        response.end();
-      }
+      routerUtils.getPage("create_list", response);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -199,23 +188,7 @@ function resolveCreateList(response, request, urlObject) {
     }
   } else if (request.method == "POST") {
     try {
-      let requestData = "";
-
-      request.on("data", function (incomingData) {
-        requestData += incomingData;
-      });
-
-      request.on("end", () => {
-        requestData = JSON.parse(requestData);
-        response.setHeader("Content-Type", "text/plain");
-        if (requestData["pictures"].length == 0) {
-          response.writeHead(400, "Bad Request");
-        } else {
-          response.writeHead(200, "OK");
-          db.createList(requestData);
-        }
-        response.end();
-      });
+      routerUtils.postFromPage(request, response, db.createList);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
