@@ -14,8 +14,28 @@ const getPage = (page, response) => {
   }
 };
 
-const postFromPage = (request) => {};
+const postFromPage = (request, response, postFn) => {
+  let requestData = "";
+  request.on("data", (incomingData) => {
+    requestData += incomingData;
+  });
+
+  request.on("end", () => {
+    requestData = JSON.parse(requestData);
+    response.setHeader("Content-Type", "text/plain");
+
+    if (requestData["pictures"].length == 0) {
+      response.writeHead(400, "Bad Request");
+    } else {
+      response.writeHead(200, "OK");
+      postFn(requestData);
+    }
+
+    response.end();
+  });
+};
 
 module.exports = {
   getPage,
+  postFromPage,
 };
