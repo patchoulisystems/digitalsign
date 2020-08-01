@@ -427,15 +427,7 @@ function resolveIndex(response, method) {
 function resolveToday(request, response) {
   if (request.method == "GET") {
     try {
-      if (fs.existsSync("../client/slideshow_page/slideshow.html")) {
-        let file = fs.readFileSync("../client/slideshow_page/slideshow.html");
-        response.writeHead(200, { "Content-Type": "text/html" });
-        response.write(file);
-        response.end();
-      } else {
-        response.writeHead(404, "Not Found");
-        response.end();
-      }
+      routerUtils.getPage("slideshow", response);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
