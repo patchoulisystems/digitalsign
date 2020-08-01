@@ -1,9 +1,12 @@
 const fs = require("fs");
 const db = require("./dbmanager");
-const ASSETS_DIRECTORY = "./data/assets/";
+const DIRS = {
+  asset: "./data/assets/",
+  widget: "../client/components/"
+}
 
-const findAsset = (response, asset, ct, inside) => {
-  let pathString = ASSETS_DIRECTORY + (inside ? inside + "/" : "/") + asset;
+const findFile = (response, dir, file, ct, inside) => {
+  let pathString = DIRS[dir] + (inside ? inside + "/" : "") + file;
 
   if (fs.existsSync(pathString)) {
     let stream = fs.createReadStream(pathString);
@@ -84,5 +87,5 @@ module.exports = {
   getPage,
   postFromPage,
   sendJson,
-  findAsset,
+  findFile,
 };
