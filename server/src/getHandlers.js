@@ -1,7 +1,6 @@
 const db = require("./dbmanager");
 const ru = require("./routerUtils");
 const querystring = require("querystring");
-const { findFile } = require("./routerUtils");
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -170,8 +169,8 @@ const widget = (response, urlObject) => {
     let ct = "text/";
     let filename = qstring.resource;
     let inside = qstring.widgetName;
-    
-    if (filename.indexOf(".js") !== -1){
+
+    if (filename.indexOf(".js") !== -1) {
       ct += "javascript";
     } else if (filename.indexOf(".css") !== -1) {
       ct += "css";
@@ -184,12 +183,110 @@ const widget = (response, urlObject) => {
 
     try {
       ru.findFile(response, "widget", filename, ct, inside);
-    } catch (err){
+    } catch (err) {
       // TODO: Logging here
       response.writeHead(500, "Internal Server Error");
       response.end();
     }
 
+  } else {
+    response.writeHead(400, "Bad Request");
+    response.end();
+  }
+};
+
+/** GET Handler for / 
+ * 
+ * Simply returns the index page and sends it on the response
+ * 
+ * @param {Response} response - The response we use to send the page in
+*/
+
+const index = (response) => {
+  try {
+    ru.getPage(response);
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
+
+/** GET Handler for /today 
+ * 
+ * Returns the slideshow page on the response
+ * 
+ * @param {Response} response - We're using the response to send back the page on
+*/
+
+const today = (response) => {
+  try {
+    ru.getPage(response, "slideshow");
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
+
+/** GET Handler for /today_images 
+ * 
+ * Returns the scheduled pictures for today on the response
+ * 
+ * @param {Response} response - We're using the response to return the image list
+*/
+
+const todayImages = (response) => {
+  try {
+    let images = db.getTodayList();
+    headers["Content-Type"] = "application/json";
+    response.writeHead(200, headers);
+    ru.sendJson(response, { data: images });
+  } catch (err) {
+    // TODO: Logging here. Also log in the db.getTodayList
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
+
+/** GET Handler for /image
+ * 
+ * A lot is happening so I'll type the comment as I go
+ * 
+ * @param {Response} response - The response we use to pipe the image to
+ * @param {import("url").UrlWithStringQuery} urlObject - The object where the querystring will be parsed from
+*/
+
+const image = (response, urlObject) => {
+  let qstring = querystring.parse(urlObject.query);
+  if (qstring.name) {
+    let inside = "";
+    let ct = "image/jpg";
+    let filename = qstring.name;
+    let dir = "";
+    // A switch is faster than an if/else. I know, we don't have that many cases but
+    // stil, if we can use a switch here and it is faster than if/else then might
+    // as well, right?
+    switch (qstring.name) {
+      case "empty.jpg":
+      case "500.jpg":
+      case "404.jpg":
+        dir = "asset";
+        break;
+      default:
+        dir = "images";
+        break;
+    }
+    try {
+      ru.findFile(response, dir, filename, ct, inside);
+    } catch (err) {
+      // TODO: Logging here. Also log in the db.getTodayList
+      console.log(err);
+      ru.findFile(response, "asset", "500.jpg", ct, "");
+    }
   } else {
     response.writeHead(400, "Bad Request");
     response.end();
@@ -204,4 +301,8 @@ module.exports = {
   hasPicture,
   assets,
   widget,
+  index,
+  today,
+  todayImages,
+  image,
 };
