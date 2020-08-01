@@ -10,7 +10,7 @@ const headers = {
   /** add other headers as per requirement */
 };
 
-/** GET Handlers for the endpoints
+/** GET Handler methods
  *
  * This module contains the handlers for the GET methods of all endpoints
  * @module getHandlers
@@ -155,11 +155,11 @@ const assets = (response, urlObject) => {
 };
 
 /** GET Handler for the /widget
- * 
+ *
  * Pretty much doing the same as the assets one, just checking if the proper params are on the
  * qstring first and then decision branching to set the correct content type. This one's simpler, because
  * everything's on the same directory as far as widgets go.
- * 
+ *
  * @param {Response} response - The response we'll use to send back the widget
  * @param {import("url").UrlWithStringQuery} urlObject - We'll use this to parse the qstring and its params from
  */
@@ -189,19 +189,18 @@ const widget = (response, urlObject) => {
       response.writeHead(500, "Internal Server Error");
       response.end();
     }
-
   } else {
     response.writeHead(400, "Bad Request");
     response.end();
   }
 };
 
-/** GET Handler for / 
- * 
+/** GET Handler for /
+ *
  * Simply returns the index page and sends it on the response
- * 
+ *
  * @param {Response} response - The response we use to send the page in
-*/
+ */
 
 const index = (response) => {
   try {
@@ -214,12 +213,12 @@ const index = (response) => {
   }
 };
 
-/** GET Handler for /today 
- * 
+/** GET Handler for /today
+ *
  * Returns the slideshow page on the response
- * 
+ *
  * @param {Response} response - We're using the response to send back the page on
-*/
+ */
 
 const today = (response) => {
   try {
@@ -232,12 +231,12 @@ const today = (response) => {
   }
 };
 
-/** GET Handler for /today_images 
- * 
+/** GET Handler for /today_images
+ *
  * Returns the scheduled pictures for today on the response
- * 
+ *
  * @param {Response} response - We're using the response to return the image list
-*/
+ */
 
 const todayImages = (response) => {
   try {
@@ -254,14 +253,14 @@ const todayImages = (response) => {
 };
 
 /** GET Handler for /image
- * 
+ *
  * Not a lot is happening, it's mostly like the previous handlers
- * where we decision branch to choose the proper directory to look 
- * for the file we're requesting. 
- * 
+ * where we decision branch to choose the proper directory to look
+ * for the file we're requesting.
+ *
  * @param {Response} response - The response we use to pipe the image to
  * @param {import("url").UrlWithStringQuery} urlObject - The object where the querystring will be parsed from
-*/
+ */
 
 const image = (response, urlObject) => {
   let qstring = querystring.parse(urlObject.query);
@@ -296,12 +295,12 @@ const image = (response, urlObject) => {
   }
 };
 
-/** GET Handler for /upload 
- * 
+/** GET Handler for /upload
+ *
  * Returns the Picture Upload page on the response
- * 
+ *
  * @param {Response} response - The response to return the page in
-*/
+ */
 
 const upload = (response) => {
   try {
@@ -314,10 +313,10 @@ const upload = (response) => {
   }
 };
 
-/** GET Handler for the /edit_day page 
- * 
+/** GET Handler for the /edit_day page
+ *
  * Returns the Edit day page on the response
-*/
+ */
 const editDay = (response) => {
   try {
     ru.getPage(response, "edit_day");
@@ -330,11 +329,11 @@ const editDay = (response) => {
 };
 
 /** GET Handler for the  /dated_images
- * 
+ *
  * Returns all the images on the response
- * 
+ *
  * @param {Response} response - We're using the response to send a list with all the images
-*/
+ */
 
 const datedImages = (response) => {
   try {
@@ -350,12 +349,12 @@ const datedImages = (response) => {
   }
 };
 
-/** GET Handler for /slideshow_settigns 
- * 
+/** GET Handler for /slideshow_settigns
+ *
  * Returns the slideshow settings on the response
- * 
+ *
  * @param {Response} response - The response to return the settings in
-*/
+ */
 
 const settingsPage = (response) => {
   try {
@@ -368,12 +367,12 @@ const settingsPage = (response) => {
   }
 };
 
-/** GET Handler for /exclude_list 
- * 
+/** GET Handler for /exclude_list
+ *
  * Returns the exclude page on the response
- * 
+ *
  * @param {Response} response - The response to return the exclude page in
-*/
+ */
 
 const excludePage = (response) => {
   try {
@@ -386,12 +385,12 @@ const excludePage = (response) => {
   }
 };
 
-/** GET Handler for /settings 
- * 
+/** GET Handler for /settings
+ *
  * Returns the settings page on the response
- * 
+ *
  * @param {Response} response - The response to return the settings page in
-*/
+ */
 
 const settings = (response) => {
   try {
@@ -408,26 +407,26 @@ const settings = (response) => {
   }
 };
 
-/** GET Handler for .css and .js endpoints 
- * 
+/** GET Handler for .css and .js endpoints
+ *
  * So this handles whatever js or css files that ARE PART OF A PAGE.
  * This is really important to note, because WIDGET JS AND CSS ARE
  * HANDLED SOMEWHERE ELSE, THEY'RE REQUESTED LIKE INDIVIDUAL WIDGETS.
- * 
+ *
  * This handler works for
- * 
+ *
  * @param {Request} request - We use the request to check wether we have a css or a js file
  * @param {Response} response - The response to return the resource in
-*/
+ */
 
 const resources = (request, response) => {
   let dir = request.url.split(".")[0].split("/")[1];
   let filename = request.url;
   let ct = "text/";
   if (request.url.indexOf(".js") !== -1) ct += "javascript";
-  else ct+= "css";
-  let inside = (dir == "index"? "" : `/${dir}_page`);
-  console.log(dir+inside+filename+ct);
+  else ct += "css";
+  let inside = dir == "index" ? "" : `/${dir}_page`;
+  console.log(dir + inside + filename + ct);
   try {
     ru.findFile(response, dir, filename, ct, inside, true);
   } catch (err) {
