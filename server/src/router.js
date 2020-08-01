@@ -129,23 +129,7 @@ function resolveSetPlaylist(response, request, urlObject) {
     }
   } else if (request.method == "POST") {
     try {
-      let requestData = "";
-
-      request.on("data", function (incomingData) {
-        requestData += incomingData;
-      });
-
-      request.on("end", () => {
-        requestData = JSON.parse(requestData);
-        response.setHeader("Content-Type", "text/plain");
-        if (requestData["pictures"].length == 0) {
-          response.writeHead(400, "Bad Request");
-        } else {
-          response.writeHead(200, "OK");
-          db.setPlaylist(requestData);
-        }
-        response.end();
-      });
+      routerUtils.postFromPage(request, response, db.setPlaylist);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
