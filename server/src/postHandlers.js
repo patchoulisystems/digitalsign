@@ -1,7 +1,13 @@
 const db = require("./dbmanager");
 const ru = require("./routerUtils");
-const querystring = require("querystring");
 const fs = require("fs");
+
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+  "Access-Control-Max-Age": 2592000, // 30 days
+  /** add other headers as per requirement */
+};
 
 /** POST Handler methods
  *
@@ -19,7 +25,7 @@ const fs = require("fs");
  * @param {Response} response - We return wether we could/couldn't post the data
  */
 
-const postList = (request, response, fn, toFind = "pictures") => {
+const postList = (request, response, fn, toFind) => {
   try {
     ru.postFromPage(request, response, fn, toFind);
   } catch (err) {
