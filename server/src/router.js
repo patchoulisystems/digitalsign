@@ -230,14 +230,7 @@ function resolveWidget(response, request, urlObject) {
  */
 function resolveIndex(response, method) {
   if (method == "GET") {
-    try {
-      routerUtils.getPage(response);
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    getH.index(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -251,14 +244,7 @@ function resolveIndex(response, method) {
  */
 function resolveToday(request, response) {
   if (request.method == "GET") {
-    try {
-      routerUtils.getPage(response, "slideshow");
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    getH.today(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -272,17 +258,7 @@ function resolveToday(request, response) {
  */
 function resolveTodayImages(response, method) {
   if (method == "GET") {
-    try {
-      let images = db.getTodayList();
-      headers["Content-Type"] = "application/json";
-      response.writeHead(200, headers);
-      routerUtils.sendJson(response, { data: images });
-    } catch (err) {
-      // TODO: Logging here. Also log in the db.getTodayList
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    getH.todayImages(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -297,57 +273,7 @@ function resolveTodayImages(response, method) {
  */
 function resolveImage(response, request, urlObject) {
   if (request.method == "GET") {
-    var parsedQuerystring = querystring.parse(urlObject.query);
-    try {
-      console.log(parsedQuerystring);
-      console.log(parsedQuerystring.name);
-      if (parsedQuerystring.name == "empty.jpg") {
-        var stream = fs.createReadStream("./data/assets/empty.jpg");
-        stream.on("open", () => {
-          response.setHeader("Content-Type", "image/jpg");
-          stream.pipe(response);
-        });
-      } else if (parsedQuerystring.name == "500.jpg") {
-        var stream = fs.createReadStream("./data/assets/500.jpg");
-        stream.on("open", () => {
-          response.setHeader("Content-Type", "image/jpg");
-          stream.pipe(response);
-        });
-      } else if (parsedQuerystring.name == "404.jpg") {
-        var stream = fs.createReadStream("./data/assets/404.jpg");
-        stream.on("open", () => {
-          response.setHeader("Content-Type", "image/jpg");
-          stream.pipe(response);
-        });
-      } else if (parsedQuerystring.name) {
-        if (fs.existsSync(`${imagesFolder}${parsedQuerystring.name}`)) {
-          var stream = fs.createReadStream(
-            `${imagesFolder}${parsedQuerystring.name}`
-          );
-          stream.on("open", () => {
-            response.setHeader("Content-Type", "image/jpg");
-            stream.pipe(response);
-          });
-        } else {
-          var stream = fs.createReadStream("./data/assets/404.jpg");
-          stream.on("open", () => {
-            response.setHeader("Content-Type", "image/jpg");
-            stream.pipe(response);
-          });
-        }
-      } else {
-        response.writeHead(400, "Bad Request");
-        response.end();
-      }
-    } catch (err) {
-      // TODO: Whenever we do logging, here's a good place to start
-      console.log(err);
-      var stream = fs.createReadStream("./data/assets/500.jpg");
-      stream.on("open", () => {
-        response.setHeader("Content-Type", "image/jpg");
-        stream.pipe(response);
-      });
-    }
+    getH.image(response, urlObject);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
