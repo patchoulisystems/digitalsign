@@ -14,7 +14,7 @@ const getPage = (page, response) => {
   }
 };
 
-const postFromPage = (request, response, postFn) => {
+const postFromPage = (request, response, postFn, toFind = "pictures") => {
   let requestData = "";
   request.on("data", (incomingData) => {
     requestData += incomingData;
@@ -24,7 +24,7 @@ const postFromPage = (request, response, postFn) => {
     requestData = JSON.parse(requestData);
     response.setHeader("Content-Type", "text/plain");
 
-    if (requestData["pictures"].length == 0) {
+    if (requestData[toFind].length == 0) {
       response.writeHead(400, "Bad Request");
     } else {
       response.writeHead(200, "OK");
