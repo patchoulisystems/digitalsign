@@ -1,7 +1,6 @@
 const getH = require("./getHandlers");
 const fs = require("fs");
 const url = require("url");
-const querystring = require("querystring");
 const db = require("./dbmanager");
 const formidable = require("formidable");
 const routerUtils = require("./routerUtils");
@@ -22,19 +21,6 @@ const headers = {
  * @module router
  * @see {@link dbmanager}
  */
-
-/**
- * @constant {String} imagesFolder - Path to the Images folder
- */
-const imagesFolder = "./data/images/";
-/**
- * @constant {String} assetsFolder - Path to the Assets folder
- */
-const assetsFolder = "./data/assets/";
-/**
- * @constant {String} widgetsFolder - Path to the Widgets folder
- */
-const widgetsFolder = "../client/components/";
 
 /**
  * This is the entry point of our application. It is divided by the pathname of the url received so we can determine which endpoint
