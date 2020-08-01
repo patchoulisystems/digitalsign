@@ -1,10 +1,3 @@
-/**
- * This module redirects the Client by manipulating the received URL string.
- * it uses a URLObject to do this and separate the
- * querystring from the actual URL, so we can see which endpoint is being called.
- * @module router
- * @see {@link dbmanager}
- */
 const getH = require("./getHandlers");
 const fs = require("fs");
 const url = require("url");
@@ -12,7 +5,6 @@ const querystring = require("querystring");
 const db = require("./dbmanager");
 const formidable = require("formidable");
 const routerUtils = require("./routerUtils");
-const { get } = require("http");
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -20,6 +12,16 @@ const headers = {
   "Access-Control-Max-Age": 2592000, // 30 days
   /** add other headers as per requirement */
 };
+
+/** Router Module
+ *
+ * This module redirects the Client by manipulating the received URL string.
+ * it uses a URLObject to do this and separate the
+ * querystring from the actual URL, so we can see which endpoint is being called.
+ *
+ * @module router
+ * @see {@link dbmanager}
+ */
 
 /**
  * @constant {String} imagesFolder - Path to the Images folder
@@ -179,8 +181,8 @@ function resolveCreateList(response, request) {
 /**
  * This the endpoint that checks if a day has pictures assigned to it
  * @param {Response} response - The response that the server will send back to the client
- * @param {XMLHttpRequest} request - The request sent by the Client
- * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
+ * @param {String} method - Method from the request
+ * @param {UrlWithStringQuery} urlObject - The object that contains the route inside the request
  */
 function resolveHasPicture(response, method, urlObject) {
   if (method == "GET") {
@@ -195,7 +197,7 @@ function resolveHasPicture(response, method, urlObject) {
  * This the endpoint that returns the requested asset back to the client
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
- * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
+ * @param {UrlWithStringQuery} urlObject - The object that contains the route inside the request
  */
 function resolveAssets(response, request, urlObject) {
   if (request.method == "GET") {
