@@ -385,14 +385,7 @@ function resolveDatedImages(response, request) {
 
 function resolveSettingsPage(response, request) {
   if (request.method == "GET") {
-    try {
-      routerUtils.getPage(response, "slideshow_settings");
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    getH.settingsPage(response);
   } else if (request.method == "POST") {
     try {
       let form = new formidable.IncomingForm({ multiples: true });
@@ -443,14 +436,7 @@ function resolveSettingsPage(response, request) {
  */
 function resolveExcludePage(response, request) {
   if (request.method == "GET") {
-    try {
-      routerUtils.getPage(response, "exclude_list");
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    getH.excludePage(response);
   } else if (request.method == "POST") {
     try {
       routerUtils.postFromPage(request, response, db.excludeListFromData);
@@ -473,18 +459,7 @@ function resolveExcludePage(response, request) {
  */
 function resolveSettings(response, method) {
   if (method == "GET") {
-    try {
-      if (fs.existsSync("./data/settings.json")) {
-        let settings = fs.readFileSync("./data/settings.json");
-        settings = JSON.parse(settings);
-        routerUtils.sendJson(response, { data: settings });
-      }
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    getH.settings(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();

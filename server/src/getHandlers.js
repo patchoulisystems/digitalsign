@@ -349,6 +349,42 @@ const datedImages = (response) => {
   }
 };
 
+const settingsPage = (response) => {
+  try {
+    ru.getPage(response, "slideshow_settings");
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
+
+const excludePage = (response) => {
+  try {
+    ru.getPage(response, "exclude_list");
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
+
+const settings = (response) => {
+  try {
+    if (fs.existsSync("./data/settings.json")) {
+      let settings = fs.readFileSync("./data/settings.json");
+      settings = JSON.parse(settings);
+      ru.sendJson(response, { data: settings });
+    }
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
 module.exports = {
   getPlaylist,
   setPlaylist,
@@ -364,4 +400,8 @@ module.exports = {
   upload,
   editDay,
   datedImages,
+  settingsPage,
+  excludePage,
+  settings,
+
 };
