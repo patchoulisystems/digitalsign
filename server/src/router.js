@@ -11,6 +11,7 @@ const url = require("url");
 const querystring = require("querystring");
 const db = require("./dbmanager");
 const formidable = require("formidable");
+const routerUtils = require("./routerUtils");
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -119,17 +120,7 @@ function resolveGetPlaylists(response, method) {
 function resolveSetPlaylist(response, request, urlObject) {
   if (request.method == "GET") {
     try {
-      if (fs.existsSync("../client/set_playlist_page/set_playlist.html")) {
-        let file = fs.readFileSync(
-          "../client/set_playlist_page/set_playlist.html"
-        );
-        response.writeHead(200, { "Content-Type": "text/html" });
-        response.write(file);
-        response.end();
-      } else {
-        response.writeHead(404, "Not Found");
-        response.end();
-      }
+      routerUtils.getPage("set_playlist", response);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -146,7 +137,6 @@ function resolveSetPlaylist(response, request, urlObject) {
 
       request.on("end", () => {
         requestData = JSON.parse(requestData);
-        console.log(requestData);
         response.setHeader("Content-Type", "text/plain");
         if (requestData["pictures"].length == 0) {
           response.writeHead(400, "Bad Request");
