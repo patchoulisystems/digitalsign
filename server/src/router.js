@@ -117,7 +117,7 @@ function resolveGetPlaylists(response, method) {
   }
 }
 
-function resolveSetPlaylist(response, request, urlObject) {
+function resolveSetPlaylist(response, request) {
   if (request.method == "GET") {
     try {
       routerUtils.getPage("set_playlist", response);
@@ -146,8 +146,11 @@ function resolvePlaylistExists(response, request, urlObject) {
   if (request.method == "GET") {
     let parsedQuerystring = querystring.parse(urlObject.query);
     if (parsedQuerystring.name) {
-      let playlistExists = db.listWithName(parsedQuerystring.name);
-      response.write(JSON.stringify({ playlistExists }));
+      response.write(
+        JSON.stringify({
+          playlistExists: db.listWithName(parsedQuerystring.name),
+        })
+      );
       response.end();
     } else {
       response.writeHead(400, "Bad Request");
