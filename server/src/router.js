@@ -110,7 +110,7 @@ const resolveSetPlaylist = (request, response) => {
   if (request.method == "GET") {
     getH.setPlaylist(response);
   } else if (request.method == "POST") {
-    postH.postList(request, response, db.setPlaylist);
+    postH.postList(request, response, db.setPlaylist, "pictures");
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -144,7 +144,7 @@ const resolveCreateList = (request, response) => {
   if (request.method == "GET") {
     getH.createList(response);
   } else if (request.method == "POST") {
-    postH.postList(request, response, db.createList);
+    postH.postList(request, response, db.createList, "pictures");
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -260,7 +260,7 @@ const resolveImage = (request, response, urlObject) => {
  */
 const resolvePictureList = (request, response) => {
   if (request.method === "POST") {
-    postH.postList(request, response, db.pictureList);
+    postH.postList(request, response, db.pictureList, "pictures");
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
