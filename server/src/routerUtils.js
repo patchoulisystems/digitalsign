@@ -1,5 +1,21 @@
 const fs = require("fs");
 const db = require("./dbmanager");
+const ASSETS_DIRECTORY = "./data/assets/";
+
+const findAsset = (response, asset, ct, inside) => {
+  let pathString = ASSETS_DIRECTORY + (inside ? inside + "/" : "/") + asset;
+
+  if (fs.existsSync(pathString)) {
+    let stream = fs.createReadStream(pathString);
+    stream.on("open", () => {
+      response.setHeader("Content-Type", ct);
+      stream.pipe(response);
+    });
+  } else {
+    response.writeHead(404, "Not Found");
+    response.end();
+  }
+};
 
 const sendJson = (response, obj) => {
   response.write(JSON.stringify(obj));
@@ -68,4 +84,5 @@ module.exports = {
   getPage,
   postFromPage,
   sendJson,
+  findAsset,
 };
