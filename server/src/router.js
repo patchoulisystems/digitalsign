@@ -108,9 +108,7 @@ function home(request, response) {
 
 function resolveGetPlaylists(response, method) {
   if (method == "GET") {
-    let playlists = db.playlists();
-    console.log(playlists);
-    response.write(JSON.stringify({ playlists }));
+    response.write(JSON.stringify({ playlists: db.playlists() }));
     response.end();
   } else {
     response.writeHead(405, "Method not Allowed");
