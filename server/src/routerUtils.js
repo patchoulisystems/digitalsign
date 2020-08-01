@@ -2,6 +2,7 @@ const fs = require("fs");
 const db = require("./dbmanager");
 const DIRS = {
   asset: "./data/assets/",
+  images: "./data/images/",
   widget: "../client/components/"
 }
 
@@ -15,8 +16,15 @@ const findFile = (response, dir, file, ct, inside) => {
       stream.pipe(response);
     });
   } else {
-    response.writeHead(404, "Not Found");
-    response.end();
+    switch (dir){
+      case "images":
+        findFile(response, "asset", "404.jpg", ct, "");
+        break;
+      default:
+        response.writeHead(404, "Not Found");
+        response.end();
+        break;
+    }
   }
 };
 
