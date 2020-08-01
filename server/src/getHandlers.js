@@ -254,7 +254,9 @@ const todayImages = (response) => {
 
 /** GET Handler for /image
  * 
- * A lot is happening so I'll type the comment as I go
+ * Not a lot is happening, it's mostly like the previous handlers
+ * where we decision branch to choose the proper directory to look 
+ * for the file we're requesting. 
  * 
  * @param {Response} response - The response we use to pipe the image to
  * @param {import("url").UrlWithStringQuery} urlObject - The object where the querystring will be parsed from
@@ -293,6 +295,24 @@ const image = (response, urlObject) => {
   }
 };
 
+/** GET Handler for /upload 
+ * 
+ * Returns the Picture Upload page on the response
+ * 
+ * @param {Response} response - The response to return the page in
+*/
+
+const upload = (response) => {
+  try {
+    routerUtils.getPage(response, "form");
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
+
 module.exports = {
   getPlaylist,
   setPlaylist,
@@ -305,4 +325,6 @@ module.exports = {
   today,
   todayImages,
   image,
+  upload,
+  
 };

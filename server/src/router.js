@@ -308,14 +308,7 @@ function resolvePictureList(response, request) {
  */
 function resolveUpload(response, request) {
   if (request.method == "GET") {
-    try {
-      routerUtils.getPage(response, "form");
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    getH.upload(response);
   } else if (request.method == "POST") {
     try {
       db.insertFormData(request, response);
