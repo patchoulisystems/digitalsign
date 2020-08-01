@@ -35,70 +35,70 @@ function home(request, response) {
 
   switch (pathname) {
     case "/assets":
-      resolveAssets(response, request.method, urlObject);
+      resolveAssets(request, response, urlObject);
       break;
     case "/widget":
-      resolveWidget(response, request, urlObject);
+      resolveWidget(request, response, urlObject);
       break;
     case "/":
-      resolveIndex(response, request.method);
+      resolveIndex(request, response);
       break;
     case "/today":
       resolveToday(request, response);
       break;
     case "/today_images":
-      resolveTodayImages(response, request.method);
+      resolveTodayImages(request, response);
       break;
     case "/image":
-      resolveImage(response, request, urlObject);
+      resolveImage(request, response, urlObject);
       break;
     case "/piclist":
-      resolvePictureList(response, request);
+      resolvePictureList(request, response);
       break;
     case "/upload":
-      resolveUpload(response, request);
+      resolveUpload(request, response);
       break;
     case "/edit_day":
-      resolveEditDay(response, request.method);
+      resolveEditDay(request, response);
       break;
     case "/exclude_list":
-      resolveExcludePage(response, request);
+      resolveExcludePage(request, response);
       break;
     case "/dated_images":
-      resolveDatedImages(response, request);
+      resolveDatedImages(request, response);
       break;
     case "/slideshow_settings":
-      resolveSettingsPage(response, request);
+      resolveSettingsPage(request, response);
       break;
     case "/settings":
-      resolveSettings(response, request.method, urlObject);
+      resolveSettings(request, response, urlObject);
       break;
     case "/hasPicture":
-      resolveHasPicture(response, request.method, urlObject);
+      resolveHasPicture(request, response, urlObject);
       break;
     case "/get_playlists":
-      resolveGetPlaylists(response, request.method);
+      resolveGetPlaylists(request, response);
       break;
     case "/create_list":
-      resolveCreateList(response, request, urlObject);
+      resolveCreateList(request, response, urlObject);
       break;
     case "/set_playlist":
-      resolveSetPlaylist(response, request, urlObject);
+      resolveSetPlaylist(request, response, urlObject);
       break;
     case "/sandbox":
-      resolveSandbox(response, request.method);
+      resolveSandbox(request, response);
       break;
     case "/playlistExists":
-      resolvePlaylistExists(response, request, urlObject);
+      resolvePlaylistExists(request, response, urlObject);
       break;
     default:
-      resolveOptions(response, request);
+      resolveOptions(request, response);
       break;
   }
 }
 
-function resolveGetPlaylists(response, method) {
-  if (method == "GET") {
+function resolveGetPlaylists(request, response) {
+  if (request.method == "GET") {
     getH.getPlaylist(response);
   } else {
     response.writeHead(405, "Method not Allowed");
@@ -106,7 +106,7 @@ function resolveGetPlaylists(response, method) {
   }
 }
 
-function resolveSetPlaylist(response, request) {
+function resolveSetPlaylist(request, response) {
   if (request.method == "GET") {
     getH.setPlaylist(response);
   } else if (request.method == "POST") {
@@ -117,7 +117,7 @@ function resolveSetPlaylist(response, request) {
   }
 }
 
-function resolvePlaylistExists(response, request, urlObject) {
+function resolvePlaylistExists(request, response, urlObject) {
   if (request.method == "GET") {
     getH.playlistExists(response, urlObject);
   } else {
@@ -126,8 +126,8 @@ function resolvePlaylistExists(response, request, urlObject) {
   }
 }
 
-function resolveSandbox(response, method) {
-  if (method == "GET") {
+function resolveSandbox(request, response) {
+  if (request.method == "GET") {
     let file = fs.readFileSync("../client/sandbox_page/sandbox.html");
     response.writeHead(200, { "Content-Type": "text/html" });
     response.write(file);
@@ -137,10 +137,10 @@ function resolveSandbox(response, method) {
 
 /**
  * This the endpoint that saves custom lists and displays the Create List page
+ * @param {Request} request - The request sent by the Client
  * @param {Response} response - The response that the server will send back to the client
- * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolveCreateList(response, request) {
+function resolveCreateList(request, response) {
   if (request.method == "GET") {
     getH.createList(response);
   } else if (request.method == "POST") {
@@ -164,8 +164,8 @@ function resolveCreateList(response, request) {
  * @param {String} method - Method from the request
  * @param {UrlWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveHasPicture(response, method, urlObject) {
-  if (method == "GET") {
+function resolveHasPicture(request, response, urlObject) {
+  if (request.method == "GET") {
     getH.hasPicture(response, urlObject);
   } else {
     response.writeHead(405, "Method Not Allowed");
@@ -179,8 +179,8 @@ function resolveHasPicture(response, method, urlObject) {
  * @param {XMLHttpRequest} request - The request sent by the Client
  * @param {UrlWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveAssets(response, method, urlObject) {
-  if (method == "GET") {
+function resolveAssets(request, response, urlObject) {
+  if (request.method == "GET") {
     getH.assets(response, urlObject);
   } else {
     response.writeHead(405, "Method Not Allowed");
@@ -194,7 +194,7 @@ function resolveAssets(response, method, urlObject) {
  * @param {XMLHttpRequest} request - The request sent by the Client
  * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveWidget(response, request, urlObject) {
+function resolveWidget(request, response, urlObject) {
   if (request.method == "GET") {
     getH.widget(response, urlObject);
   } else {
@@ -208,8 +208,8 @@ function resolveWidget(response, request, urlObject) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveIndex(response, method) {
-  if (method == "GET") {
+function resolveIndex(request, response) {
+  if (request.method == "GET") {
     getH.index(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
@@ -236,8 +236,8 @@ function resolveToday(request, response) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveTodayImages(response, method) {
-  if (method == "GET") {
+function resolveTodayImages(request, response) {
+  if (request.method == "GET") {
     getH.todayImages(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
@@ -251,7 +251,7 @@ function resolveTodayImages(response, method) {
  * @param {XMLHttpRequest} request - The request sent by the Client
  * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveImage(response, request, urlObject) {
+function resolveImage(request, response, urlObject) {
   if (request.method == "GET") {
     getH.image(response, urlObject);
   } else {
@@ -265,7 +265,7 @@ function resolveImage(response, request, urlObject) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolvePictureList(response, request) {
+function resolvePictureList(request, response) {
   if (request.method === "POST") {
     try {
       routerUtils.postFromPage(request, response, db.pictureList, "pictures");
@@ -286,7 +286,7 @@ function resolvePictureList(response, request) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolveUpload(response, request) {
+function resolveUpload(request, response) {
   if (request.method == "GET") {
     getH.upload(response);
   } else if (request.method == "POST") {
@@ -309,8 +309,8 @@ function resolveUpload(response, request) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolveEditDay(response, method) {
-  if (method == "GET") {
+function resolveEditDay(request, response) {
+  if (request.method == "GET") {
     getH.editDay(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
@@ -323,7 +323,7 @@ function resolveEditDay(response, method) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveDatedImages(response, request) {
+function resolveDatedImages(request, response) {
   if (request.method === "GET") {
     getH.datedImages(response);
   } else if (request.method == "POST") {
@@ -363,7 +363,7 @@ function resolveDatedImages(response, request) {
  * @param {String} method - The method of the request sent by the Client
  */
 
-function resolveSettingsPage(response, request) {
+function resolveSettingsPage(request, response) {
   if (request.method == "GET") {
     getH.settingsPage(response);
   } else if (request.method == "POST") {
@@ -414,7 +414,7 @@ function resolveSettingsPage(response, request) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveExcludePage(response, request) {
+function resolveExcludePage(request, response) {
   if (request.method == "GET") {
     getH.excludePage(response);
   } else if (request.method == "POST") {
@@ -437,8 +437,8 @@ function resolveExcludePage(response, request) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveSettings(response, method) {
-  if (method == "GET") {
+function resolveSettings(request, response) {
+  if (request.method == "GET") {
     getH.settings(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
@@ -453,7 +453,7 @@ function resolveSettings(response, method) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolveOptions(response, request) {
+function resolveOptions(request, response) {
   if (request.method === "OPTIONS") {
     response.writeHead(200, headers);
     response.end();
