@@ -23,6 +23,8 @@ const headers = {
  *
  * @param {Request} request - We get the data from here
  * @param {Response} response - We return wether we could/couldn't post the data
+ * @param {Function} fn - The function from the db to use when placing the data in
+ * @param {String} toFind - The attribute to find when doing the insertion. Most of the times it's pictures
  */
 
 const postList = (request, response, fn, toFind) => {
@@ -36,6 +38,13 @@ const postList = (request, response, fn, toFind) => {
   }
 };
 
+/** POST Handler for /upload
+ *
+ * Posting the form data and file(s) to the backend
+ *
+ * @param {Request} request - We get the data from here
+ * @param {Response} response - We close the request with the response
+ */
 const upload = (request, response) => {
   try {
     db.insertFormData(request, response);
@@ -47,6 +56,13 @@ const upload = (request, response) => {
   }
 };
 
+/** POST Handler for /dated_images
+ *
+ * We're posting a list of pictures with a specific date or set of dates
+ *
+ * @param {Request} request - We get the pictures to post here
+ * @param {Response} response - We close the request with the response
+ */
 const datedImages = (request, response) => {
   try {
     let requestData = "";
@@ -74,6 +90,13 @@ const datedImages = (request, response) => {
   }
 };
 
+/** POST Handler for /settings_page
+ *
+ * We recieve the incoming form to modify the current settings file with it
+ *
+ * @param {Request} request - We get the form data from here
+ * @param {Response} response - We close the request with the response
+ */
 const settingsPage = (request, response) => {
   try {
     let form = new formidable.IncomingForm({ multiples: true });
