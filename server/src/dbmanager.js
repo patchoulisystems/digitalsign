@@ -329,12 +329,14 @@ const getTodayList = () => {
   console.log(today);
   console.log(built);
 
-  if (built < today) {
+  if (built <= today) {
     console.log("Building");
     return buildToday();
   } else {
     console.log("Built");
-    return db.metadata["todayList"];
+    return db.metadata["todayList"] == 0
+      ? ["empty.jpg"]
+      : db.metadata["todayList"];
   }
 };
 
