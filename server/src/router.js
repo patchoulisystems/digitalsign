@@ -72,7 +72,7 @@ function home(request, response) {
       resolveUpload(response, request);
       break;
     case "/edit_day":
-      resolveEditDay(response, request);
+      resolveEditDay(response, request.method);
       break;
     case "/exclude_list":
       resolveExcludePage(response, request);
@@ -329,16 +329,9 @@ function resolveUpload(response, request) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolveEditDay(response, request) {
-  if (request.method == "GET") {
-    try {
-      routerUtils.getPage(response, "edit_day");
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+function resolveEditDay(response, method) {
+  if (method == "GET") {
+    getH.editDay(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
@@ -351,7 +344,9 @@ function resolveEditDay(response, request) {
  * @param {String} method - The method of the request sent by the Client
  */
 function resolveDatedImages(response, request) {
-  if (request.method == "POST") {
+  if (request.method === "GET") {
+    getH.datedImages(response);
+  } else if (request.method == "POST") {
     try {
       let requestData = "";
 
@@ -370,18 +365,6 @@ function resolveDatedImages(response, request) {
         response.writeHead(200, headers);
         routerUtils.sendJson(response, { data: responseData });
       });
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
-  } else if (request.method === "GET") {
-    try {
-      let datedImages = db.getImageListFromDate();
-      headers["Content-Type"] = "application/json";
-      response.writeHead(200, headers);
-      routerUtils.sendJson(response, { data: datedImages });
     } catch (err) {
       // TODO: Logging here
       console.log(err);

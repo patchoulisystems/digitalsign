@@ -304,7 +304,43 @@ const image = (response, urlObject) => {
 
 const upload = (response) => {
   try {
-    routerUtils.getPage(response, "form");
+    ru.getPage(response, "form");
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
+
+/** GET Handler for the /edit_day page 
+ * 
+ * Returns the Edit day page on the response
+*/
+const editDay = (response) => {
+  try {
+    ru.getPage(response, "edit_day");
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
+
+/** GET Handler for the  /dated_images
+ * 
+ * Returns all the images on the response
+ * 
+ * @param {Response} response - We're using the response to send a list with all the images
+*/
+
+const datedImages = (response) => {
+  try {
+    let datedImages = db.getImageListFromDate();
+    headers["Content-Type"] = "application/json";
+    response.writeHead(200, headers);
+    ru.sendJson(response, { data: datedImages });
   } catch (err) {
     // TODO: Logging here
     console.log(err);
@@ -326,5 +362,6 @@ module.exports = {
   todayImages,
   image,
   upload,
-  
+  editDay,
+  datedImages,
 };
