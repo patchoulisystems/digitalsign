@@ -106,7 +106,7 @@ const resolveGetPlaylists = (request, response) => {
   }
 };
 
-function resolveSetPlaylist(request, response) {
+const resolveSetPlaylist = (request, response) => {
   if (request.method == "GET") {
     getH.setPlaylist(response);
   } else if (request.method == "POST") {
@@ -115,32 +115,32 @@ function resolveSetPlaylist(request, response) {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
-function resolvePlaylistExists(request, response, urlObject) {
+const resolvePlaylistExists = (request, response, urlObject) => {
   if (request.method == "GET") {
     getH.playlistExists(response, urlObject);
   } else {
     response.writeHead(405, "Method not Allowed");
     response.end();
   }
-}
+};
 
-function resolveSandbox(request, response) {
+const resolveSandbox = (request, response) => {
   if (request.method == "GET") {
     let file = fs.readFileSync("../client/sandbox_page/sandbox.html");
     response.writeHead(200, { "Content-Type": "text/html" });
     response.write(file);
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that saves custom lists and displays the Create List page
  * @param {Request} request - The request sent by the Client
  * @param {Response} response - The response that the server will send back to the client
  */
-function resolveCreateList(request, response) {
+const resolveCreateList = (request, response) => {
   if (request.method == "GET") {
     getH.createList(response);
   } else if (request.method == "POST") {
@@ -156,7 +156,7 @@ function resolveCreateList(request, response) {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that checks if a day has pictures assigned to it
@@ -164,14 +164,14 @@ function resolveCreateList(request, response) {
  * @param {String} method - Method from the request
  * @param {UrlWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveHasPicture(request, response, urlObject) {
+const resolveHasPicture = (request, response, urlObject) => {
   if (request.method == "GET") {
     getH.hasPicture(response, urlObject);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that returns the requested asset back to the client
@@ -179,14 +179,14 @@ function resolveHasPicture(request, response, urlObject) {
  * @param {XMLHttpRequest} request - The request sent by the Client
  * @param {UrlWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveAssets(request, response, urlObject) {
+const resolveAssets = (request, response, urlObject) => {
   if (request.method == "GET") {
     getH.assets(response, urlObject);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that returns the requested widget (or related file) back to the client
@@ -194,56 +194,56 @@ function resolveAssets(request, response, urlObject) {
  * @param {XMLHttpRequest} request - The request sent by the Client
  * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveWidget(request, response, urlObject) {
+const resolveWidget = (request, response, urlObject) => {
   if (request.method == "GET") {
     getH.widget(response, urlObject);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that resolves the Index page
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveIndex(request, response) {
+const resolveIndex = (request, response) => {
   if (request.method == "GET") {
     getH.index(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that resolves the Slideshow page
  * @param {XMLHttpRequest} request - The request sent by the Client
  * @param {Response} response - The response that the server will send back to the client
  */
-function resolveToday(request, response) {
+const resolveToday = (request, response) => {
   if (request.method == "GET") {
     getH.today(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that handles the query of the list of the images for the day
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveTodayImages(request, response) {
+const resolveTodayImages = (request, response) => {
   if (request.method == "GET") {
     getH.todayImages(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that handles the query for an image
@@ -251,21 +251,21 @@ function resolveTodayImages(request, response) {
  * @param {XMLHttpRequest} request - The request sent by the Client
  * @param {URLWithStringQuery} urlObject - The object that contains the route inside the request
  */
-function resolveImage(request, response, urlObject) {
+const resolveImage = (request, response, urlObject) => {
   if (request.method == "GET") {
     getH.image(response, urlObject);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that takes a list of pictures and sets it to a passed date interval, or set of dates
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolvePictureList(request, response) {
+const resolvePictureList = (request, response) => {
   if (request.method === "POST") {
     try {
       routerUtils.postFromPage(request, response, db.pictureList, "pictures");
@@ -279,14 +279,14 @@ function resolvePictureList(request, response) {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that handles an incoming form with a set of pictures
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolveUpload(request, response) {
+const resolveUpload = (request, response) => {
   if (request.method == "GET") {
     getH.upload(response);
   } else if (request.method == "POST") {
@@ -302,28 +302,28 @@ function resolveUpload(request, response) {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that resolves the Date Edit page
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolveEditDay(request, response) {
+const resolveEditDay = (request, response) => {
   if (request.method == "GET") {
     getH.editDay(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that builds a list of images based on a date
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveDatedImages(request, response) {
+const resolveDatedImages = (request, response) => {
   if (request.method === "GET") {
     getH.datedImages(response);
   } else if (request.method == "POST") {
@@ -355,7 +355,7 @@ function resolveDatedImages(request, response) {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that resolves the slideshow settings page
@@ -363,7 +363,7 @@ function resolveDatedImages(request, response) {
  * @param {String} method - The method of the request sent by the Client
  */
 
-function resolveSettingsPage(request, response) {
+const resolveSettingsPage = (request, response) => {
   if (request.method == "GET") {
     getH.settingsPage(response);
   } else if (request.method == "POST") {
@@ -407,14 +407,14 @@ function resolveSettingsPage(request, response) {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that resolves the exclude list page
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveExcludePage(request, response) {
+const resolveExcludePage = (request, response) => {
   if (request.method == "GET") {
     getH.excludePage(response);
   } else if (request.method == "POST") {
@@ -430,21 +430,21 @@ function resolveExcludePage(request, response) {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that resolves the settings file
  * @param {Response} response - The response that the server will send back to the client
  * @param {String} method - The method of the request sent by the Client
  */
-function resolveSettings(request, response) {
+const resolveSettings = (request, response) => {
   if (request.method == "GET") {
     getH.settings(response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 // TODO: Make a proper Options file
 /**
@@ -453,7 +453,7 @@ function resolveSettings(request, response) {
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function resolveOptions(request, response) {
+const resolveOptions = (request, response) => {
   if (request.method === "OPTIONS") {
     response.writeHead(200, headers);
     response.end();
@@ -461,14 +461,14 @@ function resolveOptions(request, response) {
     response.writeHead(405, "Method Not Allowed");
     response.end();
   }
-}
+};
 
 /**
  * This the endpoint that handles the request of any CSS file of a page (this doesn't include the CSS for widgets)
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function css(request, response) {
+const css = (request, response) => {
   if (request.url.indexOf(".css") !== -1 && !request.url.includes("?")) {
     if (request.method == "GET") {
       getH.resources(request, response);
@@ -477,14 +477,14 @@ function css(request, response) {
       response.end();
     }
   }
-}
+};
 
 /**
  * This the endpoint that handles the request of any JS file of a page (this doesn't include the JS for widgets)
  * @param {Response} response - The response that the server will send back to the client
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
-function js(request, response) {
+const js = (request, response) => {
   if (request.url.indexOf(".js") !== -1 && !request.url.includes("?")) {
     if (request.method == "GET") {
       getH.resources(request, response);
@@ -493,7 +493,7 @@ function js(request, response) {
       response.end();
     }
   }
-}
+};
 
 module.exports.home = home;
 module.exports.css = css;
