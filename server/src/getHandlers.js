@@ -17,9 +17,20 @@ const setPlaylist = (response) => {
   }
 };
 
-const playlistExists = (response) => {};
+const playlistExists = (response, urlObject) => {
+  let parsedQuerystring = querystring.parse(urlObject.query);
+  if (parsedQuerystring.name) {
+    ru.sendJson(response, {
+      playlistExists: db.listWithName(parsedQuerystring.name),
+    });
+  } else {
+    response.writeHead(400, "Bad Request");
+    response.end();
+  }
+};
 
 module.exports = {
   getPlaylist,
   setPlaylist,
+  playlistExists,
 };

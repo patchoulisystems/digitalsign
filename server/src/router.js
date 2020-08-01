@@ -136,15 +136,7 @@ function resolveSetPlaylist(response, request) {
 
 function resolvePlaylistExists(response, request, urlObject) {
   if (request.method == "GET") {
-    let parsedQuerystring = querystring.parse(urlObject.query);
-    if (parsedQuerystring.name) {
-      routerUtils.sendJson(response, {
-        playlistExists: db.listWithName(parsedQuerystring.name),
-      });
-    } else {
-      response.writeHead(400, "Bad Request");
-      response.end();
-    }
+    getH.playlistExists(response, urlObject);
   } else {
     response.writeHead(405, "Method not Allowed");
     response.end();
