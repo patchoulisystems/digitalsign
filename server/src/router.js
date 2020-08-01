@@ -1,4 +1,5 @@
 const getH = require("./getHandlers");
+const postH = require("./postHandlers");
 const fs = require("fs");
 const url = require("url");
 const db = require("./dbmanager");
@@ -109,14 +110,7 @@ function resolveSetPlaylist(response, request) {
   if (request.method == "GET") {
     getH.setPlaylist(response);
   } else if (request.method == "POST") {
-    try {
-      routerUtils.postFromPage(request, response, db.setPlaylist, "pictures");
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    postH.setPlaylist(request, response);
   } else {
     response.writeHead(405, "Method Not Allowed");
     response.end();
