@@ -5,7 +5,7 @@
  * @module router
  * @see {@link dbmanager}
  */
-
+const getH = require("./getHandlers");
 const fs = require("fs");
 const url = require("url");
 const querystring = require("querystring");
@@ -109,8 +109,7 @@ function home(request, response) {
 
 function resolveGetPlaylists(response, method) {
   if (method == "GET") {
-    response.write(JSON.stringify({ playlists: db.playlists() }));
-    response.end();
+    getH.getPlaylist(response);
   } else {
     response.writeHead(405, "Method not Allowed");
     response.end();
@@ -119,14 +118,7 @@ function resolveGetPlaylists(response, method) {
 
 function resolveSetPlaylist(response, request) {
   if (request.method == "GET") {
-    try {
-      routerUtils.getPage("set_playlist", response);
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    getH.setPlaylist(response);
   } else if (request.method == "POST") {
     try {
       routerUtils.postFromPage(request, response, db.setPlaylist, "pictures");
@@ -146,12 +138,9 @@ function resolvePlaylistExists(response, request, urlObject) {
   if (request.method == "GET") {
     let parsedQuerystring = querystring.parse(urlObject.query);
     if (parsedQuerystring.name) {
-      response.write(
-        JSON.stringify({
-          playlistExists: db.listWithName(parsedQuerystring.name),
-        })
-      );
-      response.end();
+      routerUtils.sendJson(response, {
+        playlistExists: db.listWithName(parsedQuerystring.name),
+      });
     } else {
       response.writeHead(400, "Bad Request");
       response.end();
@@ -179,7 +168,7 @@ function resolveSandbox(response, method) {
 function resolveCreateList(response, request) {
   if (request.method == "GET") {
     try {
-      routerUtils.getPage("create_list", response);
+      routerUtils.getPage(response, "create_list");
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -215,8 +204,7 @@ function resolveHasPicture(response, method, urlObject) {
       let hasPicture = db.hasPicture(epochTime);
       headers["Content-Type"] = "application/json";
       response.writeHead(200, headers);
-      response.write(JSON.stringify({ data: hasPicture }));
-      response.end();
+      routerUtils.sendJson(response, { data: hasPicture });
     } else {
       response.writeHead(400, "Bad Request");
       response.end();
@@ -398,15 +386,7 @@ function resolveWidget(response, request, urlObject) {
 function resolveIndex(response, method) {
   if (method == "GET") {
     try {
-      if (fs.existsSync("../client/index.html")) {
-        let file = fs.readFileSync("../client/index.html");
-        response.writeHead(200, { "Content-Type": "text/html" });
-        response.write(file);
-        response.end();
-      } else {
-        response.writeHead(404, "Not Found");
-        response.end();
-      }
+      routerUtils.getPage(response);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -427,7 +407,7 @@ function resolveIndex(response, method) {
 function resolveToday(request, response) {
   if (request.method == "GET") {
     try {
-      routerUtils.getPage("slideshow", response);
+      routerUtils.getPage(response, "slideshow");
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -451,8 +431,7 @@ function resolveTodayImages(response, method) {
       let images = db.getTodayList();
       headers["Content-Type"] = "application/json";
       response.writeHead(200, headers);
-      response.write(JSON.stringify({ data: images }));
-      response.end();
+      routerUtils.sendJson(response, { data: images });
     } catch (err) {
       // TODO: Logging here. Also log in the db.getTodayList
       console.log(err);
@@ -559,7 +538,7 @@ function resolvePictureList(response, request) {
 function resolveUpload(response, request) {
   if (request.method == "GET") {
     try {
-      routerUtils.getPage("form", response);
+      routerUtils.getPage(response, "form");
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -589,7 +568,7 @@ function resolveUpload(response, request) {
 function resolveEditDay(response, request) {
   if (request.method == "GET") {
     try {
-      routerUtils.getPage("edit_day", response);
+      routerUtils.getPage(response, "edit_day");
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -625,8 +604,7 @@ function resolveDatedImages(response, request) {
           requestData["dates"]
         );
         response.writeHead(200, headers);
-        response.write(JSON.stringify({ data: responseData }));
-        response.end();
+        routerUtils.sendJson(response, { data: responseData });
       });
     } catch (err) {
       // TODO: Logging here
@@ -639,8 +617,7 @@ function resolveDatedImages(response, request) {
       let datedImages = db.getImageListFromDate();
       headers["Content-Type"] = "application/json";
       response.writeHead(200, headers);
-      response.write(JSON.stringify({ data: datedImages }));
-      response.end();
+      routerUtils.sendJson(response, { data: datedImages });
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -662,7 +639,7 @@ function resolveDatedImages(response, request) {
 function resolveSettingsPage(response, request) {
   if (request.method == "GET") {
     try {
-      routerUtils.getPage("slideshow_settings", response);
+      routerUtils.getPage(response, "slideshow_settings");
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -720,7 +697,7 @@ function resolveSettingsPage(response, request) {
 function resolveExcludePage(response, request) {
   if (request.method == "GET") {
     try {
-      routerUtils.getPage("exclude_list", response);
+      routerUtils.getPage(response, "exclude_list");
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -753,8 +730,7 @@ function resolveSettings(response, method) {
       if (fs.existsSync("./data/settings.json")) {
         let settings = fs.readFileSync("./data/settings.json");
         settings = JSON.parse(settings);
-        response.write(JSON.stringify({ data: settings }));
-        response.end();
+        routerUtils.sendJson(response, { data: settings });
       }
     } catch (err) {
       // TODO: Logging here
