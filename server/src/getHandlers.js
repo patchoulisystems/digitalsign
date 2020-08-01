@@ -350,6 +350,13 @@ const datedImages = (response) => {
   }
 };
 
+/** GET Handler for /slideshow_settigns 
+ * 
+ * Returns the slideshow settings on the response
+ * 
+ * @param {Response} response - The response to return the settings in
+*/
+
 const settingsPage = (response) => {
   try {
     ru.getPage(response, "slideshow_settings");
@@ -361,6 +368,13 @@ const settingsPage = (response) => {
   }
 };
 
+/** GET Handler for /exclude_list 
+ * 
+ * Returns the exclude page on the response
+ * 
+ * @param {Response} response - The response to return the exclude page in
+*/
+
 const excludePage = (response) => {
   try {
     ru.getPage(response, "exclude_list");
@@ -371,6 +385,13 @@ const excludePage = (response) => {
     response.end();
   }
 };
+
+/** GET Handler for /settings 
+ * 
+ * Returns the settings page on the response
+ * 
+ * @param {Response} response - The response to return the settings page in
+*/
 
 const settings = (response) => {
   try {
@@ -386,6 +407,18 @@ const settings = (response) => {
     response.end();
   }
 };
+
+/** GET Handler for .css and .js endpoints 
+ * 
+ * So this handles whatever js or css files that ARE PART OF A PAGE.
+ * This is really important to note, because WIDGET JS AND CSS ARE
+ * HANDLED SOMEWHERE ELSE, THEY'RE REQUESTED LIKE INDIVIDUAL WIDGETS.
+ * 
+ * This handler works for
+ * 
+ * @param {Request} request - We use the request to check wether we have a css or a js file
+ * @param {Response} response - The response to return the resource in
+*/
 
 const resources = (request, response) => {
   let dir = request.url.split(".")[0].split("/")[1];
