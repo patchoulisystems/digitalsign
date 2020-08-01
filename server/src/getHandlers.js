@@ -29,8 +29,20 @@ const playlistExists = (response, urlObject) => {
   }
 };
 
+const createList = (response) => {
+  try {
+    routerUtils.getPage(response, "create_list");
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+    response.writeHead(500, "Internal Server Error");
+    response.end();
+  }
+};
+
 module.exports = {
   getPlaylist,
   setPlaylist,
   playlistExists,
+  createList,
 };

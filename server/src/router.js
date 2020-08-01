@@ -12,6 +12,7 @@ const querystring = require("querystring");
 const db = require("./dbmanager");
 const formidable = require("formidable");
 const routerUtils = require("./routerUtils");
+const { get } = require("http");
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -159,14 +160,7 @@ function resolveSandbox(response, method) {
  */
 function resolveCreateList(response, request) {
   if (request.method == "GET") {
-    try {
-      routerUtils.getPage(response, "create_list");
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
-      response.writeHead(500, "Internal Server Error");
-      response.end();
-    }
+    getH.createList(response);
   } else if (request.method == "POST") {
     try {
       routerUtils.postFromPage(request, response, db.createList, "pictures");
