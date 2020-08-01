@@ -5,16 +5,17 @@ const DIRS = {
   images: "./data/images/",
   widget: "../client/components/",
   index: "../client",
-}
+};
 
-const findFile = (response, dir, file, ct, inside, instant=false) => {
-  let pathString = (DIRS[dir] || "../client") + (inside ? inside + "/" : "") + file;
+const findFile = (response, dir, file, ct, inside, instant = false) => {
+  let pathString =
+    (DIRS[dir] || "../client") + (inside ? inside + "/" : "") + file;
   console.log(pathString);
 
   if (fs.existsSync(pathString)) {
     if (instant) {
       let file = fs.readFileSync(pathString);
-      response.writeHead(200, {"Content-Type": ct});
+      response.writeHead(200, { "Content-Type": ct });
       response.write(file);
       response.end();
     } else {
