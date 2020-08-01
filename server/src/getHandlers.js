@@ -1,6 +1,14 @@
 const db = require("./dbmanager");
 const ru = require("./routerUtils");
 const querystring = require("querystring");
+const { findFile } = require("./routerUtils");
+
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+  "Access-Control-Max-Age": 2592000, // 30 days
+  /** add other headers as per requirement */
+};
 
 /** GET Handlers for the endpoints
  *
@@ -42,7 +50,7 @@ const setPlaylist = (response) => {
  * Uses the url object to check for a playlist with a given name
  *
  * @param {Response} response - The response used to send back if a playlist exists
- * @param {UrlWithStringQuery} urlObject - The url object that contains the name of the playlist to check
+ * @param {import("url").UrlWithStringQuery} urlObject - The url object that contains the name of the playlist to check
  */
 
 const playlistExists = (response, urlObject) => {
@@ -66,7 +74,7 @@ const playlistExists = (response, urlObject) => {
 
 const createList = (response) => {
   try {
-    routerUtils.getPage(response, "create_list");
+    ru.getPage(response, "create_list");
   } catch (err) {
     // TODO: Logging here
     console.log(err);
@@ -80,7 +88,7 @@ const createList = (response) => {
  * Uses the url object to get the requested epoch time, and the response to return the result
  *
  * @param {Response} response - The response used to send back if a day has a picture
- * @param {UrlWithStringQuery} urlObject - The url object that contains the epoch of the day to check
+ * @param {import("url").UrlWithStringQuery} urlObject - The url object that contains the epoch of the day to check
  */
 
 const hasPicture = (response, urlObject) => {
@@ -90,7 +98,7 @@ const hasPicture = (response, urlObject) => {
     let hasPicture = db.hasPicture(epochTime);
     headers["Content-Type"] = "application/json";
     response.writeHead(200, headers);
-    routerUtils.sendJson(response, { data: hasPicture });
+    ru.sendJson(response, { data: hasPicture });
   } else {
     response.writeHead(400, "Bad Request");
     response.end();
@@ -104,7 +112,7 @@ const hasPicture = (response, urlObject) => {
  * After that we're basically on a decision tree that changes the input of the find asset.
  *
  * @param {Response} response - The response
- * @param {UrlWithStringQuery} urlObject - The urlObject used to parse the querystring from
+ * @param {import("url").UrlWithStringQuery} urlObject - The urlObject used to parse the querystring from
  */
 
 const assets = (response, urlObject) => {
@@ -133,7 +141,7 @@ const assets = (response, urlObject) => {
       return response.end();
     }
     try {
-      ru.findAsset(response, filename, ct, inside);
+      ru.findFile(response, "asset", filename, ct, inside);
     } catch (err) {
       // TODO: Logging here
       console.log(err);
@@ -146,7 +154,47 @@ const assets = (response, urlObject) => {
   }
 };
 
-const widget = (response, urlObject) => {};
+/** GET Handler for the /widget
+ * 
+ * Pretty much doing the same as the assets one, just checking if the proper params are on the
+ * qstring first and then decision branching to set the correct content type. This one's simpler, because
+ * everything's on the same directory as far as widgets go.
+ * 
+ * @param {Response} response - The response we'll use to send back the widget
+ * @param {import("url").UrlWithStringQuery} urlObject - We'll use this to parse the qstring and its params from
+ */
+
+const widget = (response, urlObject) => {
+  let qstring = querystring.parse(urlObject.query);
+  if (qstring.widgetName && qstring.resource) {
+    let ct = "text/";
+    let filename = qstring.resource;
+    let inside = qstring.widgetName;
+    
+    if (filename.indexOf(".js") !== -1){
+      ct += "javascript";
+    } else if (filename.indexOf(".css") !== -1) {
+      ct += "css";
+    } else if (filename.indexOf(".html") !== -1) {
+      ct += "html";
+    } else {
+      response.writeHead(404, "Not Found");
+      return response.end();
+    }
+
+    try {
+      ru.findFile(response, "widget", filename, ct, inside);
+    } catch (err){
+      // TODO: Logging here
+      response.writeHead(500, "Internal Server Error");
+      response.end();
+    }
+
+  } else {
+    response.writeHead(400, "Bad Request");
+    response.end();
+  }
+};
 
 module.exports = {
   getPlaylist,
@@ -155,4 +203,5 @@ module.exports = {
   createList,
   hasPicture,
   assets,
+  widget,
 };
