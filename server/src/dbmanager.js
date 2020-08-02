@@ -150,11 +150,9 @@ const buildToday = (playlist) => {
   // We'll use this in the set list attribute, whenever the list has
   // no date
   if (playlist) {
-    console.log("Playlist recieved in the buildToday", playlist);
     todayList = playlist.pictures;
     // JSON parse doesn't parse the word false as the boolean value false
     if (playlist.concat == "true") {
-      console.log("Is it true?");
       // We do our magic here
       todayList = todayList.concat(
         getTodayImages().filter((el) => !todayList.includes(el))
@@ -187,7 +185,6 @@ const buildToday = (playlist) => {
           todayList = filterExclude(todayList, today);
         }
       }
-      console.log("Current List", currentList);
     }
   }
 
@@ -326,14 +323,9 @@ const getTodayList = () => {
   var today = getDate();
   var built = getDate(db.metadata["dateBuilt"]);
 
-  console.log(today);
-  console.log(built);
-
   if (built <= today) {
-    console.log("Building");
     return buildToday();
   } else {
-    console.log("Built");
     return db.metadata["todayList"] == 0
       ? ["empty.jpg"]
       : db.metadata["todayList"];
@@ -371,8 +363,6 @@ const filterExclude = (list, today) => {
 
 const getImageListFromDate = (dateType, dateString) => {
   let imageList = [];
-  console.log("Date string is " + dateString);
-  console.log("Date type is " + dateType);
 
   // Same deal like with build today
   let allImagesList = Object.keys(db.entries);
