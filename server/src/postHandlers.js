@@ -1,6 +1,7 @@
 const db = require("./dbmanager");
 const ru = require("./routerUtils");
 const fs = require("fs");
+const formidable = require("formidable");
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -17,7 +18,7 @@ const headers = {
  * @see {@link getHandlers}
  */
 
-/** POST Handler for the /set_playlist, /create_list, /piclist
+/** POST Handler for the /set_playlist, /create_list, /pictureList
  *
  * Posting data on the db from the request and closes the response appropiately
  *
