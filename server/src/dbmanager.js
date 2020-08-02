@@ -34,20 +34,22 @@ const getTodayImages = () => {
   for (const image in db.entries) {
     let currentImage = db.entries[image];
 
-    if (currentImage.dateType == "interval") {
-      let parsedDates = currentImage.dates.split(" - ");
-      let leftmostDay = getDate(parsedDates[0]);
-      let rightmostDay = getDate(parsedDates[1]);
-      if (leftmostDay <= today && today <= rightmostDay) {
-        todayImages.push(image);
-      }
-    } else {
-      currentImage.dates.split(",").forEach((date) => {
-        let aDay = getDate(date);
-        if (aDay >= today && aDay <= today) {
+    switch (currentImage.dateType) {
+      case "interval":
+        let parsedDates = currentImage.dates.split(" - ");
+        let leftmostDay = getDate(parsedDates[0]);
+        let rightmostDay = getDate(parsedDates[1]);
+        if (leftmostDay <= today && today <= rightmostDay) {
           todayImages.push(image);
         }
-      });
+      case "multiple":
+      default:
+        currentImage.dates.split(",").forEach((date) => {
+          let aDay = getDate(date);
+          if (aDay >= today && aDay <= today) {
+            todayImages.push(image);
+          }
+        });
     }
   }
   return todayImages;
@@ -62,18 +64,18 @@ const getTodayIncludeList = () => {
 
     switch (currentIncludeList.dateType) {
       case "interval":
-        let parsedDates = item.dates.split(" - ");
+        let parsedDates = currentIncludeList.dates.split(" - ");
         let leftmostDay = getDate(parsedDates[0]);
         let rightmostDay = getDate(parsedDates[1]);
-        if (leftmostDay <= today && today <= rightmostDay) {
-          includeList.push(picture);
-        }
+        if (leftmostDay <= today && today <= rightmostDay)
+          includeList.concat(currentIncludeList.pictures);
         break;
       case "multiple":
       default:
-        listDate.split(",").forEach((date) => {
+        currentIncludeList.dates.split(",").forEach((date) => {
           let aDay = getDate(date);
-          if (aDay >= today && aDay <= today) includeList.push(picture);
+          if (aDay >= today && aDay <= today)
+            includeList.concat(currentIncludeList.pictures);
         });
         break;
     }
@@ -83,30 +85,38 @@ const getTodayIncludeList = () => {
 
 const insertCreatedToList = (currentList, todayList) => {
   let today = getDate();
-  if (currentList.dateType == "interval") {
-    let parsedDates = currentList.dates.split(" - ");
-    let leftmostDay = getDate(parsedDates[0]);
-    let rightmostDay = getDate(parsedDates[1]);
-    if (leftmostDay <= today && today <= rightmostDay) {
-      currentList.pictures.forEach((picture) => {
-        if (!todayList.includes(picture.toString())) {
-          todayList.push(picture);
+
+  switch (currentList.dateType) {
+    case "interval":
+      let parsedDates = currentList.dates.split(" - ");
+      let leftmostDay = getDate(parsedDates[0]);
+      let rightmostDay = getDate(parsedDates[1]);
+      if (leftmostDay <= today && today <= rightmostDay) {
+        currentList.pictures.forEach((picture) => {
+          if (!todayList.includes(picture.toString())) {
+            todayList.push(picture);
+          }
+        });
+      }
+      break;
+    case "multiple":
+    default:
+      currentList.dates.split(",").forEach((date) => {
+        let aDay = getDate(date);
+        if (aDay >= today && aDay <= today) {
+          todayList = todayList.concat(
+            currentList.pictures.filter(
+              (picture) => !todayList.includes(picture)
+            )
+          );
         }
       });
-    }
-  } else {
-    currentList.dates.split(",").forEach((date) => {
-      let aDay = getDate(date);
-      if (aDay >= today && aDay <= today) {
-        todayList = todayList.concat(
-          currentList.pictures.filter((picture) => !todayList.includes(picture))
-        );
-      }
-    });
+      break;
   }
 };
 
 const getScheduled = (item) => {
+  let list = [];
   let today = getDate();
 
   // Switches are faster than if statements
@@ -116,29 +126,32 @@ const getScheduled = (item) => {
       let leftmostDay = getDate(parsedDates[0]);
       let rightmostDay = getDate(parsedDates[1]);
       if (leftmostDay <= today && today <= rightmostDay) {
-        return item.pictures;
+        list = item.pictures;
       }
       break;
     case "multiple":
+    default:
       item.dates.split(",").forEach((date) => {
+        console.log(date);
         let aDay = getDate(date);
+        console.log(aDay);
+        console.log(today);
+        console.log(aDay >= today && aDay <= today);
+        console.log(item.pictures);
         if (aDay >= today && aDay <= today) {
-          return item.pictures;
+          list = item.pictures;
         }
       });
       break;
-    default:
-      return [];
   }
-
-  return [];
+  return list;
 };
 
 // TODO: Optimize this
 const buildToday = (playlist) => {
-  var todayList = [];
-  var createdLists = db.metadata.createdLists;
-  var today = getDate();
+  let todayList = [];
+  let createdLists = db.metadata.createdLists;
+  let today = getDate();
 
   // We'll use this in the set list attribute, whenever the list has
   // no date
@@ -147,26 +160,22 @@ const buildToday = (playlist) => {
     // JSON parse doesn't parse the word false as the boolean value false
     if (playlist.concat == "true") {
       // We do our magic here
-
-      console.log("Before todayImages append filter", todayList);
       todayList = todayList.concat(getTodayImages());
-      console.log("After", todayList);
 
-      console.log("Before todayIncludeList append filter", todayList);
       // Appending included lists scheduled for today
       todayList = todayList.concat(getTodayIncludeList());
-      console.log("After", todayList);
+
       // Excluding scheduled pictures to be excluded. Should we add that option as well?
       todayList = filterExclude(todayList);
     }
-    console.log("The incoming playlist", playlist);
-    console.log("The current todayList", todayList);
   } else {
     for (const list in createdLists) {
       let currentList = createdLists[list];
+      console.log("\nCurrent list so far ", currentList);
       let images = getScheduled(currentList);
+      console.log("Images ", images);
       if (images.length) {
-        insertCreatedToList(currentList, todayList);
+        todayList = todayList.concat(images);
         if (currentList.concat == "true") {
           // We do our magic here
           todayList = todayList.concat(getTodayImages());
@@ -177,6 +186,8 @@ const buildToday = (playlist) => {
           todayList = filterExclude(todayList, today);
         }
       }
+      console.log("Today List so far ", todayList);
+      console.log("\n");
     }
   }
 
@@ -233,7 +244,7 @@ const createList = (data) => {
     var parsedDates = data.dates.split(" - ");
     let leftmostDay = getDate(parsedDates[0]);
     let rightmostDay = getDate(parsedDates[1]);
-    if (leftmostDay <= today || today <= rightmostDay) {
+    if (leftmostDay <= today && today <= rightmostDay) {
       buildToday(data);
     }
   } else if (data.dateType == "multiple") {
@@ -255,11 +266,11 @@ const createList = (data) => {
 };
 
 const hasPicture = (epochTime) => {
-  var result = "none";
+  let result = "none";
   let done = false;
 
   if (epochTime) {
-    var incomingDate = getDate(parseInt(epochTime), true);
+    let incomingDate = getDate(parseInt(epochTime), true);
     // First check if there's a picture with that date
     if (!done)
       for (const imageKey in db.entries) {
@@ -315,8 +326,12 @@ const hasPicture = (epochTime) => {
 };
 
 const getTodayList = () => {
-  var today = getDate();
-  var built = getDate(db.metadata["dateBuilt"]);
+  let today = getDate();
+  let built = getDate(db.metadata["dateBuilt"]);
+
+  console.log(today);
+  console.log(built);
+  console.log(built < today);
 
   if (built < today) {
     return buildToday();
