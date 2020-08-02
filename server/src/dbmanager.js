@@ -78,7 +78,7 @@ const getTodayIncludeList = () => {
 };
 
 const insertCreatedToList = (currentList, todayList) => {
-  var today = getDate();
+  let today = getDate();
   if (currentList.dateType == "interval") {
     let parsedDates = currentList.dates.split(" - ");
     let leftmostDay = getDate(parsedDates[0]);
@@ -92,7 +92,7 @@ const insertCreatedToList = (currentList, todayList) => {
     }
   } else {
     currentList.dates.split(",").forEach((date) => {
-      var aDay = getDate(date);
+      let aDay = getDate(date);
       if (aDay >= today && aDay <= today) {
         todayList = todayList.concat(
           currentList.pictures.filter((picture) => !todayList.includes(picture))
@@ -103,22 +103,30 @@ const insertCreatedToList = (currentList, todayList) => {
 };
 
 const getScheduled = (item) => {
-  var today = getDate();
-  if (item.dateType == "interval") {
-    var parsedDates = item.dates.split(" - ");
-    var leftmostDay = getDate(parsedDates[0]);
-    var rightmostDay = getDate(parsedDates[1]);
-    if (leftmostDay <= today && today <= rightmostDay) {
-      return item.pictures;
-    }
-  } else {
-    item.dates.split(",").forEach((date) => {
-      var aDay = getDate(date);
-      if (aDay >= today && aDay <= today) {
+  let today = getDate();
+
+  // Switches are faster than if statements
+  switch (item.dateType) {
+    case "interval":
+      let parsedDates = item.dates.split(" - ");
+      let leftmostDay = getDate(parsedDates[0]);
+      let rightmostDay = getDate(parsedDates[1]);
+      if (leftmostDay <= today && today <= rightmostDay) {
         return item.pictures;
       }
-    });
+      break;
+    case "multiple":
+      item.dates.split(",").forEach((date) => {
+        let aDay = getDate(date);
+        if (aDay >= today && aDay <= today) {
+          return item.pictures;
+        }
+      });
+      break;
+    default:
+      return [];
   }
+
   return [];
 };
 
@@ -137,19 +145,15 @@ const buildToday = (playlist) => {
       // We do our magic here
 
       console.log("Before todayImages append filter", todayList);
-      todayList = todayList.concat(
-        getTodayImages().filter((el) => !todayList.includes(el))
-      );
+      todayList = todayList.concat(getTodayImages());
       console.log("After", todayList);
 
       console.log("Before todayIncludeList append filter", todayList);
       // Appending included lists scheduled for today
-      todayList = todayList.concat(
-        getTodayIncludeList().filter((el) => !todayList.includes(el))
-      );
+      todayList = todayList.concat(getTodayIncludeList());
       console.log("After", todayList);
       // Excluding scheduled pictures to be excluded. Should we add that option as well?
-      todayList = filterExclude(todayList, today);
+      todayList = filterExclude(todayList);
     }
     console.log("The incoming playlist", playlist);
     console.log("The current todayList", todayList);
@@ -161,20 +165,18 @@ const buildToday = (playlist) => {
         insertCreatedToList(currentList, todayList);
         if (currentList.concat == "true") {
           // We do our magic here
-          todayList = todayList.concat(
-            getTodayImages().filter((el) => !todayList.includes(el))
-          );
+          todayList = todayList.concat(getTodayImages());
 
           // Appending included lists scheduled for today
-          todayList = todayList.concat(
-            getTodayIncludeList().filter((el) => !todayList.includes(el))
-          );
+          todayList = todayList.concat(getTodayIncludeList());
           // Excluding scheduled pictures to be excluded. Should we add that option as well?
           todayList = filterExclude(todayList, today);
         }
       }
     }
   }
+
+  todayList = [...new Set(todayList)];
 
   db.metadata["todayList"] = todayList;
   db.metadata["dateBuilt"] = today;
@@ -321,8 +323,9 @@ const getTodayList = () => {
   }
 };
 
-const filterExclude = (list, today) => {
+const filterExclude = (list) => {
   let resultList = list;
+  let today = getDate();
   if (db.metadata["builtExcludeLists"]) {
     for (const excludeList in db.metadata["builtExcludeLists"]) {
       const currentExcludeList = db.metadata["builtExcludeLists"][excludeList];
