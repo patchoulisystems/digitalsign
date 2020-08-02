@@ -25,7 +25,6 @@ const onChangeMonthYear = () => {
   setTimeout(() => {
     $("a.day").each(function (itm) {
       let parsedEpoch = $(this).attr("class").split(" ")[0].split("dp")[1];
-      console.log(parsedEpoch);
       fetch(`/hasPicture?time=${parsedEpoch}`)
         .then((response) => response.json())
         .then((data) => {

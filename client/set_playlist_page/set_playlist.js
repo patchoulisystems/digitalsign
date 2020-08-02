@@ -22,7 +22,7 @@ $(() => {
 });
 
 const getPlaylists = () => {
-  fetch("/get_playlists")
+  fetch("/getPlaylists")
     .then((resp) => resp.json())
     .then((data) => {
       let playlists = data.playlists;
@@ -42,9 +42,7 @@ const listOnClick = (playlist) => {
     displayModal(
       "This list currently accepts other images to be concatenated to it. Would you like to keep it this way? (Click No to make it so we don't concatenate anymore)",
       () => {
-        console.log("Clicked yes bruh");
         submitList(playlist);
-        console.log("After yes bruh");
       },
       "Yes",
       "No",
@@ -80,7 +78,6 @@ const submitList = (playlist) => {
     }),
     contentType: "application/json",
   };
-  console.log(payload);
   $.ajax(payload)
     .fail((xhr, error) => {
       if (xhr.status == 400) {

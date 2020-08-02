@@ -164,7 +164,7 @@ const onRequest = () => {
     let payload = {
       method: "POST",
       type: "POST",
-      url: "/dated_images",
+      url: "/datedImages",
       data: JSON.stringify({
         dateType: dateType,
         dates: dateToSend,

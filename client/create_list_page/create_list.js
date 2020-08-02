@@ -106,7 +106,6 @@ const handlePost = (
     }),
     contentType: "application/json",
   };
-  console.log("Originated payload.", payload);
   displayModal("Loading...");
   $.ajax(payload)
     .fail((xhr, error) => {
@@ -184,7 +183,6 @@ const onSubmit = (event) => {
     }).done((response, status, xhr) => {
       // No need to look inside response.data unless we change that on router
       let parsedRes = JSON.parse(response);
-      console.log(parsedRes);
       if (parsedRes.playlistExists == true) {
         displayModal(
           "There's already a list with this name. This will overwrite the previous list. Are you sure you want to continue?",
@@ -209,5 +207,4 @@ const onSubmit = (event) => {
       }
     });
   }
-  console.log("Payload left the Create Page.");
 };

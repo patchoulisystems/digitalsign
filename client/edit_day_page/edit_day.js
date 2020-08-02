@@ -109,7 +109,7 @@ const onSubmit = (event) => {
     let payload = {
       method: "POST",
       type: "POST",
-      url: "/piclist",
+      url: "/pictureList",
       data: JSON.stringify({
         dateType: dateType,
         dates: dateToSend,

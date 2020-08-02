@@ -8,7 +8,6 @@
  * @param {Function} btnOnClick The onClick function of the playlist's button
  */
 const createPlaylistElement = (playlist, btnOnClick) => {
-  console.log(playlist);
   // This is the base container for the playlist element
   var createdList = document.createElement("div");
   createdList.className += "created-list " + playlist.listName;
