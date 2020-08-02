@@ -60,18 +60,23 @@ const getTodayIncludeList = () => {
   for (const listName in db.metadata.builtLists) {
     let currentIncludeList = db.metadata.builtLists[listName];
 
-    if (currentIncludeList.dateType == "interval") {
-      let parsedDates = currentIncludeList.dates.split(" - ");
-      let leftmostDay = getDate(parsedDates[0]);
-      let rightmostDay = getDate(parsedDates[1]);
-      if (leftmostDay <= today && today <= rightmostDay)
-        includeList.push(picture);
-    } else {
-      let parsedDates = listDate.split(",");
-      parsedDates.forEach((date) => {
-        let thisListDay = getDate(date);
-        if (today == thisListDay) includeList.push(picture);
-      });
+    switch (currentIncludeList.dateType) {
+      case "interval":
+        let parsedDates = item.dates.split(" - ");
+        let leftmostDay = getDate(parsedDates[0]);
+        let rightmostDay = getDate(parsedDates[1]);
+        if (leftmostDay <= today && today <= rightmostDay) {
+          includeList.push(picture);
+        }
+        break;
+      case "multiple":
+        listDate.split(",").forEach((date) => {
+          let aDay = getDate(date);
+          if (aDay >= today && aDay <= today) includeList.push(picture);
+        });
+        break;
+      default:
+        break;
     }
   }
   return [...new Set(includeList)];
