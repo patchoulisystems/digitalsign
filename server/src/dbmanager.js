@@ -30,34 +30,26 @@ const getDate = (str, noFormat) => {
 const getTodayImages = () => {
   let today = getDate();
   let todayImages = [];
-  let files = "";
-  try {
-    files = fs.readdirSync(imagesFolder, []);
-  } catch (err) {
-    // TODO: Loggin here
-    console.log(err);
-    return ["500.jpg"];
-  }
 
-  // Appending images scheduled for today to the created list
-  files.forEach((image) => {
-    let dateType = db.entries[image].dateType.trim();
-    if (dateType == "interval") {
-      let parsedDates = db.entries[image].dates.split(" - ");
+  for (const image in db.entries) {
+    let currentImage = db.entries[image];
+
+    if (currentImage.dateType == "interval") {
+      let parsedDates = currentImage.dates.split(" - ");
       let leftmostDay = getDate(parsedDates[0]);
       let rightmostDay = getDate(parsedDates[1]);
       if (leftmostDay <= today && today <= rightmostDay) {
         todayImages.push(image);
       }
-    } else if (dateType == "multiple") {
-      db.entries[image].dates.split(",").forEach((date) => {
+    } else {
+      currentImage.dates.split(",").forEach((date) => {
         let aDay = getDate(date);
         if (aDay >= today && aDay <= today) {
           todayImages.push(image);
         }
       });
     }
-  });
+  }
   return todayImages;
 };
 
