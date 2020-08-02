@@ -16,14 +16,14 @@ const headers = {
  * @module getHandlers
  */
 
-/** GET Handler for /get_playlist
+/** GET Handler for /getPlaylists
  *
  * Sends back the playlists on the response
  *
  * @param {Response} response - The response to send back the playlists
  */
 
-const getPlaylist = (response) => {
+const getPlaylists = (response) => {
   ru.sendJson(response, { playlists: db.playlists() });
 };
 
@@ -231,7 +231,7 @@ const today = (response) => {
   }
 };
 
-/** GET Handler for /today_images
+/** GET Handler for /todayImages
  *
  * Returns the scheduled pictures for today on the response
  *
@@ -317,7 +317,7 @@ const upload = (response) => {
  *
  * Returns the Edit day page on the response
  */
-const editDay = (response) => {
+const includeList = (response) => {
   try {
     ru.getPage(response, "edit_day");
   } catch (err) {
@@ -328,7 +328,7 @@ const editDay = (response) => {
   }
 };
 
-/** GET Handler for the  /dated_images
+/** GET Handler for the  /datedImages
  *
  * Returns all the images on the response
  *
@@ -426,7 +426,6 @@ const resources = (request, response) => {
   if (request.url.indexOf(".js") !== -1) ct += "javascript";
   else ct += "css";
   let inside = dir == "index" ? "" : `/${dir}_page`;
-  console.log(dir + inside + filename + ct);
   try {
     ru.findFile(response, dir, filename, ct, inside, true);
   } catch (err) {
@@ -435,7 +434,7 @@ const resources = (request, response) => {
 };
 
 module.exports = {
-  getPlaylist,
+  getPlaylists,
   setPlaylist,
   playlistExists,
   createList,
@@ -447,7 +446,7 @@ module.exports = {
   todayImages,
   image,
   upload,
-  editDay,
+  includeList,
   datedImages,
   settingsPage,
   excludePage,
