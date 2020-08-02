@@ -62,39 +62,27 @@ const getTodayImages = () => {
 };
 
 const getTodayIncludeList = () => {
-  var includeList = [];
-  var today = getDate();
-  var builtLists = Array.from(Object.keys(db.metadata["builtLists"]));
-  builtLists.forEach((list) => {
-    let listDate = db.metadata["builtLists"][list]["dates"];
-    let listDateType = db.metadata["builtLists"][list]["dateType"];
-    let listPictures = db.metadata["builtLists"][list]["pictures"];
-    if (listDateType == "interval") {
-      let parsedDates = listDate.split(" - ");
+  let includeList = [];
+  let today = getDate();
+
+  for (const listName in db.metadata.builtLists) {
+    let currentIncludeList = db.metadata.builtLists[listName];
+
+    if (currentIncludeList.dateType == "interval") {
+      let parsedDates = currentIncludeList.dates.split(" - ");
       let leftmostDay = getDate(parsedDates[0]);
       let rightmostDay = getDate(parsedDates[1]);
-      if (leftmostDay <= today && today <= rightmostDay) {
-        listPictures.forEach((picture) => {
-          if (!includeList.includes(picture.toString())) {
-            includeList.push(picture);
-          }
-        });
-      }
+      if (leftmostDay <= today && today <= rightmostDay)
+        includeList.push(picture);
     } else {
       let parsedDates = listDate.split(",");
       parsedDates.forEach((date) => {
-        let thisListDay = getDate();
-        if (today == thisListDay) {
-          listPictures.forEach((picture) => {
-            if (!includeList.includes(picture)) {
-              includeList.push(picture);
-            }
-          });
-        }
+        let thisListDay = getDate(date);
+        if (today == thisListDay) includeList.push(picture);
       });
     }
-  });
-  return includeList;
+  }
+  return [...new Set(includeList)];
 };
 
 const insertCreatedToList = (currentList, todayList) => {
@@ -155,17 +143,19 @@ const buildToday = (playlist) => {
     // JSON parse doesn't parse the word false as the boolean value false
     if (playlist.concat == "true") {
       // We do our magic here
-      console.log("Before todayImages append filter", todayList);
 
+      console.log("Before todayImages append filter", todayList);
       todayList = todayList.concat(
         getTodayImages().filter((el) => !todayList.includes(el))
       );
       console.log("After", todayList);
 
+      console.log("Before todayIncludeList append filter", todayList);
       // Appending included lists scheduled for today
       todayList = todayList.concat(
         getTodayIncludeList().filter((el) => !todayList.includes(el))
       );
+      console.log("After", todayList);
       // Excluding scheduled pictures to be excluded. Should we add that option as well?
       todayList = filterExclude(todayList, today);
     }
