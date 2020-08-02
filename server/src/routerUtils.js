@@ -10,7 +10,6 @@ const DIRS = {
 const findFile = (response, dir, file, ct, inside, instant = false) => {
   let pathString =
     (DIRS[dir] || "../client") + (inside ? inside + "/" : "") + file;
-  console.log(pathString);
 
   if (fs.existsSync(pathString)) {
     if (instant) {
