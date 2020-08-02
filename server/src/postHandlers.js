@@ -57,7 +57,7 @@ const upload = (request, response) => {
   }
 };
 
-/** POST Handler for /dated_images
+/** POST Handler for /datedImages
  *
  * We're posting a list of pictures with a specific date or set of dates
  *

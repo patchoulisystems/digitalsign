@@ -27,7 +27,7 @@ const openFrame = () => {
   columns.innerHTML = "";
   let builtImages = [];
 
-  $.get("/dated_images").then((response) => {
+  $.get("/datedImages").then((response) => {
     response.data.forEach((image) => {
       let singlePicture = document.createElement("div");
       singlePicture.setAttribute("class", "single-picture picture-unselected");

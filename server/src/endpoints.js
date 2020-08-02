@@ -1,5 +1,6 @@
 const getH = require("./getHandlers");
 const postH = require("./postHandlers");
+const db = require("./dbmanager");
 const resolveIndex = (request, response) => {
   if (request.method == "GET") {
     getH.index(response);
