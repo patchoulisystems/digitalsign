@@ -70,12 +70,11 @@ const getTodayIncludeList = () => {
         }
         break;
       case "multiple":
+      default:
         listDate.split(",").forEach((date) => {
           let aDay = getDate(date);
           if (aDay >= today && aDay <= today) includeList.push(picture);
         });
-        break;
-      default:
         break;
     }
   }
