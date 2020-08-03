@@ -228,21 +228,27 @@ const createList = (data) => {
   db.metadata.createdLists[listName] = data;
   let jsonData = JSON.stringify(db);
   let today = getDate();
-  if (data.dateType == "interval") {
-    let parsedDates = data.dates.split(" - ");
-    let leftmostDay = getDate(parsedDates[0]);
-    let rightmostDay = getDate(parsedDates[1]);
-    if (leftmostDay <= today && today <= rightmostDay) {
-      buildToday(data);
-    }
-  } else if (data.dateType == "multiple") {
-    data.dates.split(",").forEach((date) => {
-      let aDay = getDate(date);
-      if (aDay >= today && aDay <= today) {
+
+  switch (data.dateType) {
+    case "interval":
+      let parsedDates = data.dates.split(" - ");
+      let leftmostDay = getDate(parsedDates[0]);
+      let rightmostDay = getDate(parsedDates[1]);
+      if (leftmostDay <= today && today <= rightmostDay) {
         buildToday(data);
       }
-    });
+      break;
+    case "multiple":
+    default:
+      data.dates.split(",").forEach((date) => {
+        let aDay = getDate(date);
+        if (aDay >= today && aDay <= today) {
+          buildToday(data);
+        }
+      });
+      break;
   }
+
   try {
     if (fs.existsSync(dbLocation)) {
       fs.writeFileSync(dbLocation, jsonData);
