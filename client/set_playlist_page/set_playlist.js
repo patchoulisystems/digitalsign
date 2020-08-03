@@ -38,9 +38,9 @@ const getPlaylists = () => {
 };
 
 const listOnClick = (playlist) => {
-  if (playlist.concat == "false") {
+  if (playlist.concat == "true") {
     displayModal(
-      "This list currently accepts other images to be concatenated to it. Would you like to keep it this way? (Click No to make it so we don't concatenate anymore)",
+      "This list currently accepts other images to be added/removed to it. Would you like to keep it this way? (Click No to make it so we don't modify the list at all)",
       () => {
         submitList(playlist);
       },
@@ -52,7 +52,7 @@ const listOnClick = (playlist) => {
     );
   } else {
     displayModal(
-      "This list currently takes no other images concatenated to it. Would you like to keep it this way? (Click No to make it so we are concatenating other scheduled images)",
+      "This list currently cannot be added to/removed from. Would you like to keep it this way? (Click No to make it so we are modifying the list)",
       () => {
         submitList(playlist);
       },
