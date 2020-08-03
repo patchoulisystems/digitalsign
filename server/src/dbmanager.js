@@ -80,7 +80,8 @@ const getTodayIncludeList = () => {
         break;
     }
   }
-  return [...new Set(includeList)];
+  // We're cleaning the duplicates later on anyways
+  return includeList;
 };
 
 const insertCreatedToList = (currentList, todayList) => {
@@ -132,12 +133,7 @@ const getScheduled = (item) => {
     case "multiple":
     default:
       item.dates.split(",").forEach((date) => {
-        console.log(date);
         let aDay = getDate(date);
-        console.log(aDay);
-        console.log(today);
-        console.log(aDay >= today && aDay <= today);
-        console.log(item.pictures);
         if (aDay >= today && aDay <= today) {
           list = item.pictures;
         }
@@ -171,9 +167,7 @@ const buildToday = (playlist) => {
   } else {
     for (const list in createdLists) {
       let currentList = createdLists[list];
-      console.log("\nCurrent list so far ", currentList);
       let images = getScheduled(currentList);
-      console.log("Images ", images);
       if (images.length) {
         todayList = todayList.concat(images);
         if (currentList.concat == "true") {
@@ -186,8 +180,6 @@ const buildToday = (playlist) => {
           todayList = filterExclude(todayList, today);
         }
       }
-      console.log("Today List so far ", todayList);
-      console.log("\n");
     }
   }
 
@@ -205,7 +197,6 @@ const buildToday = (playlist) => {
     console.log(err);
     return ["500.jpg"];
   }
-  console.log("The returned todayList", todayList);
   return todayList.length == 0 ? ["empty.jpg"] : todayList;
 };
 
@@ -219,11 +210,8 @@ const listWithName = (name) => {
 };
 
 const setPlaylist = (data) => {
-  console.log(data);
   let playlist = data;
-  let noDates = false;
   if (playlist.dateType.length <= 0 || playlist.dates.length <= 0) {
-    noDates = true;
     let today = getDate();
 
     playlist = {
@@ -241,7 +229,7 @@ const createList = (data) => {
   let jsonData = JSON.stringify(db);
   let today = getDate();
   if (data.dateType == "interval") {
-    var parsedDates = data.dates.split(" - ");
+    let parsedDates = data.dates.split(" - ");
     let leftmostDay = getDate(parsedDates[0]);
     let rightmostDay = getDate(parsedDates[1]);
     if (leftmostDay <= today && today <= rightmostDay) {
@@ -249,7 +237,7 @@ const createList = (data) => {
     }
   } else if (data.dateType == "multiple") {
     data.dates.split(",").forEach((date) => {
-      var aDay = getDate(date);
+      let aDay = getDate(date);
       if (aDay >= today && aDay <= today) {
         buildToday(data);
       }
@@ -272,7 +260,7 @@ const hasPicture = (epochTime) => {
   if (epochTime) {
     let incomingDate = getDate(parseInt(epochTime), true);
     // First check if there's a picture with that date
-    if (!done)
+    if (!done) {
       for (const imageKey in db.entries) {
         const currentImage = db.entries[imageKey];
         if (currentImage.dateType == "interval" && !done) {
@@ -295,8 +283,9 @@ const hasPicture = (epochTime) => {
             });
         }
       }
+    }
     // Then a list with that date (from the include list)
-    if (!done)
+    if (!done) {
       for (const listKey in db.metadata.builtLists) {
         const currentList = db.metadata.builtLists[listKey];
         if (currentList.dateType == "interval" && !done) {
@@ -320,6 +309,7 @@ const hasPicture = (epochTime) => {
             });
         }
       }
+    }
   }
 
   return result;
@@ -328,10 +318,6 @@ const hasPicture = (epochTime) => {
 const getTodayList = () => {
   let today = getDate();
   let built = getDate(db.metadata["dateBuilt"]);
-
-  console.log(today);
-  console.log(built);
-  console.log(built < today);
 
   if (built < today) {
     return buildToday();
@@ -348,24 +334,29 @@ const filterExclude = (list) => {
   if (db.metadata["builtExcludeLists"]) {
     for (const excludeList in db.metadata["builtExcludeLists"]) {
       const currentExcludeList = db.metadata["builtExcludeLists"][excludeList];
-      if (currentExcludeList.dateType == "interval") {
-        let parsedDates = currentExcludeList.dates.split(" - ");
-        let leftmostDay = getDate(parsedDates[0]);
-        let rightmostDay = getDate(parsedDates[1]);
-        if (leftmostDay <= today && today <= rightmostDay) {
-          resultList = resultList.filter(
-            (picture) => !currentExcludeList.pictures.includes(picture)
-          );
-        }
-      } else if (currentExcludeList.dateType == "multiple") {
-        currentExcludeList.dates.split(",").forEach((date) => {
-          let aDay = getDate(date);
-          if (aDay >= today && aDay <= today) {
+
+      switch (currentExcludeList.dateType) {
+        case "interval":
+          let parsedDates = currentExcludeList.dates.split(" - ");
+          let leftmostDay = getDate(parsedDates[0]);
+          let rightmostDay = getDate(parsedDates[1]);
+          if (leftmostDay <= today && today <= rightmostDay) {
             resultList = resultList.filter(
               (picture) => !currentExcludeList.pictures.includes(picture)
             );
           }
-        });
+          break;
+        case "multiple":
+        default:
+          currentExcludeList.dates.split(",").forEach((date) => {
+            let aDay = getDate(date);
+            if (aDay >= today && aDay <= today) {
+              resultList = resultList.filter(
+                (picture) => !currentExcludeList.pictures.includes(picture)
+              );
+            }
+          });
+          break;
       }
     }
   }
@@ -375,73 +366,77 @@ const filterExclude = (list) => {
 const getImageListFromDate = (dateType, dateString) => {
   let imageList = [];
 
-  // Same deal like with build today
-  let allImagesList = Object.keys(db.entries);
-  if (dateType == "interval") {
-    // Parsing dateString to proper dates
-    let parsedDates = dateString.split(" - ");
-    let lowerDate = getDate(parsedDates[0]);
-    let greaterDate = getDate(parsedDates[1]);
-
-    allImagesList.forEach((image) => {
-      if (db.entries[image].dateType.trim() == "interval") {
-        let imageParsedDates = db.entries[image].dates.split(" - ");
-        let imageLowestDate = getDate(imageParsedDates[0]);
+  for (const image in db.entries) {
+    let currentImage = db.entries[image];
+    switch (currentImage.dateType) {
+      case "interval":
+        let imageParsedDates = currentImage.split(" - ");
+        let imageLowerDate = getDate(imageParsedDates[0]);
         let imageGreaterDate = getDate(imageParsedDates[1]);
-
-        if (
-          (imageLowestDate <= lowerDate && lowerDate <= imageGreaterDate) ||
-          (imageLowestDate <= greaterDate &&
-            greaterDate <= imageGreaterDate &&
-            !imageList.includes(image))
-        ) {
-          imageList.push(image);
-        }
-      } else if (db.entries[image].dateType.trim() == "multiple") {
-        let imageDates = db.entries[image].dates.split(",");
-        imageDates.forEach((date) => {
-          let imageDate = getDate(date);
-          if (
-            lowerDate <= imageDate &&
-            imageDate <= greaterDate &&
-            !imageList.includes(image)
-          ) {
-            imageList.push(image);
-          }
-        });
-      }
-    });
-  } else if (dateType == "multiple") {
-    let incomingDates = dateString.split(",");
-    incomingDates.forEach((date) => {
-      let incomingDate = getDate(date);
-      allImagesList.forEach((image) => {
-        if (db.entries[image].dateType == "interval") {
-          let parsedDates = db.entries[image].dates.split(" - ");
-          let imageLowestDate = getDate(parsedDates[0]);
-          let imageGreaterDate = getDate(parsedDates[1]);
-
-          if (
-            imageLowestDate <= incomingDate &&
-            incomingDate <= imageGreaterDate &&
-            !imageList.includes(image)
-          ) {
-            imageList.push(image);
-          }
-        } else if (db.entries[image].dateType == "multiple") {
-          db.entries[image].dates.split(",").forEach((imageDate) => {
-            let entryDate = getDate(imageDate);
-            if (incomingDate == entryDate && !imageList.includes(image)) {
+        switch (dateType) {
+          case "interval":
+            let incomingParsedDates = dateString.split(" - ");
+            let incomingLowestDate = getDate(incomingParsedDates[0]);
+            let incomingGreatestDate = getDate(incomingParsedDates[1]);
+            if (
+              (incomingLowestDate <= imageLowerDate &&
+                imageLowerDate <= incomingGreatestDate) ||
+              (incomingLowestDate <= imageGreaterDate &&
+                imageGreaterDate <= incomingGreatestDate)
+            ) {
               imageList.push(image);
             }
-          });
+            break;
+          case "multiple":
+          default:
+            let incomingDates = dateString.split(",");
+            incomingDates.forEach((date) => {
+              let incomingDate = getDate(date);
+              if (
+                imageLowerDate <= incomingDate &&
+                incomingDate <= imageGreaterDate
+              ) {
+                imageList.push(image);
+              }
+            });
+            break;
         }
-      });
-    });
-  } else {
-    imageList = allImagesList;
+        break;
+      case "multiple":
+        let imageDates = dateString.split(",");
+        imageDates.forEach((date) => {
+          let imageDate = getDate(date);
+          switch (dateType) {
+            case "interval":
+              let incomingParsedDates = dateString.split(" - ");
+              let incomingLowestDate = getDate(incomingParsedDates[0]);
+              let incomingGreaterDate = getDate(incomingParsedDates[1]);
+              if (
+                incomingLowestDate <= imageDate &&
+                imageDate <= incomingGreaterDate &&
+                !imageList.includes(image)
+              ) {
+                imageList.push(image);
+              }
+              break;
+            case "multiple":
+            default:
+              dateString.split(",").forEach((imageDate) => {
+                let incomingDate = getDate(imageDate);
+                if (imageDate == incomingDate) {
+                  imageList.push(image);
+                }
+              });
+              break;
+          }
+        });
+        break;
+      default:
+        imageList = allImagesList;
+        break;
+    }
   }
-  return imageList;
+  return [...new Set(imageList)];
 };
 
 const removeFromExcludeds = (data) => {
@@ -541,7 +536,7 @@ const insertFormData = (request, response) => {
       try {
         // Multiple File
         files.picture.forEach((file) => {
-          var imageToInsert = savePicture(file);
+          let imageToInsert = savePicture(file);
           if (imageToInsert) {
             db.entries[imageToInsert] = {
               firstname: fields.firstname,
@@ -560,7 +555,7 @@ const insertFormData = (request, response) => {
       } catch (error) {
         if (error instanceof TypeError) {
           // Single File
-          var imageToInsert = savePicture(files.picture);
+          let imageToInsert = savePicture(files.picture);
           db.entries[imageToInsert] = {
             firstname: fields.firstname,
             lastname: fields.lastname,
@@ -583,16 +578,16 @@ const insertFormData = (request, response) => {
       }
 
       if (fields.radio == "interval") {
-        var parsedDates = fields.dates.split(" - ");
-        var leftmostDay = getDate(parsedDates[0]);
-        var rightmostDay = getDate(parsedDates[1]);
+        let parsedDates = fields.dates.split(" - ");
+        let leftmostDay = getDate(parsedDates[0]);
+        let rightmostDay = getDate(parsedDates[1]);
         if (leftmostDay <= today || today <= rightmostDay) {
           buildToday();
         }
       } else if (fields.radio == "multiple") {
-        var hasToday = false;
+        let hasToday = false;
         fields.dates.split(",").forEach((date) => {
-          var aDay = getDate(date);
+          let aDay = getDate(date);
           if (aDay >= today && aDay <= today) {
             hasToday = true;
           }
@@ -608,11 +603,11 @@ const insertFormData = (request, response) => {
 };
 
 const savePicture = (file) => {
-  var oldPath = file.path;
+  let oldPath = file.path;
   const id = nanoid();
-  var extension = path.extname(oldPath);
-  var fileName = `${id}${extension}`;
-  var newPath = `${imagesFolder}/${fileName}`;
+  let extension = path.extname(oldPath);
+  let fileName = `${id}${extension}`;
+  let newPath = `${imagesFolder}/${fileName}`;
 
   try {
     if (fs.existsSync(oldPath)) {
@@ -667,13 +662,15 @@ const initialize = () => {
   });
 };
 
-module.exports.getTodayList = getTodayList;
-module.exports.insertFormData = insertFormData;
-module.exports.getImageListFromDate = getImageListFromDate;
-module.exports.pictureList = pictureList;
-module.exports.excludeListFromData = excludeListFromData;
-module.exports.hasPicture = hasPicture;
-module.exports.createList = createList;
-module.exports.listWithName = listWithName;
-module.exports.playlists = playlists;
-module.exports.setPlaylist = setPlaylist;
+module.exports = {
+  getTodayList,
+  insertFormData,
+  getImageListFromDate,
+  pictureList,
+  excludeListFromData,
+  hasPicture,
+  createList,
+  listWithName,
+  playlists,
+  setPlaylist,
+};
