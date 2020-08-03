@@ -443,59 +443,72 @@ const removeFromExcludeds = (data) => {
   for (const excludeList in db.metadata["builtExcludeLists"]) {
     let currentExcludeList = db.metadata["builtExcludeLists"][excludeList];
 
-    if (currentExcludeList.dateType == "interval") {
-      let parsedDates = currentExcludeList.dates.split(" - ");
-      let leftmostDay = getDate(parsedDates[0]);
-      let rightmostDay = getDate(parsedDates[1]);
-      if (data.dateType == "interval") {
-        let parsedIncomingDates = data.dates.split(" - ");
-        let leftmostIncomingDay = getDate(parsedIncomingDates[0]);
-        let rightmostIncomingDay = getDate(parsedIncomingDates[1]);
-        if (
-          (leftmostDay <= leftmostIncomingDay &&
-            leftmostIncomingDay <= rightmostDay) ||
-          (leftmostDay <= rightmostIncomingDay &&
-            rightmostIncomingDay <= rightmostDay)
-        ) {
-          currentExcludeList.pictures = currentExcludeList.pictures.filter(
-            (excludedPicture) => !data.pictures.includes(excludedPicture)
-          );
-        }
-      } else if (data.dateType == "multiple") {
-        data.dates.split(",").forEach((date) => {
-          let aDay = getDate(date);
-          if (leftmostDay <= aDay && aDay <= rightmostDay) {
-            currentExcludeList.pictures = currentExcludeList.pictures.filter(
-              (excludedPicture) => !data.pictures.includes(excludedPicture)
-            );
-          }
-        });
-      }
-    } else if (currentExcludeList.dateType == "multiple") {
-      currentExcludeList.dates.split(",").forEach((date) => {
-        let aDay = getDate(date);
-        if (data.dateType == "interval") {
-          let parsedIncomingDates = data.dates.split(" - ");
-          let leftmostIncomingDay = getDate(parsedIncomingDates[0]);
-          let rightmostIncomingDay = getDate(parsedIncomingDates[1]);
-          if (leftmostIncomingDay <= aDay && aDay <= rightmostIncomingDay) {
-            currentExcludeList.pictures = currentExcludeList.pictures.filter(
-              (excludedPicture) => !data.pictures.includes(excludedPicture)
-            );
-          }
-        } else if (data.dateType == "multiple") {
-          data.dates.split(",").forEach((incomingDate) => {
-            let incomingDay = getDate(incomingDate);
-
-            if (aDay >= incomingDay && aDay <= incomingDate) {
+    switch (currentExcludeList.dateType) {
+      case "interval":
+        let parsedDates = currentExcludeList.dates.split(" - ");
+        let leftmostDay = getDate(parsedDates[0]);
+        let rightmostDay = getDate(parsedDates[1]);
+        switch (data.dateType) {
+          case "interval":
+            let parsedIncomingDates = data.dates.split(" - ");
+            let leftmostIncomingDay = getDate(parsedIncomingDates[0]);
+            let rightmostIncomingDay = getDate(parsedIncomingDates[1]);
+            if (
+              (leftmostDay <= leftmostIncomingDay &&
+                leftmostIncomingDay <= rightmostDay) ||
+              (leftmostDay <= rightmostIncomingDay &&
+                rightmostIncomingDay <= rightmostDay)
+            ) {
               currentExcludeList.pictures = currentExcludeList.pictures.filter(
                 (excludedPicture) => !data.pictures.includes(excludedPicture)
               );
             }
-          });
+            break;
+          case "multiple":
+          default:
+            data.dates.split(",").forEach((date) => {
+              let aDay = getDate(date);
+              if (leftmostDay <= aDay && aDay <= rightmostDay) {
+                currentExcludeList.pictures = currentExcludeList.pictures.filter(
+                  (excludedPicture) => !data.pictures.includes(excludedPicture)
+                );
+              }
+            });
+            break;
         }
-      });
+        break;
+      case "multiple":
+      default:
+        currentExcludeList.dates.split(",").forEach((date) => {
+          let aDay = getDate(date);
+          switch (data.dateType) {
+            case "interval":
+              let parsedIncomingDates = data.dates.split(" - ");
+              let leftmostIncomingDay = getDate(parsedIncomingDates[0]);
+              let rightmostIncomingDay = getDate(parsedIncomingDates[1]);
+              if (leftmostIncomingDay <= aDay && aDay <= rightmostIncomingDay) {
+                currentExcludeList.pictures = currentExcludeList.pictures.filter(
+                  (excludedPicture) => !data.pictures.includes(excludedPicture)
+                );
+              }
+              break;
+            case "multiple":
+            default:
+              data.dates.split(",").forEach((incomingDate) => {
+                let incomingDay = getDate(incomingDate);
+                if (aDay >= incomingDay && aDay <= incomingDate) {
+                  currentExcludeList.pictures = currentExcludeList.pictures.filter(
+                    (excludedPicture) =>
+                      !data.pictures.includes(excludedPicture)
+                  );
+                }
+              });
+              break;
+          }
+        });
     }
+    // The only reason we don't write to file right after this is that we're 100%
+    // guaranteed to do it right after this is called.
     db.metadata["builtExcludeLists"][excludeList] = currentExcludeList;
   }
 };
