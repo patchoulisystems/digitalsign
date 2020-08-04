@@ -376,7 +376,7 @@ const getImageListFromDate = (dateType, dateString) => {
     let currentImage = db.entries[image];
     switch (currentImage.dateType) {
       case "interval":
-        let imageParsedDates = currentImage.split(" - ");
+        let imageParsedDates = currentImage.dates.split(" - ");
         let imageLowerDate = getDate(imageParsedDates[0]);
         let imageGreaterDate = getDate(imageParsedDates[1]);
         switch (dateType) {
@@ -394,7 +394,6 @@ const getImageListFromDate = (dateType, dateString) => {
             }
             break;
           case "multiple":
-          default:
             let incomingDates = dateString.split(",");
             incomingDates.forEach((date) => {
               let incomingDate = getDate(date);
@@ -406,10 +405,13 @@ const getImageListFromDate = (dateType, dateString) => {
               }
             });
             break;
+          default:
+            return Object.keys(db.entries);
         }
         break;
       case "multiple":
-        let imageDates = dateString.split(",");
+      default:
+        let imageDates = currentImage.dates.split(",");
         imageDates.forEach((date) => {
           let imageDate = getDate(date);
           switch (dateType) {
@@ -426,19 +428,16 @@ const getImageListFromDate = (dateType, dateString) => {
               }
               break;
             case "multiple":
-            default:
               dateString.split(",").forEach((imageDate) => {
                 let incomingDate = getDate(imageDate);
                 if (imageDate == incomingDate) {
                   imageList.push(image);
                 }
               });
-              break;
+            default:
+              return Object.keys(db.entries);
           }
         });
-        break;
-      default:
-        imageList = allImagesList;
         break;
     }
   }
