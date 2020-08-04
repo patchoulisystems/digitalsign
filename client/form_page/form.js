@@ -3,6 +3,15 @@ $(() => {
   initializeModal(startGlitter);
 });
 
+$(window).on("load resize", function () {
+  let vpWidth = $(window).width();
+  if (vpWidth <= 425) {
+    $(".main-form").removeClass("row").addClass("col");
+  } else {
+    $(".main-form").removeClass("col").addClass("row");
+  }
+});
+
 $(document).on("submit", "form", (event) => {
   event.preventDefault();
   let form = document.forms.namedItem("main-form");
