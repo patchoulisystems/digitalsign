@@ -1,8 +1,38 @@
-var options = {
+const onChangeMonthYear = () => {
+  setTimeout(() => {
+    $("a.day").each(function (itm) {
+      let parsedEpoch = $(this).attr("class").split(" ")[0].split("dp")[1];
+      fetch(`/hasPicture?time=${parsedEpoch}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.data == "none") {
+            $(this).css("background-color", "#cf4036");
+          }
+        });
+    });
+  }, 0);
+};
+
+let options = {
   rangeSelect: true,
   minDate: 0,
   multiSelect: null,
   dateFormat: "yyyy-mm-dd",
+  onChangeMonthYear: onChangeMonthYear,
+};
+
+const initializeDatepicker = (fn, thenFn) => {
+  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
+    (data) => {
+      data.text().then((html) => {
+        let ogHTML = document.getElementById("datepicker-component").innerHTML;
+        document.getElementById("datepicker-component").innerHTML =
+          html + ogHTML;
+        startDatepicker(fn);
+        if (thenFn) thenFn();
+      });
+    }
+  );
 };
 
 const startDatepicker = (fn) => {
@@ -10,6 +40,7 @@ const startDatepicker = (fn) => {
   $("#datepicker").datepick(options);
   attachOnChange();
   onResetPress();
+  onChangeMonthYear();
 };
 
 const attachOnChange = () => {
