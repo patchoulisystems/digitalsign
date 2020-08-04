@@ -1,40 +1,7 @@
 $(() => {
-  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
-    (data) => {
-      data.text().then((html) => {
-        let ogHTML = document.getElementById("datepicker-component").innerHTML;
-        document.getElementById("datepicker-component").innerHTML =
-          html + ogHTML;
-        startDatepicker({
-          onChangeMonthYear: onChangeMonthYear,
-        });
-        onChangeMonthYear();
-        fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
-          data.text().then((html) => {
-            $("#modal").html(html);
-            startModal();
-            startGlitter();
-          });
-        });
-      });
-    }
-  );
+  initializeDatepicker();
+  initializeModal(startGlitter);
 });
-
-const onChangeMonthYear = () => {
-  setTimeout(() => {
-    $("a.day").each(function (itm) {
-      let parsedEpoch = $(this).attr("class").split(" ")[0].split("dp")[1];
-      fetch(`/hasPicture?time=${parsedEpoch}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.data == "none") {
-            $(this).css("background-color", "#cf4036");
-          }
-        });
-    });
-  }, 0);
-};
 
 $(document).on("submit", "form", (event) => {
   event.preventDefault();

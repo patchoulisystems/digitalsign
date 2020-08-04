@@ -1,21 +1,9 @@
 $(() => {
-  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
-    (data) => {
-      data.text().then((html) => {
-        let ogHTML = $("#datepicker-component").html();
-        $("#datepicker-component").html(html + ogHTML);
-        startDatepicker();
-        fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
-          data.text().then((html) => {
-            $("#modal").html(html);
-            startModalForList();
-            bindOnClickEvents();
-            startGlitter();
-          });
-        });
-      });
-    }
-  );
+  initializeDatepicker();
+  initializeModal(() => {
+    bindOnClickEvents();
+    startGlitter();
+  }, true);
 });
 
 const bindOnClickEvents = () => {
