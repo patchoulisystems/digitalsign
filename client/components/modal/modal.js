@@ -1,6 +1,16 @@
 var modal;
 var modalContent;
 
+const initializeModal = (thenFn, forList) => {
+  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
+    data.text().then((html) => {
+      $("#modal").html(html);
+      forList ? startModalForList() : startModal();
+      if (thenFn) thenFn();
+    });
+  });
+};
+
 const startModal = () => {
   modal = $("#modal");
   modalContent = $(modal).find('p[id="modal-text"]');
