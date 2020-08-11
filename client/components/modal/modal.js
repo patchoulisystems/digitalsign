@@ -23,7 +23,7 @@ const startModal = () => {
 };
 
 const closeModal = () => {
-  modal.css("visibility", "hidden");
+  modal.css("display", "none");
   modalContent.text("");
 };
 
@@ -65,5 +65,5 @@ const displayModal = (text, fn, buttonAText, buttonBText, fn2) => {
     $("#modal-cancel").off("click").on("click", closeModal);
   }
   modalContent.text(text);
-  modal.css("visibility", "visible");
+  modal.css("display", "block");
 };

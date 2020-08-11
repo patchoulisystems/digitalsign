@@ -26,25 +26,37 @@
       type="text/css"
       href="/widget?widgetName=modal&resource=modal.css"
     />
+
+    <link rel="stylesheet" href="assets?name=bootstrap.min.css" />
+
     <link rel="stylesheet" href="/set_playlist.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Picture List for Dates</title>
   </head>
   <body>
-    <div class="main-container">
-      <div id="modal" class="modal"></div>
-      <div class="top-bar">
-        <h1 class="title">
-          Set Playlist
-        </h1>
-        <p class="description">
-          You can use this page to set a playlist for today, or a range of dates
-        </p>
+    <div id="main-container" class="container-fluid">
+      <div class="top-bar row">
+        <div class="container col">
+          <h1 class="title">
+            Set Playlist
+          </h1>
+        </div>
+        <div class="container col">
+          <p class="description">
+            You can use this page to set a playlist for today, or a range of
+            dates
+          </p>
+        </div>
       </div>
       <hr />
-      <div id="datepicker-component"></div>
-      <div id="playlists-container"></div>
+      <div class="dates row">
+        <div id="datepicker-component"></div>
+      </div>
+      <div class="lists row">
+        <div class="container" id="playlists-container"></div>
+      </div>
+      <div id="modal" class="container-fluid modal"></div>
     </div>
     <script src="/assets?name=jquery-1.12.1.min.js"></script>
     <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>

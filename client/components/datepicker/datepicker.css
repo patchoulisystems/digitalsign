@@ -9,6 +9,10 @@
   font-size: 90%;
 }
 
+.datepicker-button {
+  margin-top: 1rem;
+}
+
 .datepick,
 .label {
   font-family: "Open Sans", sans-serif;

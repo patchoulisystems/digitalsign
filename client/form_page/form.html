@@ -23,79 +23,95 @@
       type="text/css"
       href="/widget?widgetName=modal&resource=modal.css"
     />
+    <link rel="stylesheet" href="assets?name=bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/form.css" />
     <title>Upload a Picture</title>
   </head>
 
   <body>
-    <div id="main-container">
-      <div class="top-bar">
-        <h1 class="title">
-          Upload a Picture
-        </h1>
-        <p class="description">
-          You can upload a picture, or set of pictures, and schedule these for a
-          set of dates.
-        </p>
+    <div id="main-container" class="container-fluid">
+      <div class="top-bar row">
+        <div class="container col">
+          <h1 class="title">
+            Upload a Picture
+          </h1>
+        </div>
+        <div class="container col">
+          <p class="description">
+            You can upload a picture, or set of pictures, and schedule these for
+            a set of dates. If a day is red, then there's no pictures scheduled
+            for it.
+          </p>
+        </div>
       </div>
       <hr />
-      <form
-        class="main-form"
-        action="/upload"
-        enctype="multipart/form-data"
-        method="post"
-        name="main-form"
-      >
-        <div class="inputs">
-          <label for="firstname">First Name</label>
-          <input
-            type="text"
-            id="firstname"
-            name="firstname"
-            class="input"
-            placeholder="Please enter your first name"
-          />
-          <label for="lastname">Last Name</label>
-          <input
-            type="text"
-            id="lastname"
-            name="lastname"
-            class="input"
-            placeholder="Please enter your last name"
-          />
-          <label for="studentid">Student ID</label>
-          <input
-            type="number"
-            id="studentid"
-            name="studentid"
-            class="input"
-            placeholder="Please enter your Student ID"
-          />
-          <label for="picture">Picture to Upload</label>
-          <input
-            type="file"
-            id="picture"
-            name="picture"
-            accept=".jpg, .png"
-            multiple
-            class="input"
-            placeholder="1920x1080 Pictures Only"
-          />
-        </div>
-        <div class="dates-container">
-          <p>Date(s) to Display the Image(s)</p>
-          <div id="datepicker-component">
-            <div class="submit-button">
-              <button type="submit" class="input button submit">
-                <span>
-                  Submit Picture(s)
-                </span>
-              </button>
+      <div class="container">
+        <form
+          class="main-form row container"
+          action="/upload"
+          enctype="multipart/form-data"
+          method="post"
+          name="main-form"
+        >
+          <div class="inputs col">
+            <div class="col">
+              <label class="row" for="firstname">First Name</label>
+              <input
+                type="text"
+                id="firstname"
+                name="firstname"
+                class="input row"
+                placeholder="Please enter your first name"
+              />
+            </div>
+            <div class="col">
+              <label class="row" for="lastname">Last Name</label>
+              <input
+                type="text"
+                id="lastname"
+                name="lastname"
+                class="input row"
+                placeholder="Please enter your last name"
+              />
+            </div>
+            <div class="col">
+              <label class="row" for="studentid">Student ID</label>
+              <input
+                type="number"
+                id="studentid"
+                name="studentid"
+                class="input row"
+                placeholder="Please enter your Student ID"
+              />
+            </div>
+            <div class="col">
+              <label class="row" for="picture">Picture to Upload</label>
+              <input
+                type="file"
+                id="picture"
+                name="picture"
+                accept=".jpg, .png"
+                multiple
+                class="input row"
+                placeholder="16:9 Ratio preferred"
+              />
             </div>
           </div>
-        </div>
-      </form>
-      <div id="modal"></div>
+          <div class="date col">
+            <p>Date(s) to Display the Image(s)</p>
+            <div id="datepicker-component">
+              <div class="submit-button">
+                <button type="submit" class="input button submit">
+                  <span>
+                    Submit Picture(s)
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="container-fluid" id="modal"></div>
     </div>
     <script src="/assets?name=jquery-1.12.1.min.js"></script>
     <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>

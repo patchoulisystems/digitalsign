@@ -21,74 +21,89 @@
       type="text/css"
       href="/widget?widgetName=modal&resource=modal.css"
     />
+    <link rel="stylesheet" href="assets?name=bootstrap.min.css" />
+
     <link rel="stylesheet" href="/create_list.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Create Playlist</title>
   </head>
   <body>
-    <div class="main-container">
-      <div id="modal" class="modal"></div>
+    <div id="modal" class="modal container-fluid"></div>
+    <div id="main-container" class="container-fluid">
       <div class="top-bar">
-        <h1 class="title">
-          Create a Playlist
-        </h1>
-        <p class="description">
-          You can use this page to select, from the uploaded pictures, which
-          ones you want to add to a playlist, and then choose whether this list
-          should include other lists scheduled for its dates or not. You can
-          choose manually what list to display today on the main menu.
-        </p>
+        <div class="top-bar-text">
+          <h1 class="title">
+            Create a Playlist
+          </h1>
+        </div>
+        <div class="top-bar-text">
+          <p class="description">
+            You can use this page to select, from the uploaded pictures, which
+            ones you want to add to a playlist, and then choose whether this
+            list should include other lists scheduled for its dates or not. You
+            can choose manually what list to display today on the main menu.
+          </p>
+        </div>
       </div>
       <hr />
-      <div class="inputs">
-        <label for="list-name">
-          What should the list be called?
-        </label>
-        <input
-          class="input"
-          type="text"
-          id="list-name"
-          name="list-name"
-          class="list-name"
-        />
-        <span>
-          Should we add other scheduled pictures to this list?
-        </span>
-        <div class="radio-inputs">
-          <div>
+      <div class="inputs-dates container">
+        <div class="container col">
+          <div class="input-labels row">
+            <label for="list-name">
+              What should the list be called?
+            </label>
             <input
-              type="radio"
-              value="true"
-              name="concat"
-              id="radio-yes"
-              checked
+              class="input"
+              type="text"
+              id="list-name"
+              name="list-name"
+              class="list-name"
             />
-            <label class="radio-label" for="radio-yes">
-              Yes
-            </label>
           </div>
-          <div>
-            <input type="radio" value="false" name="concat" id="radio-no" />
-            <label class="radio-label" for="radio-no">
-              No
-            </label>
+          <div class="input-radios row">
+            <span>
+              Should we add other scheduled pictures to this list?
+            </span>
+            <div class="radio-inputs">
+              <div>
+                <input
+                  type="radio"
+                  value="true"
+                  name="concat"
+                  id="radio-yes"
+                  checked
+                />
+                <label class="radio-label" for="radio-yes">
+                  Yes
+                </label>
+              </div>
+              <div>
+                <input type="radio" value="false" name="concat" id="radio-no" />
+                <label class="radio-label" for="radio-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="inputs-dates-right container col">
+          <div id="datepicker-component">
+            <button class="sendData button">
+              <span>
+                Submit
+              </span>
+            </button>
           </div>
         </div>
       </div>
-      <div class="center-side"></div>
-      <div id="datepicker-component">
-        <button class="sendData button">
-          <span>
-            Submit
-          </span>
-        </button>
-      </div>
-      <div id="frame" class="picture-row">
-        <div class="picture-column"></div>
-        <div class="picture-column"></div>
-        <div class="picture-column"></div>
-        <div class="picture-column"></div>
+      <div class="picframe container-fluid">
+        <div id="frame" class="picture-row">
+          <div class="picture-column"></div>
+          <div class="picture-column"></div>
+          <div class="picture-column"></div>
+          <div class="picture-column"></div>
+        </div>
       </div>
     </div>
     <script src="/assets?name=jquery-1.12.1.min.js"></script>

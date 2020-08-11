@@ -1,6 +1,6 @@
 #modal {
   font-family: "Open Sans", sans-serif;
-  visibility: hidden;
+  display: none;
   position: fixed;
   z-index: 100;
   padding-top: 30%;

@@ -8,59 +8,24 @@
 body {
   font-family: "Open Sans", sans-serif;
   background-color: #5891c4;
-  text-align: center;
-}
-
-.title,
-.description {
-  display: inline-block;
 }
 
 .title {
-  font-size: 2vw;
   color: white;
-  padding-right: 9vw;
-}
-
-.main-form {
-  padding-left: 30%;
-  padding-right: 30%;
-}
-
-#reset-button {
-  float: left;
-}
-
-.submit {
-  float: right;
 }
 
 .description {
-  width: 20vw;
-  height: 1vw;
-  padding-left: 9vw;
-  font-size: 0.85vw;
+  width: 80%;
 }
 
-.inputs {
-  float: left;
-  justify-content: left;
+.top-bar {
+  justify-content: center;
+  margin-top: 1rem;
 }
 
-.inputs > label,
-.inputs > input {
-  padding: 3%;
-  display: block;
-  text-align: left;
-}
-
-.studentidpics {
-  display: inline-block;
-}
-
-.dates-container {
-  float: right;
-  text-align: left;
+.top-bar > .col {
+  align-self: center;
+  text-align: center;
 }
 
 .input,
@@ -77,43 +42,4 @@ body {
 hr {
   width: 80%;
   border: 1px #f0b310 solid;
-}
-
-@media screen and (max-width: 1501px) {
-  span {
-    font-size: 3vw;
-  }
-  .title {
-    font-size: 4vw;
-  }
-  .description {
-    font-size: 2vw;
-  }
-}
-@media screen and (max-width: 1000px) {
-  span {
-    font-size: 5vw;
-  }
-  .title {
-    font-size: 6vw;
-  }
-  .description {
-    font-size: 3vw;
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  .title {
-    display: flex;
-    justify-content: center;
-    padding-right: 0;
-    padding-bottom: 1vw;
-  }
-
-  .description {
-    padding-left: 0;
-    justify-content: center;
-    padding-top: 1vw;
-    width: auto;
-  }
 }

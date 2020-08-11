@@ -134,6 +134,9 @@ const assets = (response, urlObject) => {
     } else if (filename.indexOf(".js") !== -1) {
       inside = "scripts";
       ct = "text/javascript";
+    } else if (filename.indexOf(".css") !== -1) {
+      inside = "css";
+      ct = "text/css";
     } else if (filename.indexOf(".ico") !== -1) {
       ct = "image/x-icon";
     } else {

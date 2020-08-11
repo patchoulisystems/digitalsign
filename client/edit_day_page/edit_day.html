@@ -21,31 +21,41 @@
       type="text/css"
       href="/widget?widgetName=modal&resource=modal.css"
     />
+    <link rel="stylesheet" href="assets?name=bootstrap.min.css" />
+
     <link rel="stylesheet" href="/edit_day.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Picture List for Dates</title>
   </head>
   <body>
-    <div class="main-container">
-      <div id="modal" class="modal"></div>
+    <div id="modal" class="modal"></div>
+    <div id="main-container" class="container-fluid">
       <div class="top-bar">
-        <h1 class="title">
-          Create a Picture List
-        </h1>
-        <p class="description">
-          You can use this page to select, from the uploaded pictures, which
-          ones you want to add to each corresponding date/list of dates. If the
-          picture is currently excluded, it will be added again.
-        </p>
+        <div class="top-bar-text">
+          <h1 class="title">
+            Create a Picture List
+          </h1>
+        </div>
+        <div class="top-bar-text">
+          <p class="description">
+            You can use this page to select, from the uploaded pictures, which
+            ones you want to add to each corresponding date/list of dates. If
+            the picture is currently excluded, it will be added again.
+          </p>
+        </div>
       </div>
       <hr />
-      <div id="datepicker-component">
-        <button class="sendData button">
-          <span>
-            Send Picture List
-          </span>
-        </button>
+      <div class="container">
+        <div class="container row">
+          <div id="datepicker-component">
+            <button class="sendData button">
+              <span>
+                Send Picture List
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
       <div id="frame" class="picture-row">
         <div class="picture-column"></div>

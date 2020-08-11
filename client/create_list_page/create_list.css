@@ -15,66 +15,57 @@ hr {
   border: 1px #f0b310 solid;
 }
 
-.main-container {
-  display: block;
-}
-
-.title,
-.description {
-  display: inline-block;
-}
-
-.title {
-  font-size: 2vw;
-  color: white;
-  padding-right: 9vw;
-}
-
-.inputs {
-  padding-left: 30%;
-  float: left;
-  justify-content: left;
-}
-
-.inputs > label,
-.inputs > input {
-  padding: 3%;
-  display: block;
-  text-align: left;
-}
-
-.radio-inputs {
-  justify-content: space-between;
+.top-bar {
   display: flex;
-  width: 80%;
+  flex-direction: row;
+  margin: 1rem 5rem 0 5rem;
+  justify-content: center;
 }
 
-.radio-inputs > div {
-  display: inline-block;
-}
-
-.description {
-  width: 20vw;
-  height: 1vw;
-  padding-left: 9vw;
-  font-size: 0.85vw;
-}
-
-#datepicker-component {
-  display: inline-block;
-}
-
-.main-container,
-#datepicker-component {
+.top-bar-text {
+  display: flex;
+  margin: 0 1rem 0 1rem;
+  flex-direction: column;
   text-align: center;
 }
 
-#reset-button {
-  float: left;
+.description,
+.top-bar-text {
+  width: 80%;
 }
 
-.sendData {
-  float: right;
+.title {
+  color: white;
+}
+
+.picframe,
+#main-container {
+  padding: 0;
+}
+
+.container.row {
+  justify-content: center;
+}
+
+.inputs-dates {
+  flex-direction: row;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+}
+
+.inputs-dates,
+.inputs-dates-right {
+  display: flex;
+}
+
+.inputs-dates-right {
+  justify-content: center;
+}
+
+.input-labels,
+.input-radios {
+  justify-content: space-between;
+  margin-bottom: 2rem;
 }
 
 .input,
@@ -85,6 +76,7 @@ hr {
 }
 
 .button {
+  padding: 1%;
   background: #f0b310;
 }
 
@@ -103,8 +95,8 @@ hr {
 }
 
 .picture-column {
-  flex: 15%;
-  max-width: 30%;
+  flex: 25%;
+  max-width: 25%;
   padding: 0 4px;
 }
 
@@ -114,60 +106,7 @@ img {
   width: 100%;
   transition: width 2s;
   opacity: 1;
-  transition: opacity 0.2s ease;
-}
-
-@media screen and (max-width: 800px) {
-  .picture-column {
-    flex: 50%;
-    max-width: 50%;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .picture-column {
-    flex: 100%;
-    max-width: 100%;
-  }
-}
-
-@media screen and (max-width: 1501px) {
-  span {
-    font-size: 3vw;
-  }
-  .title {
-    font-size: 4vw;
-  }
-  .description {
-    font-size: 2vw;
-  }
-}
-@media screen and (max-width: 1000px) {
-  span {
-    font-size: 5vw;
-  }
-  .title {
-    font-size: 6vw;
-  }
-  .description {
-    font-size: 3vw;
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  .title {
-    display: flex;
-    justify-content: center;
-    padding-right: 0;
-    padding-bottom: 1vw;
-  }
-
-  .description {
-    padding-left: 0;
-    justify-content: center;
-    padding-top: 1vw;
-    width: auto;
-  }
+  transition: opacity 0.5s ease;
 }
 
 .single-picture {
@@ -195,9 +134,30 @@ img {
 
 .unselected {
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.5s ease;
 }
 
 .selected {
   background-color: rgba(122, 252, 122, 0.281);
+}
+
+@media screen and (max-width: 425px) {
+  .inputs-dates,
+  .top-bar {
+    flex-direction: column;
+  }
+
+  .top-bar {
+    margin: 0;
+  }
+
+  .description,
+  .top-bar-text {
+    width: auto;
+  }
+
+  .input-labels,
+  .input-radios {
+    justify-content: center;
+  }
 }
