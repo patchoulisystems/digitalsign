@@ -15,43 +15,34 @@ hr {
   border: 1px #f0b310 solid;
 }
 
-.main-container {
-  display: block;
+.top-bar {
+  margin-top: 1rem;
+  justify-content: center;
 }
-
-#datepicker-component {
-  display: inline-block;
-}
-
-.main-container,
-#datepicker-component {
+.top-bar > .col {
+  align-self: center;
   text-align: center;
 }
 
-#reset-button {
-  float: left;
-}
-
-.getData {
-  float: right;
-}
-
-.title,
 .description {
-  display: inline-block;
+  width: 80%;
+}
+
+.container.row {
+  justify-content: center;
+}
+
+.picframe,
+#main-container {
+  padding: 0;
+}
+
+.picframe {
+  margin-bottom: 1rem;
 }
 
 .title {
-  font-size: 2vw;
   color: white;
-  padding-right: 9vw;
-}
-
-.description {
-  width: 20vw;
-  height: 1vw;
-  padding-left: 9vw;
-  font-size: 0.85vw;
 }
 
 .button {
@@ -77,7 +68,6 @@ hr {
 }
 
 .picture-column {
-  z-index: 0;
   flex: 25%;
   max-width: 25%;
   padding: 0 4px;
@@ -90,59 +80,6 @@ img {
   transition: width 2s;
   opacity: 1;
   transition: opacity 0.5s ease;
-}
-
-@media screen and (max-width: 800px) {
-  .picture-column {
-    flex: 50%;
-    max-width: 50%;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .picture-column {
-    flex: 100%;
-    max-width: 100%;
-  }
-}
-
-@media screen and (max-width: 1501px) {
-  span {
-    font-size: 3vw;
-  }
-  .title {
-    font-size: 4vw;
-  }
-  .description {
-    font-size: 2vw;
-  }
-}
-@media screen and (max-width: 1000px) {
-  span {
-    font-size: 5vw;
-  }
-  .title {
-    font-size: 6vw;
-  }
-  .description {
-    font-size: 3vw;
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  .title {
-    display: flex;
-    justify-content: center;
-    padding-right: 0;
-    padding-bottom: 1vw;
-  }
-
-  .description {
-    padding-left: 0;
-    justify-content: center;
-    padding-top: 1vw;
-    width: auto;
-  }
 }
 
 .single-picture {

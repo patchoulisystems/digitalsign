@@ -7,6 +7,7 @@
       href="/assets?name=favicon.ico"
     />
     <meta charset="UTF-8" />
+
     <link
       rel="stylesheet"
       href="/widget?widgetName=datepicker&resource=datepicker.css"
@@ -21,43 +22,67 @@
       type="text/css"
       href="/widget?widgetName=modal&resource=modal.css"
     />
+    <!-- 
+      TODO: UI Related: 
+      ! Download a local boostrap js 
+      ? This will allow us to have some breathing room when creating UI. This was a
+      ? test page and it worked wonders. 
+    -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
     <link rel="stylesheet" href="/exclude_list.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Exclude Pictures from Dates</title>
   </head>
   <body>
-    <div class="main-container">
-      <div class="top-bar">
-        <h1 class="title">
-          Exclude List
-        </h1>
-        <p class="description">
-          You can select a range of dates and see the pictures scheduled for it.
-          Then, you can select which ones of those pictures you want to exclude
-          for those dates.
-        </p>
+    <div id="modal" class="modal container-fluid"></div>
+    <div id="main-container" class="container-fluid">
+      <div class="top-bar row">
+        <div class="container col">
+          <h1 class="title">
+            Exclude List
+          </h1>
+        </div>
+        <div class="container col">
+          <p class="description">
+            You can select a range of dates and see the pictures scheduled for
+            it. Then, you can select which ones of those pictures you want to
+            exclude for those dates.
+          </p>
+        </div>
       </div>
       <hr />
-      <div id="modal" class="modal"></div>
-      <div id="datepicker-component">
-        <button class="getData button">
-          <span>
-            Get pictures
-          </span>
-        </button>
+      <div class="container">
+        <div class="container row">
+          <div id="datepicker-component">
+            <button class="getData button">
+              <span>
+                Get pictures
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
-      <div id="frame" class="picture-row">
-        <div class="picture-column"></div>
-        <div class="picture-column"></div>
-        <div class="picture-column"></div>
-        <div class="picture-column"></div>
+      <div class="picframe container-fluid">
+        <div id="frame" class="picture-row">
+          <div class="picture-column"></div>
+          <div class="picture-column"></div>
+          <div class="picture-column"></div>
+          <div class="picture-column"></div>
+        </div>
       </div>
-      <button class="sendData button">
-        <span>
-          Exclude pictures from this date(s)
-        </span>
-      </button>
+      <div class="container">
+        <div class="container row">
+          <button class="sendData button">
+            <span>
+              Exclude pictures from this date(s)
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
     <script src="/assets?name=jquery-1.12.1.min.js"></script>
     <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>

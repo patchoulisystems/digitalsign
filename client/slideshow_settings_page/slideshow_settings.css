@@ -4,48 +4,43 @@
     URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
 }
 
+/* TODO: Temporary color */
 body {
-  /* TODO: Temporal Color */
-  background-color: #5891c4;
   font-family: "Open Sans", sans-serif;
-  text-align: center;
-}
-
-.title,
-.description {
-  display: inline-block;
+  background-color: #5891c4;
 }
 
 .title {
-  font-size: 2vw;
   color: white;
-  padding-right: 9vw;
 }
 
-.description {
-  width: 20vw;
-  height: 1vw;
-  padding-left: 9vw;
-  font-size: 0.85vw;
+.top-bar {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem 5rem 0 5rem;
+  justify-content: center;
 }
 
-.holder {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 40%;
-  padding: 1%;
+.top-bar-text {
+  display: flex;
+  margin: 0 1rem 0 1rem;
+  flex-direction: column;
+  text-align: center;
+}
+.title {
+  color: white;
+}
+.description,
+.top-bar-text {
+  width: 80%;
 }
 
-.holder > label,
-.holder > input,
-.holder > select {
-  display: block;
-  text-align: left;
+.main-form {
+  padding: 0 1rem 0 1rem;
 }
 
-.input {
-  padding: 1%;
+.input,
+.button {
   margin-bottom: 10px;
   border: 2px #f0b310 solid;
   border-radius: 5px;
@@ -55,51 +50,19 @@ body {
   background: #f0b310;
 }
 
-.button:hover,
-.button:focus {
-  cursor: pointer;
-}
-
 hr {
   width: 80%;
   border: 1px #f0b310 solid;
 }
 
-@media screen and (max-width: 1501px) {
-  span {
-    font-size: 3vw;
-  }
-  .title {
-    font-size: 4vw;
-  }
-  .description {
-    font-size: 2vw;
-  }
-}
-@media screen and (max-width: 1000px) {
-  span {
-    font-size: 5vw;
-  }
-  .title {
-    font-size: 6vw;
-  }
-  .description {
-    font-size: 3vw;
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  .title {
-    display: flex;
-    justify-content: center;
-    padding-right: 0;
-    padding-bottom: 1vw;
+@media screen and (max-width: 425px) {
+  .top-bar {
+    flex-direction: column;
+    margin: 0;
   }
 
-  .description {
-    padding-left: 0;
-    justify-content: center;
-    padding-top: 1vw;
+  .description,
+  .top-bar-text {
     width: auto;
   }
 }

@@ -15,55 +15,33 @@ hr {
   border: 1px #f0b310 solid;
 }
 
-.main-container {
-  display: block;
+#main-container {
+  padding: 0;
 }
 
-.title,
-.description {
-  display: inline-block;
+.top-bar {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem 5rem 0 5rem;
+  justify-content: center;
 }
 
-.title {
-  font-size: 2vw;
-  color: white;
-  padding-right: 9vw;
-}
-
-.description {
-  width: 20vw;
-  height: 1vw;
-  padding-left: 9vw;
-  font-size: 0.85vw;
-}
-
-#datepicker-component {
-  display: inline-block;
-}
-
-.main-container,
-#datepicker-component {
+.top-bar-text {
+  display: flex;
+  margin: 0 1rem 0 1rem;
+  flex-direction: column;
   text-align: center;
 }
-
-#reset-button {
-  float: left;
+.title {
+  color: white;
+}
+.description,
+.top-bar-text {
+  width: 80%;
 }
 
-.sendData {
-  float: right;
-}
-
-.button {
-  margin-bottom: 10px;
-  border: 2px #f0b310 solid;
-  border-radius: 5px;
-  background: #f0b310;
-}
-
-.button:hover,
-.button:focus {
-  cursor: pointer;
+.container.row {
+  justify-content: center;
 }
 
 .picture-row {
@@ -76,8 +54,8 @@ hr {
 }
 
 .picture-column {
-  flex: 15%;
-  max-width: 30%;
+  flex: 25%;
+  max-width: 25%;
   padding: 0 4px;
 }
 
@@ -87,60 +65,7 @@ img {
   width: 100%;
   transition: width 2s;
   opacity: 1;
-  transition: opacity 0.2s ease;
-}
-
-@media screen and (max-width: 800px) {
-  .picture-column {
-    flex: 50%;
-    max-width: 50%;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .picture-column {
-    flex: 100%;
-    max-width: 100%;
-  }
-}
-
-@media screen and (max-width: 1501px) {
-  span {
-    font-size: 3vw;
-  }
-  .title {
-    font-size: 4vw;
-  }
-  .description {
-    font-size: 2vw;
-  }
-}
-@media screen and (max-width: 1000px) {
-  span {
-    font-size: 5vw;
-  }
-  .title {
-    font-size: 6vw;
-  }
-  .description {
-    font-size: 3vw;
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  .title {
-    display: flex;
-    justify-content: center;
-    padding-right: 0;
-    padding-bottom: 1vw;
-  }
-
-  .description {
-    padding-left: 0;
-    justify-content: center;
-    padding-top: 1vw;
-    width: auto;
-  }
+  transition: opacity 0.5s ease;
 }
 
 .single-picture {
@@ -168,9 +93,34 @@ img {
 
 .unselected {
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.5s ease;
 }
 
 .selected {
   background-color: rgba(122, 252, 122, 0.281);
+}
+
+.button {
+  padding: 1%;
+  margin-bottom: 10px;
+  border: 2px #f0b310 solid;
+  border-radius: 5px;
+  background: #f0b310;
+}
+
+.button:hover,
+.button:focus {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 425px) {
+  .top-bar {
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .description,
+  .top-bar-text {
+    width: auto;
+  }
 }

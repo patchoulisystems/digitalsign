@@ -14,8 +14,18 @@ body {
   color: white;
 }
 
+.description {
+  width: 80%;
+}
+
 .top-bar {
+  justify-content: center;
   margin-top: 1rem;
+}
+
+.top-bar > .col {
+  align-self: center;
+  text-align: center;
 }
 
 .input,

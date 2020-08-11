@@ -4,60 +4,44 @@
     URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
 }
 
-p {
+.listname {
   font-family: "Open Sans", sans-serif;
   font-size: 2rem;
   color: white;
 }
 
 .pictures-slider {
-  height: 100%;
   width: 100%;
   overflow: hidden;
   overflow-y: hidden;
-  background-color: #410b13;
-  margin-bottom: 1%;
+  background-color: #003249;
+  margin-bottom: 2rem;
 }
 img {
   height: 9rem;
   width: 16rem;
-  padding: 5px;
-}
-.pictures-slider-wrapper {
-  float: left;
+  margin: 1rem;
 }
 
-.outside-container {
-  padding-bottom: 3rem;
-  background-color: #ba1f33;
-}
-
-.created-list.concat > .pictures-slider {
-  background-color: #003249;
-}
-
-.created-list.concat > .outside-container {
+.top-banner {
   background-color: #007ea7;
 }
 
-.outside-container > p,
-.outside-container > button {
-  display: inline-block;
-}
-
-.outside-container > p {
-  padding-left: 1%;
-  float: left;
-  margin: 0;
-}
-
-.outside-container > button {
-  float: right;
-}
-
 .created-list {
-  width: 50%;
-  padding-left: 1vw;
+  justify-content: center;
+}
+
+.created-list.no-modify > .pictures-slider {
+  background-color: #410b13;
+}
+
+.created-list.no-modify > .top-banner {
+  background-color: #ba1f33;
+}
+
+.set-playlist-wrapper {
+  text-align: end;
+  padding-top: 1rem;
 }
 
 .pictures-slider:hover {

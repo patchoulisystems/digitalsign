@@ -1,6 +1,6 @@
 $(() => {
   initializeDatepicker();
-  initializeModal();
+  initializeModal(null, true);
   getPlaylists();
 });
 
@@ -15,8 +15,8 @@ const getPlaylists = () => {
           listOnClick(current);
         });
         $("#playlists-container").append(built);
-        startGlitter();
       }
+      startGlitter();
     });
 };
 
