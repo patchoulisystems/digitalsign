@@ -1,5 +1,15 @@
-var modal;
-var modalContent;
+let modal;
+let modalContent;
+
+const createModalCssLink = () => {
+  let link = document.createElement("link");
+  link.href = "/widget?widgetName=modal&resource=modal.css";
+  link.rel = "stylesheet";
+  link.type = "text/css";
+  document.body.appendChild(link);
+};
+
+createModalCssLink();
 
 const initializeModal = (thenFn, forList) => {
   fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
