@@ -1,4 +1,5 @@
 $(() => {
+  startTopBanner();
   initializeDatepicker();
   initializeModal(() => {
     startGlitter();

@@ -1,4 +1,5 @@
 $(() => {
+  startTopBanner();
   initializeModal(startGlitter);
 });
 

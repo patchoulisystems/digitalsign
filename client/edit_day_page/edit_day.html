@@ -31,20 +31,13 @@
   <body>
     <div id="modal" class="modal"></div>
     <div id="main-container" class="container-fluid">
-      <div class="top-bar">
-        <div class="top-bar-text">
-          <h1 class="title">
-            Create a Picture List
-          </h1>
-        </div>
-        <div class="top-bar-text">
-          <p class="description">
-            You can use this page to select, from the uploaded pictures, which
-            ones you want to add to each corresponding date/list of dates. If
-            the picture is currently excluded, it will be added again.
-          </p>
-        </div>
-      </div>
+      <div
+        id="top-bar"
+        title="Create a Picture List"
+        description="You can use this page to select, from the uploaded pictures, which
+      ones you want to add to each corresponding date/list of dates. If
+      the picture is currently excluded, it will be added again."
+      ></div>
       <hr />
       <div class="container">
         <div class="container row">
@@ -70,6 +63,7 @@
     <script src="/widget?widgetName=datepicker&resource=jquery.datepick.js"></script>
     <script src="/widget?widgetName=datepicker&resource=datepicker.js"></script>
     <script src="/widget?widgetName=modal&resource=modal.js"></script>
+    <script src="/widget?widgetName=topbanner&resource=topbanner.js"></script>
     <script src="/edit_day.js"></script>
   </body>
 </html>

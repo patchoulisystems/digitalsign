@@ -30,20 +30,13 @@
 
   <body>
     <div id="main-container" class="container-fluid">
-      <div class="top-bar row">
-        <div class="container col">
-          <h1 class="title">
-            Upload a Picture
-          </h1>
-        </div>
-        <div class="container col">
-          <p class="description">
-            You can upload a picture, or set of pictures, and schedule these for
-            a set of dates. If a day is red, then there's no pictures scheduled
-            for it.
-          </p>
-        </div>
-      </div>
+      <div
+        id="top-bar"
+        title="Upload a Picture"
+        description="You can upload a picture, or set of pictures, and schedule these for
+      a set of dates. If a day is red, then there's no pictures scheduled
+      for it"
+      ></div>
       <hr />
       <div class="container">
         <form
@@ -119,6 +112,7 @@
     <script src="/widget?widgetName=datepicker&resource=jquery.datepick.js"></script>
     <script src="/widget?widgetName=datepicker&resource=datepicker.js"></script>
     <script src="/widget?widgetName=modal&resource=modal.js"></script>
+    <script src="/widget?widgetName=topbanner&resource=topbanner.js"></script>
     <script src="/form.js"></script>
   </body>
 </html>

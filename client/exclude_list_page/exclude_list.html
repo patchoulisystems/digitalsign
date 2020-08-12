@@ -32,20 +32,13 @@
   <body>
     <div id="modal" class="modal container-fluid"></div>
     <div id="main-container" class="container-fluid">
-      <div class="top-bar row">
-        <div class="container col">
-          <h1 class="title">
-            Exclude List
-          </h1>
-        </div>
-        <div class="container col">
-          <p class="description">
-            You can select a range of dates and see the pictures scheduled for
-            it. Then, you can select which ones of those pictures you want to
-            exclude for those dates.
-          </p>
-        </div>
-      </div>
+      <div
+        id="top-bar"
+        title="Exclude List"
+        description="You can select a range of dates and see the pictures scheduled for
+      it. Then, you can select which ones of those pictures you want to
+      exclude for those dates."
+      ></div>
       <hr />
       <div class="container">
         <div class="container row">
@@ -82,6 +75,7 @@
     <script src="/widget?widgetName=datepicker&resource=jquery.datepick.js"></script>
     <script src="/widget?widgetName=datepicker&resource=datepicker.js"></script>
     <script src="/widget?widgetName=modal&resource=modal.js"></script>
+    <script src="/widget?widgetName=topbanner&resource=topbanner.js"></script>
     <script src="/exclude_list.js"></script>
   </body>
 </html>

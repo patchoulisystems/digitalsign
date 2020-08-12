@@ -15,29 +15,6 @@ hr {
   border: 1px #f0b310 solid;
 }
 
-.top-bar {
-  display: flex;
-  flex-direction: row;
-  margin: 1rem 5rem 0 5rem;
-  justify-content: center;
-}
-
-.top-bar-text {
-  display: flex;
-  margin: 0 1rem 0 1rem;
-  flex-direction: column;
-  text-align: center;
-}
-
-.description,
-.top-bar-text {
-  width: 80%;
-}
-
-.title {
-  color: white;
-}
-
 .picframe,
 #main-container {
   padding: 0;
@@ -142,18 +119,8 @@ img {
 }
 
 @media screen and (max-width: 425px) {
-  .inputs-dates,
-  .top-bar {
+  .inputs-dates {
     flex-direction: column;
-  }
-
-  .top-bar {
-    margin: 0;
-  }
-
-  .description,
-  .top-bar-text {
-    width: auto;
   }
 
   .input-labels,

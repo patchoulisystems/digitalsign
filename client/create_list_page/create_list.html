@@ -31,21 +31,14 @@
   <body>
     <div id="modal" class="modal container-fluid"></div>
     <div id="main-container" class="container-fluid">
-      <div class="top-bar">
-        <div class="top-bar-text">
-          <h1 class="title">
-            Create a Playlist
-          </h1>
-        </div>
-        <div class="top-bar-text">
-          <p class="description">
-            You can use this page to select, from the uploaded pictures, which
-            ones you want to add to a playlist, and then choose whether this
-            list should include other lists scheduled for its dates or not. You
-            can choose manually what list to display today on the main menu.
-          </p>
-        </div>
-      </div>
+      <div
+        id="top-bar"
+        title="Create a Playlist"
+        description="You can use this page to select, from the uploaded pictures, which
+      ones you want to add to a playlist, and then choose whether this
+      list should include other lists scheduled for its dates or not. You
+      can choose manually what list to display today on the main menu."
+      ></div>
       <hr />
       <div class="inputs-dates container">
         <div class="container col">
@@ -112,6 +105,7 @@
     <script src="/widget?widgetName=datepicker&resource=jquery.datepick.js"></script>
     <script src="/widget?widgetName=datepicker&resource=datepicker.js"></script>
     <script src="/widget?widgetName=modal&resource=modal.js"></script>
+    <script src="/widget?widgetName=topbanner&resource=topbanner.js"></script>
     <script src="/create_list.js"></script>
   </body>
 </html>

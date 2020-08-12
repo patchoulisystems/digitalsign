@@ -1,4 +1,5 @@
 $(() => {
+  startTopBanner();
   initializeDatepicker();
   initializeModal(() => {
     $(".sendData").click((event) => {
