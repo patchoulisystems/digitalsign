@@ -3,7 +3,7 @@ const createTopBannerCssLink = () => {
   link.href = "/widget?widgetName=topbanner&resource=topbanner.css";
   link.rel = "stylesheet";
   link.type = "text/css";
-  document.body.appendChild(link);
+  document.head.prepend(link);
 };
 
 createTopBannerCssLink();

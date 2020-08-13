@@ -1,3 +1,13 @@
+const createDatepickerCssLink = () => {
+  let link = document.createElement("link");
+  link.href = "/widget?widgetName=datepicker&resource=datepicker.css";
+  link.rel = "stylesheet";
+  link.type = "text/css";
+  document.head.prepend(link);
+};
+
+createDatepickerCssLink();
+
 const onChangeMonthYear = () => {
   setTimeout(() => {
     $("a.day").each(function (itm) {

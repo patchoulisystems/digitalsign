@@ -6,7 +6,7 @@ const createModalCssLink = () => {
   link.href = "/widget?widgetName=modal&resource=modal.css";
   link.rel = "stylesheet";
   link.type = "text/css";
-  document.body.appendChild(link);
+  document.head.prepend(link);
 };
 
 createModalCssLink();
