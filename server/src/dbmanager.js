@@ -616,12 +616,12 @@ const savePicture = (file) => {
  * Then we search through all the built lists, the excluded lists and the created lists
  * and we remove it from those as well.
  * Lastly, we delete the picture if it's still there.
- * 
+ *
  * @param {String} name - The name of the image to kick from the server
  */
 const removePicture = (name) => {
   // If the entry was still there well... now it ain't
-  delete db.metadata.entries[name];
+  delete db.entries[name];
 
   // Today's list should also be cleansed
   db.metadata.todayList = db.metadata.todayList.filter((el) => el != name);
@@ -665,18 +665,21 @@ const removePicture = (name) => {
 };
 
 /** Deletes an image from the server
- * 
+ *
  * This is what actually deletes the image from the server.
  * @param {String} name - The name of the file we're removing
  */
 const deleteImage = (name) => {
-  let imagesDir =  "./data/images/";
+  let imagesDir = "./data/images/";
   try {
-    fs.unlink(imagesDir + name);
+    fs.unlinkSync(imagesDir + name);
   } catch (err) {
-    // TODO: Logging here
-    console.log(err);
-    console.log("More than likely the image is not there");
+    if (err.code == "ENOENT") {
+      console.log("More than likely the image is not there");
+    } else {
+      // TODO: Logging here
+      console.log(err);
+    }
   }
 };
 

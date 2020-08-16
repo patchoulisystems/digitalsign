@@ -290,7 +290,6 @@ const image = (response, urlObject) => {
     } catch (err) {
       // TODO: Logging here. Also log in the db.getTodayList
       console.log(err);
-      db.removePicture(filename);
       ru.findFile(response, "asset", "500.jpg", ct, "");
     }
   } else {

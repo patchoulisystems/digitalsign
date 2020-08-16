@@ -28,6 +28,7 @@ const findFile = (response, dir, file, ct, inside, instant = false) => {
     switch (dir) {
       case "images":
         findFile(response, "asset", "404.jpg", ct, "");
+        db.removePicture(file);
         break;
       default:
         response.writeHead(404, "Not Found");
