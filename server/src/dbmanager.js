@@ -610,6 +610,79 @@ const savePicture = (file) => {
   return fileName;
 };
 
+/** Removes a named picture from the database
+ *
+ * First we search for the entry, and remove it.
+ * Then we search through all the built lists, the excluded lists and the created lists
+ * and we remove it from those as well.
+ * Lastly, we delete the picture if it's still there.
+ *
+ * @param {String} name - The name of the image to kick from the server
+ */
+const removePicture = (name) => {
+  // If the entry was still there well... now it ain't
+  delete db.entries[name];
+
+  // Today's list should also be cleansed
+  db.metadata.todayList = db.metadata.todayList.filter((el) => el != name);
+
+  // Now for each created list, we cleanse
+  for (const list in db.metadata.createdLists) {
+    db.metadata.createdLists[list].pictures = db.metadata.createdLists[
+      list
+    ].pictures.filter((el) => el != name);
+  }
+
+  // Now for each built list, we cleanse
+  for (const list in db.metadata.builtLists) {
+    db.metadata.builtLists[list].pictures = db.metadata.builtLists[
+      list
+    ].pictures.filter((el) => el != name);
+  }
+
+  // Now for each exclude list, we cleanse
+  for (const list in db.metadata.builtExcludeLists) {
+    db.metadata.builtExcludeLists[
+      list
+    ].pictures = db.metadata.builtExcludeLists[list].pictures.filter(
+      (el) => el != name
+    );
+  }
+
+  // Now we save our game
+  let jsonData = JSON.stringify(db);
+  try {
+    if (fs.existsSync(dbLocation)) {
+      fs.writeFileSync(dbLocation, jsonData);
+    }
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+  }
+
+  // Now we say goodbye to the image
+  deleteImage(name);
+};
+
+/** Deletes an image from the server
+ *
+ * This is what actually deletes the image from the server.
+ * @param {String} name - The name of the file we're removing
+ */
+const deleteImage = (name) => {
+  let imagesDir = "./data/images/";
+  try {
+    fs.unlinkSync(imagesDir + name);
+  } catch (err) {
+    if (err.code == "ENOENT") {
+      console.log("More than likely the image is not there");
+    } else {
+      // TODO: Logging here
+      console.log(err);
+    }
+  }
+};
+
 const excludeListFromData = (data) => {
   let excludeListName = `excludeList${db.metadata["builtExcludeListsNumber"]}`;
   db.metadata["builtExcludeLists"][excludeListName] = data;
@@ -661,4 +734,5 @@ module.exports = {
   listWithName,
   playlists,
   setPlaylist,
+  removePicture,
 };
