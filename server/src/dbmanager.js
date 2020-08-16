@@ -660,10 +660,7 @@ const savePicture = (file) => {
   } catch (err) {
     // TODO: Logging here
     if (err.code == "ENOENT") {
-      console.log(
-        "Most likely the image directory was not found. Retrying...",
-        err
-      );
+      console.log("Most likely the image directory was not found. Retrying...");
       try {
         fs.mkdirSync(imagesFolder);
         savePicture(file);
