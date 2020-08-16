@@ -84,38 +84,6 @@ const getTodayIncludeList = () => {
   return includeList;
 };
 
-const insertCreatedToList = (currentList, todayList) => {
-  let today = getDate();
-
-  switch (currentList.dateType) {
-    case "interval":
-      let parsedDates = currentList.dates.split(" - ");
-      let leftmostDay = getDate(parsedDates[0]);
-      let rightmostDay = getDate(parsedDates[1]);
-      if (leftmostDay <= today && today <= rightmostDay) {
-        currentList.pictures.forEach((picture) => {
-          if (!todayList.includes(picture.toString())) {
-            todayList.push(picture);
-          }
-        });
-      }
-      break;
-    case "multiple":
-    default:
-      currentList.dates.split(",").forEach((date) => {
-        let aDay = getDate(date);
-        if (aDay >= today && aDay <= today) {
-          todayList = todayList.concat(
-            currentList.pictures.filter(
-              (picture) => !todayList.includes(picture)
-            )
-          );
-        }
-      });
-      break;
-  }
-};
-
 const getScheduled = (item) => {
   let list = [];
   let today = getDate();
@@ -171,15 +139,17 @@ const buildToday = (playlist) => {
       if (images.length) {
         todayList = todayList.concat(images);
         if (currentList.concat == "true") {
-          // We do our magic here
           todayList = todayList.concat(getTodayImages());
-
-          // Appending included lists scheduled for today
           todayList = todayList.concat(getTodayIncludeList());
-          // Excluding scheduled pictures to be excluded. Should we add that option as well?
-          todayList = filterExclude(todayList, today);
+          todayList = filterExclude(todayList);
         }
       }
+    }
+    // Accounting for the case that there's no scheduled lists at all
+    if (!todayList.length) {
+      todayList = todayList.concat(getTodayImages());
+      todayList = todayList.concat(getTodayIncludeList());
+      todayList = filterExclude(todayList);
     }
   }
 
