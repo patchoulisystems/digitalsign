@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
+  "$id": "/Metadata",
+  "type": "object",
+  "properties": {
+    "imageNumber": { "type": "integer" },
+    "todayList": { "type": "array" },
+    "dateBuilt": { "type": "string" },
+    "builtListsNumber": { "type": "integer" },
+    "builtLists": { "$ref": "/List" },
+    "builtExcludeListsNumber": { "type": "integer" },
+    "builtExcludeLists": { "$ref": "/List" },
+    "createdLists": { "$ref": "/CreatedList" }
+  }
+}
