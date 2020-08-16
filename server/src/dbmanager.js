@@ -729,6 +729,8 @@ const initialize = () => {
   try {
     if (fs.existsSync(dbLocation)) {
       fs.writeFileSync(dbLocation, jsonData);
+    } else {
+      fs.writeFileSync(dbLocation, jsonData);
     }
   } catch (err) {
     // TODO: Logging here
