@@ -44,11 +44,7 @@ const initialize = () => {
   //   });
   let jsonData = JSON.stringify(db);
   try {
-    if (fs.existsSync(dbLocation)) {
-      fs.writeFileSync(dbLocation, jsonData);
-    } else {
-      fs.writeFileSync(dbLocation, jsonData);
-    }
+    fs.writeFileSync(dbLocation, jsonData);
   } catch (err) {
     // TODO: Logging here
     console.log(err);
