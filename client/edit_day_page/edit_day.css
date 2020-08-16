@@ -1,11 +1,7 @@
-@font-face {
-  font-family: "Open Sans";
-  src: URL("/assets?name=fontOpenSans-Regular.ttf") format("truetype"),
-    URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
-}
+@import url("/assets?name=colors.css");
+@import url("/assets?name=globals.css");
 
 body {
-  font-family: "Open Sans", sans-serif;
   background-color: #5891c4;
 }
 
@@ -16,27 +12,6 @@ hr {
 
 #main-container {
   padding: 0;
-}
-
-.top-bar {
-  display: flex;
-  flex-direction: row;
-  margin: 1rem 5rem 0 5rem;
-  justify-content: center;
-}
-
-.top-bar-text {
-  display: flex;
-  margin: 0 1rem 0 1rem;
-  flex-direction: column;
-  text-align: center;
-}
-.title {
-  color: white;
-}
-.description,
-.top-bar-text {
-  width: 80%;
 }
 
 .container.row {
@@ -54,16 +29,4 @@ hr {
 .button:hover,
 .button:focus {
   cursor: pointer;
-}
-
-@media screen and (max-width: 425px) {
-  .top-bar {
-    flex-direction: column;
-    margin: 0;
-  }
-
-  .description,
-  .top-bar-text {
-    width: auto;
-  }
 }

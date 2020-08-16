@@ -1,31 +1,13 @@
-@font-face {
-  font-family: "Open Sans";
-  src: URL("/assets?name=fontOpenSans-Regular.ttf") format("truetype"),
-    URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
-}
+@import url("/assets?name=colors.css");
+@import url("/assets?name=globals.css");
 
 body {
-  font-family: "Open Sans", sans-serif;
   background-color: #5891c4;
   margin: 0;
 }
 
-.top-bar {
-  justify-content: center;
-}
-
-.top-bar > .col {
-  align-self: center;
-  text-align: center;
-}
-
-.top-bar,
 .lists.row {
   margin-top: 1rem;
-}
-
-.title {
-  color: white;
 }
 
 .dates.row {
@@ -34,14 +16,14 @@ body {
 
 hr {
   width: 80%;
-  border: 1px #f0b310 solid;
+  border: 1px var(--necc-yellow-prim) solid;
 }
 
 .button {
   margin-bottom: 10px;
-  border: 2px #f0b310 solid;
+  border: 2px var(--necc-yellow-prim) solid;
   border-radius: 5px;
-  background: #f0b310;
+  background: var(--necc-yellow-prim);
 }
 
 .button:hover,

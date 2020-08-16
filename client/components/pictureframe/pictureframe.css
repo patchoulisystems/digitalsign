@@ -14,7 +14,7 @@
   height: 0;
   display: inline-flex;
   flex-wrap: wrap;
-  background-color: #214566;
+  background-color: var(--necc-secondary);
   padding: 0 4px;
 }
 
@@ -62,7 +62,7 @@
 }
 
 .selected {
-  background-color: rgba(122, 252, 122, 0.281);
+  background-color: var(--picture-frame-selected);
 }
 
 @media screen and (max-width: 768px) {

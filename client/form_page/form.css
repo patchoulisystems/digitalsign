@@ -1,31 +1,9 @@
-@font-face {
-  font-family: "Open Sans";
-  src: URL("/assets?name=fontOpenSans-Regular.ttf") format("truetype"),
-    URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
-}
+@import url("/assets?name=colors.css");
+@import url("/assets?name=globals.css");
 
 /* TODO: Temporary color */
 body {
-  font-family: "Open Sans", sans-serif;
   background-color: #5891c4;
-}
-
-.title {
-  color: white;
-}
-
-.description {
-  width: 80%;
-}
-
-.top-bar {
-  justify-content: center;
-  margin-top: 1rem;
-}
-
-.top-bar > .col {
-  align-self: center;
-  text-align: center;
 }
 
 .input,

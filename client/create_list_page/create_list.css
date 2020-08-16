@@ -1,17 +1,13 @@
-@font-face {
-  font-family: "Open Sans";
-  src: URL("/assets?name=fontOpenSans-Regular.ttf") format("truetype"),
-    URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
-}
+@import url("/assets?name=colors.css");
+@import url("/assets?name=globals.css");
 
 body {
-  font-family: "Open Sans", sans-serif;
   background-color: #5891c4;
 }
 
 hr {
   width: 80%;
-  border: 1px #f0b310 solid;
+  border: 1px var(--necc-yellow-prim) solid;
 }
 
 #main-container {
@@ -46,13 +42,13 @@ hr {
 .input,
 .button {
   margin-bottom: 10px;
-  border: 2px #f0b310 solid;
+  border: 2px var(--necc-yellow-prim) solid;
   border-radius: 5px;
 }
 
 .button {
   padding: 1%;
-  background: #f0b310;
+  background: var(--necc-yellow-prim);
 }
 
 .button:hover,

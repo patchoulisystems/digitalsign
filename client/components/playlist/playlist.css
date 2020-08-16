@@ -1,20 +1,13 @@
-@font-face {
-  font-family: "Open Sans";
-  src: URL("/assets?name=fontOpenSans-Regular.ttf") format("truetype"),
-    URL("/assets?name=fontOpenSans-Regular.woff") format("woff");
-}
-
 .listname {
-  font-family: "Open Sans", sans-serif;
   font-size: 2rem;
-  color: white;
+  color: var(--necc-title);
 }
 
 .pictures-slider {
   width: 100%;
   overflow: hidden;
   overflow-y: hidden;
-  background-color: #003249;
+  background-color: var(--playlist-mod-prim);
   margin-bottom: 2rem;
 }
 img {
@@ -24,7 +17,7 @@ img {
 }
 
 .top-banner {
-  background-color: #007ea7;
+  background-color: var(--playlist-mod-sec);
 }
 
 .created-list {
@@ -32,11 +25,11 @@ img {
 }
 
 .created-list.no-modify > .pictures-slider {
-  background-color: #410b13;
+  background-color: var(--playlist-nomod-prim);
 }
 
 .created-list.no-modify > .top-banner {
-  background-color: #ba1f33;
+  background-color: var(--playlist-nomod-sec);
 }
 
 .set-playlist-wrapper {
@@ -57,7 +50,7 @@ img {
   z-index: 100;
 }
 .pictures-slider::-webkit-scrollbar-thumb {
-  background-color: #007ea7; /* color of the scroll thumb */
+  background-color: var(--playlist-mod-sec); /* color of the scroll thumb */
   border-radius: 20px; /* roundness of the scroll thumb */
-  border: 3px solid orange; /* creates padding around scroll thumb */
+  border: 3px solid var(--playlist-scrollbar-border); /* creates padding around scroll thumb */
 }
