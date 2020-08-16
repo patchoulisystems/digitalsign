@@ -771,11 +771,7 @@ const initializeSettings = () => {
     timeBetweenPictures: "6000",
   });
   try {
-    if (fs.existsSync(jsonData)) {
-      fs.writeFileSync("./data/settings.json", jsonData);
-    } else {
-      fs.writeFileSync("./data/settings.json", jsonData);
-    }
+    fs.writeFileSync("./data/settings.json", jsonData);
   } catch (err) {
     // TODO: Logging here
     console.log(err);
