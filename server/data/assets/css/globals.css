@@ -32,3 +32,8 @@ hr {
 .button:focus {
   cursor: pointer;
 }
+
+.input:focus {
+  border: 2px var(--necc-yellow-input-prim) solid;
+  border-radius: 5px;
+}
