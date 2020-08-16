@@ -616,6 +616,8 @@ const savePicture = (file) => {
  * Then we search through all the built lists, the excluded lists and the created lists
  * and we remove it from those as well.
  * Lastly, we delete the picture if it's still there.
+ * 
+ * @param {String} name - The name of the image to kick from the server
  */
 const removePicture = (name) => {
   // If the entry was still there well... now it ain't
@@ -665,6 +667,7 @@ const removePicture = (name) => {
 /** Deletes an image from the server
  * 
  * This is what actually deletes the image from the server.
+ * @param {String} name - The name of the file we're removing
  */
 const deleteImage = (name) => {
   let imagesDir =  "./data/images/";
