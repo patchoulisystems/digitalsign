@@ -16,20 +16,19 @@ body {
   padding-top: 5%;
 }
 
-.necc-logo,
-.title {
-  display: inline-block;
+#top-bar {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem 20rem 0 20rem;
+  justify-content: space-between;
 }
 
-.necc-logo {
-  padding-right: 9vw;
+#top-bar-logo {
+  align-self: center;
 }
 
-.title {
-  font-family: "Open Sans", sans-serif;
-  font-size: 2vw;
-  color: white;
-  padding-left: 9vw;
+#top-bar-title {
+  color: var(--necc-title);
 }
 
 /* Buttons properties */
@@ -42,58 +41,20 @@ body {
   color: black;
   /* Wide padding, and then High padding */
   padding: 1% 0.5%;
-  /* On hover, what cursor to turn into */
-  cursor: pointer;
   /* Just to make all buttons the same width */
   width: 65%;
+  font-size: 2rem;
 }
 
-hr {
-  width: 80%;
-  border: 1px #f0b310 solid;
-}
-
-span {
-  font-size: 1vw;
-}
-
-@media screen and (max-width: 1501px) {
-  span {
-    font-size: 3vw;
-  }
-  .title {
-    font-size: 4vw;
+@media screen and (max-width: 1024px) {
+  #top-bar {
+    flex-direction: column;
+    margin: 1rem 10rem 0 10rem;
   }
 }
 
-@media screen and (max-width: 1000px) {
-  span {
-    font-size: 5vw;
-  }
-  .title {
-    font-size: 6vw;
-  }
-}
-
-/* If the screen size is 503 wide or less
-move the top bar elements around so that they fall on top of
-each other */
-@media screen and (max-width: 503px) {
-  .top-bar {
-    text-align: center;
-  }
-  .necc-logo,
-  .title {
-    display: flex;
-  }
-  .necc-logo {
-    padding-right: 0;
-    padding-left: 25%;
-    padding-bottom: 1vw;
-  }
-
-  .title {
-    padding-left: 25%;
-    padding-top: 1vw;
+@media screen and (max-width: 768px) {
+  #top-bar {
+    margin: 1rem 5rem 0 5rem;
   }
 }

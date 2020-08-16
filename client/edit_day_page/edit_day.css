@@ -1,32 +1,10 @@
 @import url("/assets?name=colors.css");
 @import url("/assets?name=globals.css");
 
-body {
-  background-color: #5891c4;
-}
-
-hr {
-  width: 80%;
-  border: 1px #f0b310 solid;
-}
-
 #main-container {
   padding: 0;
 }
 
 .container.row {
   justify-content: center;
-}
-
-.button {
-  padding: 1%;
-  margin-bottom: 10px;
-  border: 2px #f0b310 solid;
-  border-radius: 5px;
-  background: #f0b310;
-}
-
-.button:hover,
-.button:focus {
-  cursor: pointer;
 }

@@ -1,23 +1,2 @@
 @import url("/assets?name=colors.css");
 @import url("/assets?name=globals.css");
-
-/* TODO: Temporary color */
-body {
-  background-color: #5891c4;
-}
-
-.input,
-.button {
-  margin-bottom: 10px;
-  border: 2px #f0b310 solid;
-  border-radius: 5px;
-}
-
-.button {
-  background: #f0b310;
-}
-
-hr {
-  width: 80%;
-  border: 1px #f0b310 solid;
-}

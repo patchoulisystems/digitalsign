@@ -6,4 +6,29 @@
 
 body {
   font-family: "Open Sans", sans-serif;
+  background-color: var(--necc-third);
+  margin: 0;
+}
+
+hr {
+  width: 80%;
+  border: 1px var(--necc-yellow-prim) solid;
+}
+
+.input,
+.button {
+  margin-bottom: 1rem;
+  border: 2px var(--necc-yellow-prim) solid;
+  border-radius: 5px;
+}
+
+.button {
+  padding: 0.35rem;
+  background: var(--necc-yellow-prim);
+  font-size: 1rem;
+}
+
+.button:hover,
+.button:focus {
+  cursor: pointer;
 }

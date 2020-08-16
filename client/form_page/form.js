@@ -6,7 +6,7 @@ $(() => {
 
 $(window).on("load resize", function () {
   let vpWidth = $(window).width();
-  if (vpWidth <= 425) {
+  if (vpWidth <= 765) {
     $(".main-form").removeClass("row").addClass("col");
   } else {
     $(".main-form").removeClass("col").addClass("row");

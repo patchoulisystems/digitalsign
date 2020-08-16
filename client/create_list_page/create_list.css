@@ -1,15 +1,6 @@
 @import url("/assets?name=colors.css");
 @import url("/assets?name=globals.css");
 
-body {
-  background-color: #5891c4;
-}
-
-hr {
-  width: 80%;
-  border: 1px var(--necc-yellow-prim) solid;
-}
-
 #main-container {
   padding: 0;
 }
@@ -37,23 +28,6 @@ hr {
 .input-radios {
   justify-content: space-between;
   margin-bottom: 2rem;
-}
-
-.input,
-.button {
-  margin-bottom: 10px;
-  border: 2px var(--necc-yellow-prim) solid;
-  border-radius: 5px;
-}
-
-.button {
-  padding: 1%;
-  background: var(--necc-yellow-prim);
-}
-
-.button:hover,
-.button:focus {
-  cursor: pointer;
 }
 
 @media screen and (max-width: 425px) {
