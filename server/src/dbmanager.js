@@ -8,6 +8,55 @@ const imagesFolder = "./data/images/";
 const dbLocation = "./data/db.json";
 let db;
 
+/** Initializes the DB file or creates a new one if there isn't one
+ *
+ * Really powerful method. It will wipe the database if used. Something to note is that
+ * it will be triggered whenever the app cannot find the db. Pictures will still be there, so all we have to
+ * do is uncomment the bottom loop if wanted.
+ */
+const initialize = () => {
+  // This also works as a more visual schema of the db
+  db = {
+    entries: {},
+    metadata: {
+      imageNumber: 0,
+      todayList: [],
+      dateBuilt: "",
+      builtListsNumber: 0,
+      builtExcludeListsNumber: 0,
+    },
+    createdLists: {},
+    builtLists: {},
+    builtExcludeLists: {},
+  };
+  // If you want to initialize it with the pictures stored quickly, uncomment this
+  // fs.readdir(imagesFolder, (err, files) => {
+  //  let today = getDate();
+  //   files.forEach((image) => {
+  //     db.entries[image] = {
+  //       firstname: "Vladimir",
+  //       lastname: "Ventura",
+  //       studentid: "00301144",
+  //       dateType: "multiple",
+  //       dates: `${today.year()}-${today.month() + 1}-${today.date()}`,
+  //       pictureName: image,
+  //     };
+  //   });
+  let jsonData = JSON.stringify(db);
+  try {
+    if (fs.existsSync(dbLocation)) {
+      fs.writeFileSync(dbLocation, jsonData);
+    } else {
+      fs.writeFileSync(dbLocation, jsonData);
+    }
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+  }
+};
+// And then uncomment this as well
+// initialize();
+
 try {
   if (fs.existsSync(dbLocation)) {
     db = fs.readFileSync(dbLocation);
@@ -15,7 +64,10 @@ try {
   }
 } catch (err) {
   // TODO: Logging here
-  console.log(err);
+  console.log(
+    "DB file was either empty or had a bad parsing. Please take a look at it, or delete it and start the app again to initialize one."
+  );
+  process.exit(1);
 }
 
 const getDate = (str, noFormat) => {
@@ -603,7 +655,18 @@ const savePicture = (file) => {
     }
   } catch (err) {
     // TODO: Logging here
-    console.log(err);
+    if (err.code == "ENOENT") {
+      console.log(
+        "Most likely the image directory was not found. Retrying...",
+        err
+      );
+      try {
+        fs.mkdirSync(imagesFolder);
+        savePicture(file);
+      } catch (err) {
+        console.log("Something else is the issue: ", err);
+      }
+    }
     return "";
   }
 
@@ -695,55 +758,6 @@ const excludeListFromData = (data) => {
     console.log(err);
   }
 };
-
-/** Initializes the DB file or creates a new one if there isn't one
- *
- * Really powerful method. It will wipe the database if used. Something to note is that
- * it will be triggered whenever the app cannot find the db. Pictures will still be there, so all we have to
- * do is uncomment the bottom loop if wanted.
- */
-const initialize = () => {
-  // This also works as a more visual schema of the db
-  db = {
-    entries: {},
-    metadata: {
-      imageNumber: 0,
-      todayList: [],
-      dateBuilt: "",
-      builtListsNumber: 0,
-      builtExcludeListsNumber: 0,
-    },
-    createdLists: {},
-    builtLists: {},
-    builtExcludeLists: {},
-  };
-  // If you want to initialize it with the pictures stored quickly, uncomment this
-  // fs.readdir(imagesFolder, (err, files) => {
-  //  let today = getDate();
-  //   files.forEach((image) => {
-  //     db.entries[image] = {
-  //       firstname: "Vladimir",
-  //       lastname: "Ventura",
-  //       studentid: "00301144",
-  //       dateType: "multiple",
-  //       dates: `${today.year()}-${today.month() + 1}-${today.date()}`,
-  //       pictureName: image,
-  //     };
-  //   });
-  let jsonData = JSON.stringify(db);
-  try {
-    if (fs.existsSync(dbLocation)) {
-      fs.writeFileSync(dbLocation, jsonData);
-    } else {
-      fs.writeFileSync(dbLocation, jsonData);
-    }
-  } catch (err) {
-    // TODO: Logging here
-    console.log(err);
-  }
-};
-// And then uncomment this as well
-// initialize();
 
 /** Initializes the Settings file or creates one from scratch if there is none
  *
