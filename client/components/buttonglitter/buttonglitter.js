@@ -1,3 +1,13 @@
+const createGlitterCssLink = () => {
+  let link = document.createElement("link");
+  link.href = "/widget?widgetName=buttonglitter&resource=buttonglitter.css";
+  link.rel = "stylesheet";
+  link.type = "text/css";
+  document.head.prepend(link);
+};
+
+createGlitterCssLink();
+
 const startGlitter = () => {
   $(".button").mousemove((e) => {
     bindMouseEvent(e);

@@ -8,85 +8,82 @@
     />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets?name=bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/slideshow_settings.css" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="/widget?widgetName=buttonglitter&resource=buttonglitter.css"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="/widget?widgetName=modal&resource=modal.css"
-    />
     <title>Slideshow Settings</title>
   </head>
   <body>
-    <div id="main-container">
-      <div class="top-bar">
-        <h1 class="title">
-          Slideshow Settings
-        </h1>
-        <p class="description">
-          You can use this page to set up the animation between pictures, its
-          speed and how long each picture shows for. All durations are measured
-          in seconds.
-        </p>
-      </div>
+    <div id="main-container" class="container-fluid">
+      <div
+        id="top-bar"
+        title="Slideshow Settings"
+        description="You can use this page to set up the animation between pictures, its
+      speed and how long each picture shows for. All durations are
+      measured in seconds."
+      ></div>
       <hr />
       <form
-        class="main-form"
+        class="main-form container"
         action="/slideshow_settings"
         enctype="multipart/form-data"
         method="post"
         name="main-form"
       >
-        <div class="animation-select holder">
-          <label for="animationName">Choose an Animation</label>
-          <select name="animationName" id="animationName" class="input">
-            <option value="blur">Blur</option>
-            <option value="fade">Fade</option>
-            <option value="dropdown">Drop Down</option>
-            <option value="fallingtwist">Falling with a Twist</option>
-            <option value="expand">Expand</option>
-            <option value="rotate">Rotate</option>
-            <option value="slideleft">Slide from Left</option>
-          </select>
+        <div class="animation-select container row">
+          <div class="container col">
+            <label class="row" for="animationName">Choose an Animation</label>
+            <select name="animationName" id="animationName" class="input row">
+              <option value="blur">Blur</option>
+              <option value="fade">Fade</option>
+              <option value="dropdown">Drop Down</option>
+              <option value="fallingtwist">Falling with a Twist</option>
+              <option value="expand">Expand</option>
+              <option value="rotate">Rotate</option>
+              <option value="slideleft">Slide from Left</option>
+            </select>
+          </div>
         </div>
-        <div class="animation-speed holder">
-          <label for="animationSpeed"
-            >How long should the animation play for?</label
-          >
-          <input
-            name="animationSpeed"
-            id="animationSpeed"
-            type="number"
-            step="0.01"
-            class="input"
-          />
+        <div class="animation-speed container row">
+          <div class="col">
+            <label class="row" for="animationSpeed"
+              >How long should the animation play for?</label
+            >
+            <input
+              name="animationSpeed"
+              id="animationSpeed"
+              type="number"
+              step="0.01"
+              class="input row"
+            />
+          </div>
         </div>
-        <div class="picture-delay holder">
-          <label for="timeBetweenPictures"
-            >How much time should there be between pictures?</label
-          >
-          <input
-            name="timeBetweenPictures"
-            id="timeBetweenPictures"
-            type="number"
-            class="input"
-          />
+        <div class="picture-delay container row">
+          <div class="col">
+            <label class="row" for="timeBetweenPictures"
+              >How much time should there be between pictures?</label
+            >
+            <input
+              name="timeBetweenPictures"
+              id="timeBetweenPictures"
+              type="number"
+              class="input row"
+            />
+          </div>
         </div>
-        <button class="input button" type="submit">
-          <span>
-            Submit Settings
-          </span>
-        </button>
+        <div class="container row">
+          <button class="input button" type="submit">
+            <span>
+              Submit Settings
+            </span>
+          </button>
+        </div>
       </form>
     </div>
-    <div id="modal" class="modal"></div>
+    <div class="container-fluid" id="modal" class="modal"></div>
     <script src="/assets?name=jquery-1.12.1.min.js"></script>
     <script src="/widget?widgetName=buttonglitter&resource=buttonglitter.js"></script>
     <script src="/widget?widgetName=modal&resource=modal.js"></script>
+    <script src="/widget?widgetName=topbanner&resource=topbanner.js"></script>
     <script src="/slideshow_settings.js"></script>
   </body>
 </html>

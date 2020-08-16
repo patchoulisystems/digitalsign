@@ -1,13 +1,7 @@
 $(() => {
-  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
-    data.text().then((html) => {
-      $("#modal").html(html);
-      startModal();
-      startGlitter();
-    });
-  });
+  startTopBanner();
+  initializeModal(startGlitter);
 });
-
 
 $(document).on("submit", "form", (event) => {
   event.preventDefault();

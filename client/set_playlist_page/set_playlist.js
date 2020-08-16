@@ -1,28 +1,12 @@
 $(() => {
-  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
-    (data) => {
-      data.text().then((html) => {
-        let ogHTML = document.getElementById("datepicker-component").innerHTML;
-        document.getElementById("datepicker-component").innerHTML =
-          html + ogHTML;
-        startDatepicker();
-        fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
-          data.text().then((html) => {
-            $("#modal").html(html);
-            startModalForList();
-            $(".sendData").click((event) => {
-              onSubmit();
-            });
-            getPlaylists();
-          });
-        });
-      });
-    }
-  );
+  startTopBanner();
+  initializeDatepicker();
+  initializeModal(null, true);
+  getPlaylists();
 });
 
 const getPlaylists = () => {
-  fetch("/get_playlists")
+  fetch("/getPlaylists")
     .then((resp) => resp.json())
     .then((data) => {
       let playlists = data.playlists;
@@ -32,19 +16,17 @@ const getPlaylists = () => {
           listOnClick(current);
         });
         $("#playlists-container").append(built);
-        startGlitter();
       }
+      startGlitter();
     });
 };
 
 const listOnClick = (playlist) => {
-  if (playlist.concat == "false") {
+  if (playlist.concat == "true") {
     displayModal(
-      "This list currently accepts other images to be concatenated to it. Would you like to keep it this way? (Click No to make it so we don't concatenate anymore)",
+      "This list currently accepts other images to be added/removed to it. Would you like to keep it this way? (Click No to make it so we don't modify the list at all)",
       () => {
-        console.log("Clicked yes bruh");
         submitList(playlist);
-        console.log("After yes bruh");
       },
       "Yes",
       "No",
@@ -54,7 +36,7 @@ const listOnClick = (playlist) => {
     );
   } else {
     displayModal(
-      "This list currently takes no other images concatenated to it. Would you like to keep it this way? (Click No to make it so we are concatenating other scheduled images)",
+      "This list currently cannot be added to/removed from. Would you like to keep it this way? (Click No to make it so we are modifying the list)",
       () => {
         submitList(playlist);
       },
@@ -80,7 +62,6 @@ const submitList = (playlist) => {
     }),
     contentType: "application/json",
   };
-  console.log(payload);
   $.ajax(payload)
     .fail((xhr, error) => {
       if (xhr.status == 400) {

@@ -1,7 +1,7 @@
 $(() => {
   startGlitter();
-  $(".button").click((event) => {
-    let sendTo = $(event.target).attr("sendTo");
+  $(".button").click(function () {
+    let sendTo = $(this).attr("sendTo");
     window.open(sendTo);
   });
 });

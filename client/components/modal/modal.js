@@ -1,5 +1,25 @@
-var modal;
-var modalContent;
+let modal;
+let modalContent;
+
+const createModalCssLink = () => {
+  let link = document.createElement("link");
+  link.href = "/widget?widgetName=modal&resource=modal.css";
+  link.rel = "stylesheet";
+  link.type = "text/css";
+  document.head.prepend(link);
+};
+
+createModalCssLink();
+
+const initializeModal = (thenFn, forList) => {
+  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
+    data.text().then((html) => {
+      $("#modal").html(html);
+      forList ? startModalForList() : startModal();
+      if (thenFn) thenFn();
+    });
+  });
+};
 
 const startModal = () => {
   modal = $("#modal");
@@ -13,7 +33,7 @@ const startModal = () => {
 };
 
 const closeModal = () => {
-  modal.css("visibility", "hidden");
+  modal.css("display", "none");
   modalContent.text("");
 };
 
@@ -55,5 +75,5 @@ const displayModal = (text, fn, buttonAText, buttonBText, fn2) => {
     $("#modal-cancel").off("click").on("click", closeModal);
   }
   modalContent.text(text);
-  modal.css("visibility", "visible");
+  modal.css("display", "block");
 };

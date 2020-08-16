@@ -1,6 +1,5 @@
 #modal {
-  font-family: "Open Sans", sans-serif;
-  visibility: hidden;
+  display: none;
   position: fixed;
   z-index: 100;
   padding-top: 30%;
@@ -10,19 +9,19 @@
   height: 100%;
   overflow: auto;
   background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: var(--modal-background-shadow);
 }
 /* TODO: Customize modal */
 .modal-content {
-  background-color: #fefefe;
+  background-color: var(--modal-body);
   margin: auto;
   padding: 20px;
-  border: 1px solid #888;
+  border: 1px solid var(--modal-body-border);
   width: 80%;
 }
 
 #modal-text {
-  color: black;
+  color: var(--modal-text);
 }
 
 .close {

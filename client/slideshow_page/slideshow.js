@@ -1,4 +1,4 @@
-const endpoint = "/today_images";
+const endpoint = "/todayImages";
 const settingsEndpoint = "/settings";
 
 var now = new Date();
@@ -103,7 +103,6 @@ function hide() {
 $(document).mousemove(function () {
   if (!justHidden) {
     justHidden = false;
-    console.log("move");
     clearTimeout(j);
     $("html").css({
       cursor: "default",

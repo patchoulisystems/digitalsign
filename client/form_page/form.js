@@ -1,41 +1,17 @@
 $(() => {
-  fetch("/widget?widgetName=datepicker&resource=datepicker.html").then(
-    (data) => {
-      data.text().then((html) => {
-        let ogHTML = document.getElementById("datepicker-component").innerHTML;
-        document.getElementById("datepicker-component").innerHTML =
-          html + ogHTML;
-        startDatepicker({
-          onChangeMonthYear: onChangeMonthYear,
-        });
-        onChangeMonthYear();
-        fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
-          data.text().then((html) => {
-            $("#modal").html(html);
-            startModal();
-            startGlitter();
-          });
-        });
-      });
-    }
-  );
+  startTopBanner();
+  initializeDatepicker();
+  initializeModal(startGlitter);
 });
 
-const onChangeMonthYear = () => {
-  setTimeout(() => {
-    $("a.day").each(function (itm) {
-      let parsedEpoch = $(this).attr("class").split(" ")[0].split("dp")[1];
-      console.log(parsedEpoch);
-      fetch(`/hasPicture?time=${parsedEpoch}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.data == "none") {
-            $(this).css("background-color", "#cf4036");
-          }
-        });
-    });
-  }, 0);
-};
+$(window).on("load resize", function () {
+  let vpWidth = $(window).width();
+  if (vpWidth <= 765) {
+    $(".main-form").removeClass("row").addClass("col");
+  } else {
+    $(".main-form").removeClass("col").addClass("row");
+  }
+});
 
 $(document).on("submit", "form", (event) => {
   event.preventDefault();

@@ -1,0 +1,35 @@
+:root {
+  --necc-primary: #225f9c;
+  --necc-secondary: #214566;
+  --necc-third: #5891c4;
+  --necc-border-color: #404040;
+  --necc-yellow-text-prim: #eeb111;
+  --necc-yellow-input-prim: #d1a732;
+  --necc-yellow-prim: #f0b310;
+  --necc-title: white;
+
+  --modal-background-shadow: rgba(0, 0, 0, 0.4);
+  --modal-body: white;
+  --modal-text: black;
+  --modal-body-border: #888;
+
+  --playlist-nomod-prim: #410b13;
+  --playlist-nomod-sec: #ba1f33;
+  --playlist-mod-prim: #003249;
+  --playlist-mod-sec: #007ea7;
+  --playlist-scrollbar-border: #ffa500;
+
+  --picture-frame-selected: rgba(122, 252, 122, 0.281);
+
+  --datepicker-white: #eef2f8;
+  --datepicker-dateselect-text: #b89b1a;
+  --datepicker-disabled: white;
+  --datepicker-disabled-buttons: rgb(119, 100, 16);
+  --datepicker-navbar-control: white;
+  --datepicker-navbar-control-ovr: #600;
+  --datepicker-control-command-onhover: #f08080;
+  --datepicker-past-days: #51667b;
+  --datepicker-enabled-days: rgb(29, 100, 172);
+  --datepicker-past-text: rgb(187, 169, 90);
+  --datepicker-weekends: rgb(25, 123, 221);
+}
