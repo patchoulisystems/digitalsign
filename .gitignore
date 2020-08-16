@@ -13,3 +13,6 @@ server/data/db.json
 
 #Sass compiling file. We don't need it for the CSS to work
 *.map
+
+# no more need for the images on git. we don't really need the db or settings either, but we'll see
+server/data/images
