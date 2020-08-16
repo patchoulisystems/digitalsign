@@ -1,8 +1,8 @@
+require("./src/startup")();
 const https = require("https");
 const http = require("http");
 const fs = require("fs");
 const router = require("./src/router");
-const validator = require("./src/validateDb");
 
 // address is the address on ethernet interface, which is what we want to listen to
 // 80 is standard for http, may need to sudo node app.js to listen on port 80
@@ -20,17 +20,6 @@ const secret = process.env.SECRET;
 
 var options;
 var server;
-
-let dbValidate = validator();
-
-if (dbValidate.errors.length) {
-  console.log(
-    "There has been an issue validating the DB's schema: ",
-    dbValidate.errors
-  );
-} else {
-  console.log("The DB schema has been validated successfully");
-}
 
 try {
   options = {

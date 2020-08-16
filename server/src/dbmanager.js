@@ -696,7 +696,12 @@ const excludeListFromData = (data) => {
   }
 };
 
-// TODO: Solve this
+/** Initializes the DB file or creates a new one if there isn't one
+ *
+ * Really powerful method. It will wipe the database if used. Something to note is that
+ * it will be triggered whenever the app cannot find the db. Pictures will still be there, so all we have to
+ * do is uncomment the bottom loop if wanted.
+ */
 const initialize = () => {
   // This also works as a more visual schema of the db
   db = {
@@ -740,6 +745,29 @@ const initialize = () => {
 // And then uncomment this as well
 // initialize();
 
+/** Initializes the Settings file or creates one from scratch if there is none
+ *
+ * Is not that dangerous of a method to be honest. It's only the settings, so I don't think
+ * there's a whole lot to fret about if we lose these.
+ */
+const initializeSettings = () => {
+  let jsonData = JSON.stringify({
+    animationName: "expand",
+    animationSpeed: "2",
+    timeBetweenPictures: "6000",
+  });
+  try {
+    if (fs.existsSync(jsonData)) {
+      fs.writeFileSync("./data/settings.json", jsonData);
+    } else {
+      fs.writeFileSync("./data/settings.json", jsonData);
+    }
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+  }
+};
+
 module.exports = {
   getTodayList,
   insertFormData,
@@ -752,4 +780,6 @@ module.exports = {
   playlists,
   setPlaylist,
   removePicture,
+  initialize,
+  initializeSettings,
 };
