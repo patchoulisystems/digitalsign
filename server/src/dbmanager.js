@@ -6,7 +6,9 @@ const moment = require("moment");
 
 const imagesFolder = "./data/images/";
 const dbLocation = "./data/db.json";
-let db;
+let db = fs.existsSync(dbLocation)
+  ? JSON.parse(fs.readFileSync(dbLocation))
+  : {};
 
 /** Initializes the DB file or creates a new one if there isn't one
  *
@@ -49,22 +51,28 @@ const initialize = () => {
     // TODO: Logging here
     console.log(err);
   }
+  // And then uncomment this as well
+  // initialize();
 };
-// And then uncomment this as well
-// initialize();
 
-try {
-  if (fs.existsSync(dbLocation)) {
-    db = fs.readFileSync(dbLocation);
-    db = JSON.parse(db);
+/** Initializes the Settings file or creates one from scratch if there is none
+ *
+ * Is not that dangerous of a method to be honest. It's only the settings, so I don't think
+ * there's a whole lot to fret about if we lose these.
+ */
+const initializeSettings = () => {
+  let jsonData = JSON.stringify({
+    animationName: "expand",
+    animationSpeed: "2",
+    timeBetweenPictures: "6000",
+  });
+  try {
+    fs.writeFileSync("./data/settings.json", jsonData);
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
   }
-} catch (err) {
-  // TODO: Logging here
-  console.log(
-    "DB file was either empty or had a bad parsing. Please take a look at it, or delete it and start the app again to initialize one."
-  );
-  process.exit(1);
-}
+};
 
 const getDate = (str, noFormat) => {
   return moment(str || new Date(), !noFormat ? "YYYY-MM-DD" : null).set({
@@ -749,25 +757,6 @@ const excludeListFromData = (data) => {
     if (fs.existsSync(dbLocation)) {
       fs.writeFileSync(dbLocation, jsonData);
     }
-  } catch (err) {
-    // TODO: Logging here
-    console.log(err);
-  }
-};
-
-/** Initializes the Settings file or creates one from scratch if there is none
- *
- * Is not that dangerous of a method to be honest. It's only the settings, so I don't think
- * there's a whole lot to fret about if we lose these.
- */
-const initializeSettings = () => {
-  let jsonData = JSON.stringify({
-    animationName: "expand",
-    animationSpeed: "2",
-    timeBetweenPictures: "6000",
-  });
-  try {
-    fs.writeFileSync("./data/settings.json", jsonData);
   } catch (err) {
     // TODO: Logging here
     console.log(err);
