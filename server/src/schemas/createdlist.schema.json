@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
+  "$id": "/CreatedList",
+  "type": "object",
+  "patternProperties": {
+    "^.*$": {
+      "type": "object",
+      "properties": {
+        "dateType": { "type": "string" },
+        "dates": { "type": "string" },
+        "pictures": { "type": "array" },
+        "listName": { "type": "string" },
+        "concat": { "type": "string" }
+      }
+    }
+  }
+}

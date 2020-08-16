@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
+  "$id": "/List",
+  "type": "object",
+  "patternProperties": {
+    "^.*$": {
+      "type": "object",
+      "properties": {
+        "dateType": { "type": "string" },
+        "dates": { "type": "string" },
+        "pictures": { "type": "array" }
+      }
+    }
+  }
+}

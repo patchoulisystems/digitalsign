@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
+  "$id": "/Entries",
+  "type": "object",
+  "patternProperties": {
+    "^.*$": {
+      "type": "object",
+      "properties": {
+        "firstname": { "type": "string" },
+        "lastname": { "type": "string" },
+        "studentid": { "type": "string" },
+        "dateType": { "type": "string" },
+        "dates": { "type": "string" },
+        "pictureName": { "type": "string" }
+      }
+    }
+  }
+}
