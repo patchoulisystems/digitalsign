@@ -23,31 +23,11 @@ function home(request, response) {
   let pathname = urlObject.pathname.toString();
 
   if (endpoints[pathname]) endpoints[pathname](request, response, urlObject);
-  else resolveOptions(request, response);
-}
-
-// TODO: Make a proper Options file
-/**
- * This the endpoint that resolves whenever the options of the web app are requested.
- * Definitively needs more work because this actually does nothing.
- * @param {Response} response - The response that the server will send back to the client
- * @param {XMLHttpRequest} request - The request sent by the Client
- */
-const resolveOptions = (request, response) => {
-  let headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
-    "Access-Control-Max-Age": 2592000,
-  };
-
-  if (request.method === "OPTIONS") {
-    response.writeHead(200, headers);
-    response.end();
-  } else {
-    response.writeHead(405, "Method Not Allowed");
+  else {
+    response.writeHead(404, "Not Found");
     response.end();
   }
-};
+}
 
 /**
  * This the endpoint that handles the request of any CSS file of a page (this doesn't include the CSS for widgets)
