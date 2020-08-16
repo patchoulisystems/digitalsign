@@ -59,8 +59,8 @@ const getTodayIncludeList = () => {
   let includeList = [];
   let today = getDate();
 
-  for (const listName in db.metadata.builtLists) {
-    let currentIncludeList = db.metadata.builtLists[listName];
+  for (const listName in db.builtLists) {
+    let currentIncludeList = db.builtLists[listName];
 
     switch (currentIncludeList.dateType) {
       case "interval":
@@ -114,7 +114,7 @@ const getScheduled = (item) => {
 // TODO: Optimize this
 const buildToday = (playlist) => {
   let todayList = [];
-  let createdLists = db.metadata.createdLists;
+  let createdLists = db.createdLists;
   let today = getDate();
 
   // We'll use this in the set list attribute, whenever the list has
@@ -156,7 +156,7 @@ const buildToday = (playlist) => {
   todayList = [...new Set(todayList)];
 
   db.metadata["todayList"] = todayList;
-  db.metadata["dateBuilt"] = today;
+  db.metadata["dateBuilt"] = todayList.length ? today : "";
   let jsonData = JSON.stringify(db);
   try {
     if (fs.existsSync(dbLocation)) {
@@ -195,7 +195,7 @@ const setPlaylist = (data) => {
 
 const createList = (data) => {
   let listName = data.listName;
-  db.metadata.createdLists[listName] = data;
+  db.createdLists[listName] = data;
   let jsonData = JSON.stringify(db);
   let today = getDate();
 
@@ -262,8 +262,8 @@ const hasPicture = (epochTime) => {
     }
     // Then a list with that date (from the include list)
     if (!done) {
-      for (const listKey in db.metadata.builtLists) {
-        const currentList = db.metadata.builtLists[listKey];
+      for (const listKey in db.builtLists) {
+        const currentList = db.builtLists[listKey];
         if (currentList.dateType == "interval" && !done) {
           let parsedDates = currentList.dates.split(" - ");
           let leftmostDay = getDate(parsedDates[0]);
@@ -295,11 +295,11 @@ const getTodayList = () => {
   let today = getDate();
   let built = getDate(db.metadata["dateBuilt"]);
 
-  if (built < today) {
+  if (built && built < today) {
     return buildToday();
   } else {
     return db.metadata["todayList"] == 0
-      ? ["empty.jpg"]
+      ? buildToday()
       : db.metadata["todayList"];
   }
 };
@@ -627,26 +627,24 @@ const removePicture = (name) => {
   db.metadata.todayList = db.metadata.todayList.filter((el) => el != name);
 
   // Now for each created list, we cleanse
-  for (const list in db.metadata.createdLists) {
-    db.metadata.createdLists[list].pictures = db.metadata.createdLists[
-      list
-    ].pictures.filter((el) => el != name);
+  for (const list in db.createdLists) {
+    db.createdLists[list].pictures = db.createdLists[list].pictures.filter(
+      (el) => el != name
+    );
   }
 
   // Now for each built list, we cleanse
-  for (const list in db.metadata.builtLists) {
-    db.metadata.builtLists[list].pictures = db.metadata.builtLists[
-      list
-    ].pictures.filter((el) => el != name);
+  for (const list in db.builtLists) {
+    db.builtLists[list].pictures = db.builtLists[list].pictures.filter(
+      (el) => el != name
+    );
   }
 
   // Now for each exclude list, we cleanse
-  for (const list in db.metadata.builtExcludeLists) {
-    db.metadata.builtExcludeLists[
+  for (const list in db.builtExcludeLists) {
+    db.builtExcludeLists[list].pictures = db.builtExcludeLists[
       list
-    ].pictures = db.metadata.builtExcludeLists[list].pictures.filter(
-      (el) => el != name
-    );
+    ].pictures.filter((el) => el != name);
   }
 
   // Now we save our game
@@ -700,28 +698,45 @@ const excludeListFromData = (data) => {
 
 // TODO: Solve this
 const initialize = () => {
-  fs.readdir(imagesFolder, (err, files) => {
-    files.forEach((image) => {
-      db.entries[image] = {
-        firstname: "Vladimir",
-        lastname: "Ventura",
-        studentid: "00301144",
-        dateType: "interval",
-        dates: "2020-01-01 - 2020-12-31",
-        pictureName: image,
-      };
-    });
-    let jsonData = JSON.stringify(db);
-    try {
-      if (fs.existsSync(dbLocation)) {
-        fs.writeFileSync(dbLocation, jsonData);
-      }
-    } catch (err) {
-      // TODO: Logging here
-      console.log(err);
+  // This also works as a more visual schema of the db
+  db = {
+    entries: {},
+    metadata: {
+      imageNumber: 0,
+      todayList: [],
+      dateBuilt: "",
+      builtListsNumber: 0,
+      builtExcludeListsNumber: 0,
+    },
+    createdLists: {},
+    builtLists: {},
+    builtExcludeLists: {},
+  };
+  // If you want to initialize it with the pictures stored quickly, uncomment this
+  // fs.readdir(imagesFolder, (err, files) => {
+  //  let today = getDate();
+  //   files.forEach((image) => {
+  //     db.entries[image] = {
+  //       firstname: "Vladimir",
+  //       lastname: "Ventura",
+  //       studentid: "00301144",
+  //       dateType: "multiple",
+  //       dates: `${today.year()}-${today.month() + 1}-${today.date()}`,
+  //       pictureName: image,
+  //     };
+  //   });
+  let jsonData = JSON.stringify(db);
+  try {
+    if (fs.existsSync(dbLocation)) {
+      fs.writeFileSync(dbLocation, jsonData);
     }
-  });
+  } catch (err) {
+    // TODO: Logging here
+    console.log(err);
+  }
 };
+// And then uncomment this as well
+// initialize();
 
 module.exports = {
   getTodayList,
