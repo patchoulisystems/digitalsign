@@ -47,20 +47,22 @@ const getPage = (response, page = "index") => {
   if (page != "index") {
     let pagePath = `../client/${page}_page/${page}.html`;
     if (fs.existsSync(pagePath)) {
-      let file = fs.readFileSync(pagePath);
-      response.writeHead(200, { "Content-Type": "text/html" });
-      response.write(file);
-      response.end();
+      fs.readFile(pagePath, (err, file) => {
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.write(file);
+        response.end();
+      });
     } else {
       response.writeHead(404, "Not Found");
       response.end();
     }
   } else if (page == "index") {
     if (fs.existsSync("../client/index.html")) {
-      let file = fs.readFileSync("../client/index.html");
-      response.writeHead(200, { "Content-Type": "text/html" });
-      response.write(file);
-      response.end();
+      fs.readFile("../client/index.html", (err, file) => {
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.write(file);
+        response.end();
+      });
     } else {
       response.writeHead(404, "Not Found");
       response.end();

@@ -10,6 +10,11 @@ let db = fs.existsSync(dbLocation)
   ? JSON.parse(fs.readFileSync(dbLocation))
   : {};
 
+/** DB Manager Module
+ *
+ * All of the database related methods are in this module (or rather, the vast majority of them).
+ */
+
 /** Initializes the DB file or creates a new one if there isn't one
  *
  * Really powerful method. It will wipe the database if used. Something to note is that
@@ -17,42 +22,45 @@ let db = fs.existsSync(dbLocation)
  * do is uncomment the bottom loop if wanted.
  */
 const initialize = () => {
-  // This also works as a more visual schema of the db
-  db = {
-    entries: {},
-    metadata: {
-      imageNumber: 0,
-      todayList: [],
-      dateBuilt: "",
-      builtListsNumber: 0,
-      builtExcludeListsNumber: 0,
-    },
-    createdLists: {},
-    builtLists: {},
-    builtExcludeLists: {},
-  };
-  // If you want to initialize it with the pictures stored quickly, uncomment this
-  // fs.readdir(imagesFolder, (err, files) => {
-  //  let today = getDate();
-  //   files.forEach((image) => {
-  //     db.entries[image] = {
-  //       firstname: "Vladimir",
-  //       lastname: "Ventura",
-  //       studentid: "00301144",
-  //       dateType: "multiple",
-  //       dates: `${today.year()}-${today.month() + 1}-${today.date()}`,
-  //       pictureName: image,
-  //     };
-  //   });
-  let jsonData = JSON.stringify(db);
-  try {
-    fs.writeFileSync(dbLocation, jsonData);
-  } catch (err) {
-    // TODO: Logging here
-    console.log(err);
-  }
-  // And then uncomment this as well
-  // initialize();
+  return new Promise((res, rej) => {
+    // This also works as a more visual schema of the db
+    db = {
+      entries: {},
+      metadata: {
+        imageNumber: 0,
+        todayList: [],
+        dateBuilt: "",
+        builtListsNumber: 0,
+        builtExcludeListsNumber: 0,
+      },
+      createdLists: {},
+      builtLists: {},
+      builtExcludeLists: {},
+    };
+    // If you want to initialize it with the pictures stored quickly, uncomment this
+    // fs.readdir(imagesFolder, (err, files) => {
+    //  let today = getDate();
+    //   files.forEach((image) => {
+    //     db.entries[image] = {
+    //       firstname: "Vladimir",
+    //       lastname: "Ventura",
+    //       studentid: "00301144",
+    //       dateType: "multiple",
+    //       dates: `${today.year()}-${today.month() + 1}-${today.date()}`,
+    //       pictureName: image,
+    //     };
+    //   });
+    let jsonData = JSON.stringify(db);
+
+    fs.open(dbLocation, "wx", (err, fd) => {
+      // TODO: Logging here
+      if (err) console.log(err);
+      fs.writeFile(dbLocation, jsonData, (err) => {
+        if (err) console.log(err);
+        else res();
+      });
+    });
+  });
 };
 
 /** Initializes the Settings file or creates one from scratch if there is none
@@ -60,18 +68,22 @@ const initialize = () => {
  * Is not that dangerous of a method to be honest. It's only the settings, so I don't think
  * there's a whole lot to fret about if we lose these.
  */
-const initializeSettings = () => {
-  let jsonData = JSON.stringify({
-    animationName: "expand",
-    animationSpeed: "2",
-    timeBetweenPictures: "6000",
+const initializeSettings = async () => {
+  return new Promise((res, rej) => {
+    let jsonData = JSON.stringify({
+      animationName: "expand",
+      animationSpeed: "2",
+      timeBetweenPictures: "6000",
+    });
+    fs.open("./data/settings.json", "wx", (err, fd) => {
+      // TODO: Logging here
+      if (err) console.log("1", err);
+      fs.writeFile("./data/settings.json", jsonData, (err) => {
+        if (err) console.log(err);
+        else res();
+      });
+    });
   });
-  try {
-    fs.writeFileSync("./data/settings.json", jsonData);
-  } catch (err) {
-    // TODO: Logging here
-    console.log(err);
-  }
 };
 
 const getDate = (str, noFormat) => {
@@ -214,15 +226,17 @@ const buildToday = (playlist) => {
   db.metadata["todayList"] = todayList;
   db.metadata["dateBuilt"] = todayList.length ? today : "";
   let jsonData = JSON.stringify(db);
-  try {
-    if (fs.existsSync(dbLocation)) {
-      fs.writeFileSync(dbLocation, jsonData);
-    }
-  } catch (err) {
+  fs.open(dbLocation, "wx", (err, fd) => {
     // TODO: Logging here
-    console.log(err);
-    return ["500.jpg"];
-  }
+    if (err && err.code != "EEXIST") {
+      console.log(err);
+    }
+    fs.writeFile(dbLocation, jsonData, (err) => {
+      if (err && err.code != "EEXIST") {
+        console.log(err);
+      }
+    });
+  });
   return todayList.length == 0 ? ["empty.jpg"] : todayList;
 };
 
@@ -275,14 +289,17 @@ const createList = (data) => {
       break;
   }
 
-  try {
-    if (fs.existsSync(dbLocation)) {
-      fs.writeFileSync(dbLocation, jsonData);
-    }
-  } catch (err) {
+  fs.open(dbLocation, "wx", (err, fd) => {
     // TODO: Logging here
-    console.log(err);
-  }
+    if (err && err.code != "EEXIST") {
+      console.log(err);
+    }
+    fs.writeFile(dbLocation, jsonData, (err) => {
+      if (err && err.code != "EEXIST") {
+        console.log(err);
+      }
+    });
+  });
 };
 
 const hasPicture = (epochTime) => {
@@ -550,14 +567,17 @@ const pictureList = (data) => {
   db.metadata["builtLists"][listName] = data;
   db.metadata["builtListsNumber"]++;
   let jsonData = JSON.stringify(db);
-  try {
-    if (fs.existsSync(dbLocation)) {
-      fs.writeFileSync(dbLocation, jsonData);
-    }
-  } catch (err) {
+  fs.open(dbLocation, "wx", (err, fd) => {
     // TODO: Logging here
-    console.log(err);
-  }
+    if (err && err.code != "EEXIST") {
+      console.log(err);
+    }
+    fs.writeFile(dbLocation, jsonData, (err) => {
+      if (err && err.code != "EEXIST") {
+        console.log(err);
+      }
+    });
+  });
 };
 
 const insertFormData = (request, response) => {
@@ -565,7 +585,7 @@ const insertFormData = (request, response) => {
   let today = getDate();
   form.keepExtensions = true;
 
-  form.parse(request, (error, fields, files) => {
+  form.parse(request, async (error, fields, files) => {
     if (
       !fields.firstname ||
       !fields.lastname ||
@@ -579,9 +599,33 @@ const insertFormData = (request, response) => {
       // So we do the map here, for each image to insert
       try {
         // Multiple File
-        files.picture.forEach((file) => {
-          let imageToInsert = savePicture(file);
-          if (imageToInsert) {
+        files.picture.forEach(async (file) => {
+          await savePicture(file).then((data) => {
+            console.log(data);
+            let imageToInsert = data;
+            if (imageToInsert) {
+              db.entries[imageToInsert] = {
+                firstname: fields.firstname,
+                lastname: fields.lastname,
+                studentid: fields.studentid,
+                dateType: fields.radio,
+                dates: fields.dates,
+                pictureName: imageToInsert,
+              };
+              db.metadata["imageNumber"]++;
+            } else {
+              response.writeHead(500, "Internal Server Error");
+              response.end();
+            }
+          });
+        });
+      } catch (error) {
+        if (error instanceof TypeError) {
+          // Single File
+          await savePicture(files.picture).then((data) => {
+            console.log(data);
+
+            let imageToInsert = data;
             db.entries[imageToInsert] = {
               firstname: fields.firstname,
               lastname: fields.lastname,
@@ -591,36 +635,21 @@ const insertFormData = (request, response) => {
               pictureName: imageToInsert,
             };
             db.metadata["imageNumber"]++;
-          } else {
-            response.writeHead(500, "Internal Server Error");
-            response.end();
-          }
-        });
-      } catch (error) {
-        if (error instanceof TypeError) {
-          // Single File
-          let imageToInsert = savePicture(files.picture);
-          db.entries[imageToInsert] = {
-            firstname: fields.firstname,
-            lastname: fields.lastname,
-            studentid: fields.studentid,
-            dateType: fields.radio,
-            dates: fields.dates,
-            pictureName: imageToInsert,
-          };
-          db.metadata["imageNumber"]++;
+          });
         }
       }
       let jsonData = JSON.stringify(db);
-      try {
-        if (fs.existsSync(dbLocation)) {
-          fs.writeFileSync(dbLocation, jsonData);
-        }
-      } catch (err) {
+      fs.open(dbLocation, "wx", (err, fd) => {
         // TODO: Logging here
-        console.log(err);
-      }
-
+        if (err && err.code != "EEXIST") {
+          console.log(err);
+        }
+        fs.writeFile(dbLocation, jsonData, (err) => {
+          if (err && err.code != "EEXIST") {
+            console.log(err);
+          }
+        });
+      });
       if (fields.radio == "interval") {
         let parsedDates = fields.dates.split(" - ");
         let leftmostDay = getDate(parsedDates[0]);
@@ -646,32 +675,62 @@ const insertFormData = (request, response) => {
   });
 };
 
+/** Promise that saves a picture from the form to the images directory
+ *
+ * Returns a promise (because we want to wait until the file is saved so we can move on with the DB Manipulation)
+ * that, when resolved, returns the name of the file that we moved from the OS's temp directory to the app's image
+ * directory. If something happens while saving we return empty and we log what went wrong.
+ *
+ * @param {Files} file - The form file object with the path to the image
+ */
 const savePicture = (file) => {
-  let oldPath = file.path;
-  const id = nanoid();
-  let extension = path.extname(oldPath);
-  let fileName = `${id}${extension}`;
-  let newPath = `${imagesFolder}/${fileName}`;
+  return new Promise((res, rej) => {
+    let oldPath = file.path;
+    const id = nanoid();
+    let extension = path.extname(oldPath);
+    let fileName = `${id}${extension}`;
+    let newPath = `${imagesFolder}/${fileName}`;
 
-  try {
-    if (fs.existsSync(oldPath)) {
-      fs.renameSync(oldPath, newPath);
-    }
-  } catch (err) {
-    // TODO: Logging here
-    if (err.code == "ENOENT") {
-      console.log("Most likely the image directory was not found. Retrying...");
-      try {
-        fs.mkdirSync(imagesFolder);
-        savePicture(file);
-      } catch (err) {
-        console.log("Something else is the issue: ", err);
+    // This is an ugly change, but a needed one for several pictures at a time (we're receiving each picture and saving it asynchronously)
+    fs.open(oldPath, "wx", (err, fd) => {
+      // TODO: Logging here
+      if (err) {
+        switch (err.code) {
+          case "EEXIST":
+            console.log("File was saved locally successfully");
+            break;
+          default:
+            console.log("Something went wrong: ", err);
+            res("");
+            break;
+        }
       }
-    }
-    return "";
-  }
 
-  return fileName;
+      fs.rename(oldPath, newPath, (err) => {
+        if (err) {
+          switch (err.code) {
+            case "ENOENT":
+              console.log(
+                "The Images directory was not found. Creating, then retrying."
+              );
+              fs.mkdir(imagesFolder, (err) => {
+                if (err) {
+                  if (err.code != "EEXIST")
+                    console.log("Something else is the issue: ", err);
+                  res("");
+                } else res(savePicture(file));
+              });
+              break;
+            default:
+              console.log("Something went wrong: ", err);
+              res("");
+              break;
+          }
+        }
+        res(fileName);
+      });
+    });
+  });
 };
 
 /** Removes a named picture from the database
@@ -713,14 +772,17 @@ const removePicture = (name) => {
 
   // Now we save our game
   let jsonData = JSON.stringify(db);
-  try {
-    if (fs.existsSync(dbLocation)) {
-      fs.writeFileSync(dbLocation, jsonData);
-    }
-  } catch (err) {
+  fs.open(dbLocation, "wx", (err, fd) => {
     // TODO: Logging here
-    console.log(err);
-  }
+    if (err && err.code != "EEXIST") {
+      console.log(err);
+    }
+    fs.writeFile(dbLocation, jsonData, (err) => {
+      if (err && err.code != "EEXIST") {
+        console.log(err);
+      }
+    });
+  });
 
   // Now we say goodbye to the image
   deleteImage(name);
@@ -733,16 +795,34 @@ const removePicture = (name) => {
  */
 const deleteImage = (name) => {
   let imagesDir = "./data/images/";
-  try {
-    fs.unlinkSync(imagesDir + name);
-  } catch (err) {
-    if (err.code == "ENOENT") {
-      console.log("More than likely the image is not there");
+  fs.open(dbLocation, "wx", (err, fd) => {
+    if (err && err.code == "EEXIST") {
+      switch (err.code) {
+        case "EEXIST":
+          fs.unlink(imagesDir + name, (err) => {
+            if (err) {
+              switch (err.code) {
+                case "ENOENT":
+                  console.log(
+                    `Attempt of deletion ${name} inside ${imagesDir}. File not found.`,
+                    err
+                  );
+                  break;
+              }
+            }
+          });
+          break;
+        case "ENOENT":
+          console.log(
+            `Attempt of deletion ${name} inside ${imagesDir}. File not found.`,
+            err
+          );
+          break;
+      }
     } else {
-      // TODO: Logging here
-      console.log(err);
+      console.log("Tried to delete file", name, err);
     }
-  }
+  });
 };
 
 const excludeListFromData = (data) => {
@@ -750,14 +830,17 @@ const excludeListFromData = (data) => {
   db.metadata["builtExcludeLists"][excludeListName] = data;
   db.metadata["builtExcludeListsNumber"]++;
   let jsonData = JSON.stringify(db);
-  try {
-    if (fs.existsSync(dbLocation)) {
-      fs.writeFileSync(dbLocation, jsonData);
-    }
-  } catch (err) {
+  fs.open(dbLocation, "wx", (err, fd) => {
     // TODO: Logging here
-    console.log(err);
-  }
+    if (err && err.code != "EEXIST") {
+      console.log(err);
+    }
+    fs.writeFile(dbLocation, jsonData, (err) => {
+      if (err && err.code != "EEXIST") {
+        console.log(err);
+      }
+    });
+  });
 };
 
 module.exports = {
