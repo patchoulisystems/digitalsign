@@ -82,6 +82,10 @@ function home(request, response) {
     case "/settings":
       resolveSettings(response, request.method, urlObject);
       break;
+    // new menu options
+    case "/image_manager":
+      resolveImageManager(response, request);
+      break;
     default:
       resolveOptions(response, request);
       break;
@@ -453,6 +457,24 @@ function resolveOptions(response, request) {
     response.end();
     return;
   } else {
+    response.end();
+  }
+}
+
+/**
+ * This the endpoint that resolves the image_manager
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {String} method - The method of the request sent by the Client
+ */
+function resolveImageManager(response, request) {
+  if (request.method == "GET") {
+    let file = fs.readFileSync("../client/image_manager_page/image_manager.html");
+    headers["Content-Type"] = "text/html";
+    response.writeHead(200, headers);
+    response.write(file);
+    response.end();
+  } else {
+    response.writeHead(404, "Not Found");
     response.end();
   }
 }
