@@ -492,6 +492,8 @@ function resolveAllImages(response, request) {
   if (request.method == "GET") {
     //console.log(JSON.stringify({ data: db.getImages() }));
     //console.log(db.getImages());
+    headers["Content-Type"] = "text/html";
+    response.writeHead(200, headers);
     response.write(JSON.stringify(db.getImages()));
     response.end();
   } else {
