@@ -17,9 +17,7 @@ $(() => {
 });
 
 const openFrame = () => {
-  let columns = $(".picture-column");
-  columns.innerHTML = "";
-    let counter = 0;
+  let gallery = $(".picture-gallery");
 
   console.log("hello");
   //console.log($.get("/all_images"));
@@ -30,11 +28,11 @@ const openFrame = () => {
     JSON.parse(data).forEach((image) => {
       console.log(image);
       console.log(image.pictureName);
-      let singlePicture = document.createElement("div");
-      singlePicture.setAttribute("class", "single-picture picture-unselected");
-      singlePicture.setAttribute("id", image.pictureName);
+      let imageWrapper = document.createElement("div");
+      imageWrapper.setAttribute("class", "single-picture");
+      imageWrapper.setAttribute("id", image.pictureName);
 
-      singlePicture.onclick = function () {
+      imageWrapper.onclick = function () {
         onSinglePictureClick(image.pictureName);
       };
 
@@ -42,13 +40,27 @@ const openFrame = () => {
       imageTag.setAttribute("src", `/image?name=${image.pictureName}`);
 
       let overlay = document.createElement("div");
-      overlay.setAttribute("class", "overlay unselected");
+      overlay.setAttribute("class", "overlay");
 
-      singlePicture.appendChild(imageTag);
-      singlePicture.appendChild(overlay);
+      let detailWrapper = document.createElement("div");
+      detailWrapper.setAttribute("class", "image-details");
+      let details = document.createElement("p");
+      details.innerText = image.pictureName;
+      detailWrapper.appendChild(details)
 
-      columns[counter % 4].appendChild(singlePicture);
-      counter++;
+      details = document.createElement("p");
+      details.innerText = "Submitted by: " + image.firstname + " " + image.lastname;
+      detailWrapper.appendChild(details)
+
+      details = document.createElement("p");
+      details.innerText = "ID: " + image.studentid;
+      detailWrapper.appendChild(details)
+
+      imageWrapper.appendChild(imageTag);
+      imageWrapper.appendChild(overlay);
+      imageWrapper.appendChild(detailWrapper);
+
+      gallery.append(imageWrapper);
     });
   });
   $("#frame").css({
@@ -65,16 +77,10 @@ const onSinglePictureClick = (pictureName) => {
 };
 
 const togglePictureClass = (picture, overlay) => {
-  if (picture.classList.contains("picture-unselected")) {
-    picture.classList.remove("picture-unselected");
-    picture.classList.add("picture-selected");
-    overlay.classList.remove("unselected");
-    overlay.classList.add("selected");
+  if (picture.classList.contains("selected")) {
+    picture.classList.remove("selected");
   } else {
-    picture.classList.remove("picture-selected");
-    picture.classList.add("picture-unselected");
-    overlay.classList.remove("selected");
-    overlay.classList.add("unselected");
+    picture.classList.add("selected");
   }
 };
 
