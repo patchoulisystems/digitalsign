@@ -86,6 +86,9 @@ function home(request, response) {
     case "/image_manager":
       resolveImageManager(response, request);
       break;
+    case "/all_images":
+      resolveAllImages(response, request);
+      break;
     default:
       resolveOptions(response, request);
       break;
@@ -479,6 +482,23 @@ function resolveImageManager(response, request) {
   }
 }
 
+
+/**
+ * This the endpoint that resolves a list of all images known to the server
+ * @param {Response} response - The response that the server will send back to the client
+ * @param {String} method - The method of the request sent by the Client
+ */
+function resolveAllImages(response, request) {
+  if (request.method == "GET") {
+    //console.log(JSON.stringify({ data: db.getImages() }));
+    //console.log(db.getImages());
+    response.write(JSON.stringify(db.getImages()));
+    response.end();
+  } else {
+    response.writeHead(404, "Not Found");
+    response.end();
+  }
+}
 /**
  * This the endpoint that handles the request of any CSS file of a page (this doesn't include the CSS for widgets)
  * @param {Response} response - The response that the server will send back to the client

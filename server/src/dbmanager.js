@@ -4,7 +4,7 @@ const path = require("path");
 
 const imagesFolder = "./data/images/";
 const dbLocation = "./data/db.json";
-
+const imageDbPath = "./data/images.json";
 let db = fs.readFileSync(dbLocation);
 db = JSON.parse(db);
 // TODO: Optimize this
@@ -163,6 +163,13 @@ const filterExclude = (list, today) => {
   }
   return resultList;
 };
+
+const getImages = () => {
+  //console.log(JSON.parse(fs.readFileSync(imageDbPath)));
+  return JSON.parse(
+    fs.readFileSync(imageDbPath)
+  );
+}
 
 const getImageListFromDate = (dateType, dateString) => {
   let imageList = [];
@@ -528,3 +535,4 @@ module.exports.insertFormData = insertFormData;
 module.exports.getImageListFromDate = getImageListFromDate;
 module.exports.pictureList = pictureList;
 module.exports.excludeListFromData = excludeListFromData;
+module.exports.getImages = getImages;

@@ -5,8 +5,8 @@ $(() => {
         data.text().then((html) => {
           $("#modal").html(html);
           startModalForList();
-          $(".sendData").click((event) => {
-            onSubmit();
+          $(".delete").click((event) => {
+            deleteImages();
           });
           startGlitter();
         });
@@ -19,20 +19,27 @@ $(() => {
 const openFrame = () => {
   let columns = $(".picture-column");
   columns.innerHTML = "";
-  let builtImages = [];
+    let counter = 0;
 
-  $.get("/dated_images").then((response) => {
-    response.data.forEach((image) => {
+  console.log("hello");
+  //console.log($.get("/all_images"));
+  $.get("/all_images", (data, text, jqXHR) => {
+    console.log(data);
+    console.log(JSON.parse(data));
+    //console.log(Object.keys(JSON.parse(data)));
+    JSON.parse(data).forEach((image) => {
+      console.log(image);
+      console.log(image.pictureName);
       let singlePicture = document.createElement("div");
       singlePicture.setAttribute("class", "single-picture picture-unselected");
-      singlePicture.setAttribute("id", image);
+      singlePicture.setAttribute("id", image.pictureName);
 
       singlePicture.onclick = function () {
-        onSinglePictureClick(image);
+        onSinglePictureClick(image.pictureName);
       };
 
       let imageTag = document.createElement("img");
-      imageTag.setAttribute("src", `/image?name=${image}`);
+      imageTag.setAttribute("src", `/image?name=${image.pictureName}`);
 
       let overlay = document.createElement("div");
       overlay.setAttribute("class", "overlay unselected");
@@ -40,14 +47,9 @@ const openFrame = () => {
       singlePicture.appendChild(imageTag);
       singlePicture.appendChild(overlay);
 
-      builtImages.push(singlePicture);
-    });
-
-    let counter = 0;
-    while (builtImages.length > 0) {
-      columns[counter % 4].appendChild(builtImages.pop());
+      columns[counter % 4].appendChild(singlePicture);
       counter++;
-    }
+    });
   });
   $("#frame").css({
     transition: "height 0ms 0ms, opacity 600ms 0ms",
@@ -129,3 +131,10 @@ const onSubmit = (event) => {
       });
   }
 };
+
+
+const deleteImages = () => {
+  console.log(Array.from(
+    $("picture-selected")
+  ))
+}
