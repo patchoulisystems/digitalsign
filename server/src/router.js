@@ -86,9 +86,6 @@ function home(request, response) {
     case "/image_manager":
       resolveImageManager(response, request);
       break;
-    case "/all_images":
-      resolveAllImages(response, request);
-      break;
     default:
       resolveOptions(response, request);
       break;
@@ -264,27 +261,39 @@ function resolveImage(response, request, urlObject) {
  * @param {XMLHttpRequest} request - The request sent by the Client
  */
 function resolvePictureList(response, request) {
-  if (request.method === "POST") {
-    let requestData = "";
-
-    request.on("data", function (incomingData) {
-      requestData += incomingData;
-    });
-
-    request.on("end", () => {
-      requestData = JSON.parse(requestData);
-      response.setHeader("Content-Type", "text/plain");
-      if (requestData["pictures"].length == 0) {
-        response.writeHead(400, "Bad Request");
-      } else {
-        response.writeHead(200, "OK");
-        db.pictureList(requestData);
-      }
+  switch (request.method) {
+    case "GET": // getting all images
+      headers["Content-Type"] = "text/html";
+      response.writeHead(200, headers);
+      response.write(JSON.stringify(db.getImages()));
       response.end();
-    });
-  } else {
-    response.writeHead(404, "Not Found");
-    response.end();
+      break;
+    case "DELETE": // deleting images
+      request.on("data", function (incomingData) {
+        console.log(incomingData);
+      });
+      break;
+    case "POST": //adding images
+      let requestData = "";
+      request.on("data", function (incomingData) {
+        requestData += incomingData;
+      });
+      request.on("end", () => {
+        requestData = JSON.parse(requestData);
+        response.setHeader("Content-Type", "text/plain");
+        if (requestData["pictures"].length == 0) {
+          response.writeHead(400, "Bad Request");
+        } else {
+          response.writeHead(200, "OK");
+          db.pictureList(requestData);
+        }
+        response.end();
+      });
+      break;
+    default:
+      response.writeHead(404, "Not Found");
+      response.end();
+      break;
   }
 }
 
@@ -483,24 +492,6 @@ function resolveImageManager(response, request) {
 }
 
 
-/**
- * This the endpoint that resolves a list of all images known to the server
- * @param {Response} response - The response that the server will send back to the client
- * @param {String} method - The method of the request sent by the Client
- */
-function resolveAllImages(response, request) {
-  if (request.method == "GET") {
-    //console.log(JSON.stringify({ data: db.getImages() }));
-    //console.log(db.getImages());
-    headers["Content-Type"] = "text/html";
-    response.writeHead(200, headers);
-    response.write(JSON.stringify(db.getImages()));
-    response.end();
-  } else {
-    response.writeHead(404, "Not Found");
-    response.end();
-  }
-}
 /**
  * This the endpoint that handles the request of any CSS file of a page (this doesn't include the CSS for widgets)
  * @param {Response} response - The response that the server will send back to the client
