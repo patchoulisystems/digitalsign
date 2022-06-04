@@ -269,9 +269,15 @@ function resolvePictureList(response, request) {
       response.end();
       break;
     case "DELETE": // deleting images
+      let data = '';
       request.on("data", function (incomingData) {
-        console.log(incomingData);
+        data += incomingData;
       });
+      request.on('end', function () {
+        console.log("Received DELETE request: " + JSON.parse(data));
+        db.deleteImages(JSON.parse(data));
+      });
+      // TODO rewrite the database file
       break;
     case "POST": //adding images
       let requestData = "";

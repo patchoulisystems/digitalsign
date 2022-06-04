@@ -5,6 +5,7 @@ const path = require("path");
 const imagesFolder = "./data/images/";
 const dbLocation = "./data/db.json";
 const imageDbPath = "./data/images.json";
+let imageDB = JSON.parse(fs.readFileSync(imageDbPath));
 let db = fs.readFileSync(dbLocation);
 db = JSON.parse(db);
 // TODO: Optimize this
@@ -166,9 +167,21 @@ const filterExclude = (list, today) => {
 
 const getImages = () => {
   //console.log(JSON.parse(fs.readFileSync(imageDbPath)));
-  return JSON.parse(
-    fs.readFileSync(imageDbPath)
-  );
+  return imageDB;
+}
+
+const deleteImages = (images) => {
+  console.log("DB before delete" + JSON.stringify(imageDB));
+  let count = 0;
+  for (let index = imageDB.length-1; index >= 0; --index) {
+    if (images.includes(imageDB[index].pictureName)) {
+      console.log("Deleting: " + imageDB[index].pictureName);
+      ++count;
+      imageDB.splice(index,1);
+    }
+  }
+  console.log("DB after delete" + JSON.stringify(imageDB));
+  return count;
 }
 
 const getImageListFromDate = (dateType, dateString) => {
@@ -536,3 +549,4 @@ module.exports.getImageListFromDate = getImageListFromDate;
 module.exports.pictureList = pictureList;
 module.exports.excludeListFromData = excludeListFromData;
 module.exports.getImages = getImages;
+module.exports.deleteImages = deleteImages;

@@ -1,18 +1,15 @@
 $(() => {
-  (data) => {
+  fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
     data.text().then((html) => {
-      fetch("/widget?widgetName=modal&resource=modal.html").then((data) => {
-        data.text().then((html) => {
-          $("#modal").html(html);
-          startModalForList();
-          $(".delete").click((event) => {
-            deleteImages();
-          });
-          startGlitter();
-        });
+      $("#modal").html(html);
+      startModalForList();
+      console.log("hello before delete button");
+      $(".delete").click((event) => {
+        deleteImages();
       });
+      startGlitter();
     });
-  }
+  });
   openFrame();
 });
 
@@ -20,8 +17,7 @@ const openFrame = () => {
   let gallery = $(".picture-gallery");
 
   console.log("hello");
-  //console.log($.get("/all_images"));
-  $.get("/all_images", (data, text, jqXHR) => {
+  $.get("/piclist", (data, text, jqXHR) => {
     console.log(data);
     console.log(JSON.parse(data));
     //console.log(Object.keys(JSON.parse(data)));
@@ -71,12 +67,7 @@ const openFrame = () => {
 };
 
 const onSinglePictureClick = (pictureName) => {
-  let singlePicture = document.getElementById(pictureName);
-  let singlePictureOverlay = singlePicture.getElementsByClassName("overlay")[0];
-  togglePictureClass(singlePicture, singlePictureOverlay);
-};
-
-const togglePictureClass = (picture, overlay) => {
+  let picture = document.getElementById(pictureName);
   if (picture.classList.contains("selected")) {
     picture.classList.remove("selected");
   } else {
@@ -140,7 +131,21 @@ const onSubmit = (event) => {
 
 
 const deleteImages = () => {
-  console.log(Array.from(
-    $("picture-selected")
-  ))
+  var arr = [];
+  $(".selected").each((i, val) => {
+    arr.push(val.id);
+  });
+  $(".selected").remove();
+  $.ajax({
+    method: "DELETE",
+    url: "/piclist",
+    data: JSON.stringify(arr),
+    contentType: "application/json",
+  }).done((data) => {
+    console.log(data);
+  }).fail((xhr, textStatus, err) => {
+    console.log("jqXHR:" + xhr);
+    console.log("TestStatus: " + textStatus);
+    console.log("ErrorThrown: " + err);
+  });
 }
