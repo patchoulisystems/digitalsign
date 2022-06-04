@@ -1,0 +1,157 @@
+[
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image1.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image10.JPG"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image2.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image3.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image4.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image5.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image6.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image7.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image9.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image11.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image12.PNG"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image13.jpg"
+    },
+    {
+        "firstname": "Javier",
+        "lastname": "Javiero",
+        "pictureName": "image14.PNG"
+    },
+    {
+        "firstname": "Vlad",
+        "lastname": "Ventura",
+        "pictureName": "image15.jpg"
+    },
+    {
+        "firstname": "Vlad",
+        "lastname": "Ventura",
+        "pictureName": "image16.jpg"
+    },
+    {
+        "firstname": "Vlad",
+        "lastname": "Ventura",
+        "pictureName": "image17.jpg"
+    },
+    {
+        "firstname": "Vlad",
+        "lastname": "Ventura",
+        "pictureName": "image18.jpg"
+    },
+    {
+        "firstname": "M",
+        "lastname": "O",
+        "pictureName": "image19.jpg"
+    },
+    {
+        "firstname": "Wild",
+        "lastname": "Boys",
+        "pictureName": "image20.jpg"
+    },
+    {
+        "firstname": "Celty",
+        "lastname": "Sturluson",
+        "studentid": "321654789",
+        "pictureName": "image27.jpg"
+    },
+    {
+        "firstname": "V",
+        "lastname": "B",
+        "studentid": "654321",
+        "pictureName": "image28.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image29.jpg"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image30.png"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "00301144",
+        "pictureName": "image31.png"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "111111",
+        "pictureName": "image32.png"
+    },
+    {
+        "firstname": "Vladimir",
+        "lastname": "Ventura",
+        "studentid": "33333",
+        "pictureName": "image33.png"
+    },
+    {
+        "firstname": "Spike",
+        "lastname": "Spiegel",
+        "studentid": "1337801",
+        "pictureName": "image34.jpg"
+    }
+]
